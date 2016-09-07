@@ -1,0 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'goatoolsgui/styles.css' %}">
+<script src="{% static 'goatoolsgui/app.js' %}" type="text/javascript" async defer></script>
+
+<h1>Hello from goatools index.html</h1>
+
+<!-- TODO: Fix the form action -->
+<form action="show">
+  <p>Enter your GO ID's:</p>
+  <input type="text" name="goids" placeholder="required">
+
+  <!-- Don't think that we need to handle header inputs/ Section files should take care of this -->
+  <!-- <p>Enter your Header ID's:</p> -->
+  <!-- <input type="text" name="headerids" placeholder="optional"> -->
+  <p>Name your file:</p>
+  <input type="text" name="filename" placehoder="filename">
+  <p>Select a .txt file</p>
+  <input type="file" name="gosfile" id="gosfile" onchange="readFile(this.files)">
+  <input type="submit">
+</form>
