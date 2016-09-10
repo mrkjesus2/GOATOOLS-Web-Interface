@@ -18,6 +18,8 @@ function callServer() {
  * [parseTxtFile description]
  * @param  {[type]} fileContents [description]
  */
+// TODO: Refactor this function
+// (No longer takes a section file, isValidTextFile may not need to be separate)
 function parseTxtFile(fileContents) {
   var goIds = document.getElementsByName('goids')[0];
   // Clear in case the file is changed
@@ -100,3 +102,15 @@ function clearForm() {
   // document.getElementsByName('headerids')[0].value = ''; Here incase header input is necessary
   document.getElementsByName('filename')[0].value = '';
 }
+
+/**
+ * Functions used on interaction with the GoId form
+ */
+function showFileInputs() {
+
+}
+
+function hideGoIdTextInput() {
+
+}
+

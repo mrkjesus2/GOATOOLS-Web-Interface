@@ -8,7 +8,7 @@ from .helpers import submit_gos
 # Create your views here.
 def index(request):
   if request.method == 'POST':
-    form = GoIdsForm(request.POST, request.FILES) # auto_id=True should get rid for id_ prefix
+    form = GoIdsForm(request.POST, request.FILES)
     if form.is_valid() and request.FILES:
       instance = GoIds(file=request.FILES['sections_file'])
       instance.save()
@@ -18,7 +18,7 @@ def index(request):
     elif form.is_valid():
       print(submit_gos(request.POST))
   else:
-    form = GoIdsForm()
+    form = GoIdsForm(auto_id=True)
   return render(request, 'goatoolsgui/index.html', {'form': form})
 
 def showGos(request):
