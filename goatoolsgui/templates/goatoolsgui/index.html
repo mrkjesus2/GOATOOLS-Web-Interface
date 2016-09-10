@@ -3,12 +3,16 @@
 <link rel="stylesheet" href="{% static 'goatoolsgui/styles.css' %}">
 <script src="{% static 'goatoolsgui/app.js' %}" type="text/javascript" async defer></script>
 
-<h1>Hello from goatools index.html</h1>
+<header>
+  <!-- TODO: Make a nice little header that makes sense -->
+  <h1>Hello from goatools index.html</h1>
+</header>
 
-<!-- TODO: Fix the form action -->
 <form action="/" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  {{ form }}
+  <div class="go-form-line">
+    {{ form }}
+  </div>
   <input type="submit" value="Submit">
 
   <!-- <p>Enter your GO ID's:</p>
@@ -23,3 +27,7 @@
   <input type="file" name="gosfile" id="gosfile" onchange="readFile(this.files)">
   <input type="submit"> -->
 </form>
+
+<footer>
+  <!-- TODO: Add copyright information and any other relevant links -->
+</footer>

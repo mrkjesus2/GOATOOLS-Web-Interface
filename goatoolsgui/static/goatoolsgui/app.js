@@ -1,5 +1,11 @@
 /* global window document FileReader*/
 
+/*
+TODO: Add a checkbox for GO file upload that hides go ids text input
+and shows file input when it is clicked. Perhaps this should include the
+sections file input as well.
+*/
+
 function goIdsToArray() {
   // Convert a series of GoIds to an array
 }

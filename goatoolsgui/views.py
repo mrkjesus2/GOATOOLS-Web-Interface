@@ -10,7 +10,7 @@ def index(request):
   if request.method == 'POST':
     form = GoIdsForm(request.POST, request.FILES) # auto_id=True should get rid for id_ prefix
     if form.is_valid() and request.FILES:
-      instance = GoIds(file=request.FILES['file'])
+      instance = GoIds(file=request.FILES['sections_file'])
       instance.save()
       print(submit_gos(request.POST, instance.file.url))
       instance.delete()

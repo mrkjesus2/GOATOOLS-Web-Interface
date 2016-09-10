@@ -1,0 +1,15 @@
+/* For my temporary sanity */
+.go-form-line input {
+  display: block;
+  margin: 0.5em 0 2em;
+}
+
+input {
+  width: 50%;
+  height: 2em;
+}
+/* End Sanity */
+
+#id_goids::after {
+  content: "I have a file I would rather use"
+}
