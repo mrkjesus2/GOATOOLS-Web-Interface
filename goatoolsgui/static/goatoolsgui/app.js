@@ -108,3 +108,4 @@ function hideGoIdTextInput() {
   // TODO: Write this function
 }
 
+// TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)

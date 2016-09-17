@@ -25,7 +25,7 @@ class GoIdsForm(forms.Form):
 
   goids = forms.CharField(
     label='Enter your go ids',
-    max_length=1000,
+    max_length=10000,
     widget=forms.TextInput(
       attrs={
         'placeholder': 'ex: GO:0008629',
