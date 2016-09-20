@@ -22,6 +22,8 @@ def index(request):
         user_data.save()
       else:
         user_data.xlsx_data = submit_gos(request.POST)['flat']
+        user_data.json_data = user_data.xlsx_data
+        # print(user_data.json_data)
         user_data.save()
       request.session['user_data_id'] = user_data.id
 
@@ -31,11 +33,12 @@ def index(request):
   return render(request, 'goatoolsgui/index.html', {'form': form})
 
 def showGos(request):
-  # data = request.session['go_data']
-  # print('\nshowGos says: \n')
-  # print(data)
-  # print('')
-  return render(request, 'goatoolsgui/show.html')
+  json_data = GoIds.objects.get(pk=request.session['user_data_id']).json_data
+  goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
+  # print('\nShow Gos says:\n')
+  # print(json_data)
+  # Pass JSON data to the template
+  return render(request, 'goatoolsgui/show.html', {'goids': goid_object})
 
 def sendFile(request):
   # TODO: Make sure that this is a robust solution

@@ -45,12 +45,18 @@ def submit_gos(form, form_file_path=None):
 
 # Accepts 'flat' or 'sections' key in submit_gos() data object
 def nts_to_json(data):
+  # print('\nNts to JSON says:\n')
+  # print(data)
   json_data = {
     "nts": []
   }
   for nt in data:
+    print('')
+    print(type(nt))
+    print(json_data)
+    print('')
     json_data['nts'].append(json.dumps(nt._asdict()))
-  return json_data
+  return json_data['nts']
 
 
   # print(response_object['flat']) #Access the 'flat table'

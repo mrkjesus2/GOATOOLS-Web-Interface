@@ -1,3 +1,37 @@
+{% load static %}
+
 <h1>Hello from goatools show.html</h1>
+
+{% if goids %}
+  <!-- Given a list
+      ['0': 'format_txt', '1': 'hdr_idx', '2': 'is_hdrgo', '3': 'is_usrgo',
+       '4': 'hdr1usr01', '5': 'NS', '6': 'dcnt', '7': 'level', '8': 'depth',
+       '9': 'GO', '10': 'D1', '11': 'GO_Name']
+  -->
+  <table>
+    <tr>
+      <th>hd</th>
+      <th>NS</th>
+      <th>dcnt</th>
+      <th>level</th>
+      <th>depth</th>
+      <th>GO</th>
+      <th>D1</th>
+      <th>GO_name</th>
+    </tr>
+    {% for goid in goids.json_data %}
+      <tr>
+        <td>{{goid.4}}</td>
+        <td>{{goid.5}}</td>
+        <td>{{goid.6}}</td>
+        <td>{{goid.8}}</td>
+        <td>{{goid.9}}</td>
+        <td>{{goid.10}}</td>
+        <td>{{goid.11}}</td>
+        <td>{{goid.12}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endif %}
 
 <a href="/sendfile">Download</a>
