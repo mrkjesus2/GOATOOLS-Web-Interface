@@ -18,12 +18,10 @@ def index(request):
       if request.FILES.get('sections_file'):
         user_data.sections_file = request.FILES.get('sections_file')
         user_data.save()
-        user_data.xlsx_data = submit_gos(request.POST, user_data.sections_file.url)
+        user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)
         user_data.save()
       else:
-        user_data.xlsx_data = submit_gos(request.POST)['flat']
-        user_data.json_data = user_data.xlsx_data
-        # print(user_data.json_data)
+        user_data.json_data = submit_gos(request.POST)['flat']
         user_data.save()
       request.session['user_data_id'] = user_data.id
 
@@ -32,23 +30,24 @@ def index(request):
     form = GoIdsForm(auto_id=True)
   return render(request, 'goatoolsgui/index.html', {'form': form})
 
+
 def showGos(request):
-  json_data = GoIds.objects.get(pk=request.session['user_data_id']).json_data
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
-  # print('\nShow Gos says:\n')
-  # print(json_data)
-  # Pass JSON data to the template
   return render(request, 'goatoolsgui/show.html', {'goids': goid_object})
+
 
 def sendFile(request):
   # TODO: Make sure that this is a robust solution
   user_gos_obj = GoIds.objects.get(pk=request.session['user_data_id'])
-  xlsx = user_gos_obj.xlsx_data
+
+  # Opent the file to download
   filename = user_gos_obj.file_out_name
   file = open(filename, 'r')
-  # Will need to return 'Content-Disposition'
+
+  # Response header for file download
   response = HttpResponse(file, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   response['Content-Disposition'] = 'attachment; filename="%s.xlsx"' % filename
-  # return render(response)
+
+  file.close()
   return response
 
