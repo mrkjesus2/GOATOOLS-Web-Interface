@@ -13,6 +13,13 @@ class GoIds(models.Model):
   xlsx_data = models.TextField(max_length=80000)
   json_data = JSONField()
 
-  def delete(self, *args, **kwargs):
+  def __str__(self):
+    return self.go_ids
+
+  def delete(self):
     # Model TODO: Going to need some checks here
+    print(self.sections_file.name)
     os.remove(self.sections_file.name)
+    print(self.file_out_name)
+    os.remove(self.file_out_name)
+    super(GoIds, self).delete()

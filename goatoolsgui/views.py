@@ -45,9 +45,11 @@ def sendFile(request):
   file = open(filename, 'r')
 
   # Response header for file download
+  # TODO: Does the MIME type need to change
   response = HttpResponse(file, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   response['Content-Disposition'] = 'attachment; filename="%s.xlsx"' % filename
 
   file.close()
+  user_gos_obj.delete()
   return response
 
