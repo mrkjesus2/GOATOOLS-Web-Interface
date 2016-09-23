@@ -40,9 +40,11 @@ function isValidTextFile(file) {
   if (!file) {
     alert("The file failed to load");
   } else if (!file.type.match('text.*')) {
+    console.log(file.type);
     alert(file.name + " is not a valid text file.");
     // TODO: Clear the file field
   } else {
+    console.log(file.type);
     return true;
   }
 }
