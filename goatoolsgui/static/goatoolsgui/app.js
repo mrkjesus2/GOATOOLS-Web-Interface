@@ -37,15 +37,14 @@ function parseTxtFile(fileContents) {
 * Takes a file and checks that it is a text/* file
  */
 function isValidTextFile(file) {
+  var extension = file.name.substr(file.name.lastIndexOf('.')+1);
   if (!file) {
     alert("The file failed to load");
-  } else if (!file.type.match('text.*')) {
-    console.log(file.type);
+  } else if (extension === 'txt' || extension === 'tsv') {
+    return true;
+  } else {
     alert(file.name + " is not a valid text file.");
     // TODO: Clear the file field
-  } else {
-    console.log(file.type);
-    return true;
   }
 }
 
