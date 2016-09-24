@@ -1,4 +1,4 @@
-<form class="form goids-form" action="/gosite" method="post" enctype="multipart/form-data">
+<form class="form goids-form" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <!-- <p>I want to use a file:</p> -->
   <!-- <input id="goids-form__input goids-form__input--checkbox" type="checkbox" value="use-file"> -->
