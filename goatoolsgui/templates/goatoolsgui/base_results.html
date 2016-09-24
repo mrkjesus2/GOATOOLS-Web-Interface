@@ -1,6 +1,10 @@
-{% load static %}
+{% extends 'goatoolsgui/base.html' %}
 
+{% block content %}
 <h1>Hello from goatools show.html</h1>
+
+<!-- TODO: Can I delete the file only if it is actually downloaded? -->
+<a href="{% url 'goatoolsgui:sendfile' %}">Download</a>
 
 {% if goids %}
   <!-- Given a list
@@ -33,5 +37,4 @@
     {% endfor %}
   </table>
 {% endif %}
-
-<a href="{% url 'goatoolsgui:sendfile' %}">Download</a>
+{% endblock %}

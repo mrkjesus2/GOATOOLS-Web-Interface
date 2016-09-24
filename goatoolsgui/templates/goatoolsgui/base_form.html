@@ -1,3 +1,6 @@
+{% extends 'goatoolsgui/base.html' %}
+
+{% block content %}
 <form class="form goids-form" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <!-- <p>I want to use a file:</p> -->
@@ -10,3 +13,4 @@
   <input class="form__reset goids-form__input" type="reset">
   <input class="form__submit goids-form__input" type="submit">
 </form>
+{% endblock %}

@@ -28,12 +28,12 @@ def index(request):
       return HttpResponseRedirect(reverse('goatoolsgui:show'))
   else:
     form = GoIdsForm(auto_id=True)
-  return render(request, 'goatoolsgui/index.html', {'form': form})
+  return render(request, 'goatoolsgui/base_form.html', {'form': form})
 
 
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
-  return render(request, 'goatoolsgui/show.html', {'goids': goid_object})
+  return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
 
 def sendFile(request):

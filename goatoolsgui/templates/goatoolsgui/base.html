@@ -12,7 +12,8 @@
 
   <body>
     {% include "goatoolsgui/header.html" %}
-    {% include "goatoolsgui/form.html" %}
+    <!-- TODO: Do I need another block here for information? -->
+    {% block content %}{% endblock %}
     {% include "goatoolsgui/footer.html" %}
   </body>
 </html>
