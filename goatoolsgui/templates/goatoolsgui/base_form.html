@@ -17,27 +17,27 @@
     <label for="{{ form.goids.id_for_label }}" class="">
       Enter GO id's:
     </label>
+    <!-- Hidden by '.input-file' in forms.py -->
+    {{ form.gos_file }}
     <div class="input-group">
       <label for="{{ form.gos_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload<br><br>file
       </label>
       {{ form.goids }}
     </div>
-      <!-- Hidden by '.input-file' in forms.py -->
-      {{ form.gos_file }}
   </div>
 
   <!-- Section File Input -->
   <div class="form-group">
-    <!-- <label for="">Sections File:</label> -->
+    <label for="">Sections File:</label>
+    <!-- Hidden by '.input-file' in forms.py -->
+    {{ form.sections_file }}
     <div class="input-group">
       <label for="{{ form.sections_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload File:
       </label>
       <span id="sections-file-name" class="form-control">Optional</span>
     </div>
-    <!-- Hidden by '.input-file' in forms.py -->
-    {{ form.sections_file }}
   </div>
 
   <!-- Name File Download -->
@@ -52,11 +52,11 @@
   <!-- Form Buttons -->
   <div class="form-group">
     <div class="row">
-      <div class="col-xs-5 pull-right">
-        <input class="btn btn-primary" type="submit" />
-      </div>
-      <div class="col-xs-5 pull-right">
+      <div class="col-xs-5 col-xs-offset-2">
         <input class="btn btn-secondary" type="reset" />
+      </div>
+      <div class="col-xs-5">
+        <input class="btn btn-primary" type="submit" />
       </div>
     </div>
   </div>
