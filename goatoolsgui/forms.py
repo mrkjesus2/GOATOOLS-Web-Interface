@@ -8,7 +8,8 @@ class GoIdsForm(forms.Form):
     widget=forms.ClearableFileInput(
       attrs={
         'class': 'input-file',
-        'onchange': 'readFile(this.files)'
+        'onchange': 'readFile(this.files)',
+        'style': 'width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;'
       }
     )
   )

@@ -18,26 +18,26 @@
       Enter GO id's:
     </label>
     <div class="input-group">
-      {{ form.gos_file }}
       <label for="{{ form.gos_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload<br><br>file
       </label>
       {{ form.goids }}
     </div>
+      <!-- Hidden by '.input-file' in forms.py -->
+      {{ form.gos_file }}
   </div>
 
   <!-- Section File Input -->
   <div class="form-group">
-    <label for="">Sections File:</label>
+    <!-- <label for="">Sections File:</label> -->
     <div class="input-group">
       <label for="{{ form.sections_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload File:
       </label>
-      <span class="form-control">
-        <span id="sections-file-name">Optional</span>
-      </span>
-      {{ form.sections_file }}
+      <span id="sections-file-name" class="form-control">Optional</span>
     </div>
+    <!-- Hidden by '.input-file' in forms.py -->
+    {{ form.sections_file }}
   </div>
 
   <!-- Name File Download -->
