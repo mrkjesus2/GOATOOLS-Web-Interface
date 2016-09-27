@@ -103,8 +103,10 @@ function clearForm() {
  * Puts the file name in the customized file uploader
  * @param {[type]} file [description]
  */
-addFileName(file) {
-  // TODO: Write this function
+function addFileName(files) {
+  var file = files[0];
+  var el = document.getElementById('sections-file-name');
+  el.innerHTML = file.name;
 }
 
 /**
