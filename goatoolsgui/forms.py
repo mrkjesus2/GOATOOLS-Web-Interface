@@ -42,7 +42,8 @@ class GoIdsForm(forms.Form):
     widget=forms.TextInput(
       attrs={
         'placeholder': 'ex: yourfilename',
-        'class': 'form-control'
+        'class': 'form-control',
+        'value': 'gene-ontology'
       }
     )
   )

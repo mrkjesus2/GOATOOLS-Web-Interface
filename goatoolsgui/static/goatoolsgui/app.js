@@ -95,7 +95,7 @@ function readFile(files) {
 function clearForm() {
   document.getElementsByName('goids')[0].value = '';
   // document.getElementsByName('headerids')[0].value = ''; Here incase header input is necessary
-  document.getElementsByName('filename')[0].value = '';
+  // document.getElementsByName('filename')[0].value = '';
 }
 
 /**
