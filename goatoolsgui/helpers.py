@@ -8,7 +8,7 @@ os.chdir('/var/www/gosite/data_files/')
 # End comment
 
 import goatools
-from goatools_alpha.gosubdag_grouper import wr_xlsx_gos, wr_xlsx_gos_sectionsfile, prt_gos, get_sorted_nts
+from goatools_alpha.gosubdag_grouper import wr_xlsx_gos, wr_xlsx_gos_sectionsfile
 from datetime import datetime
 import json
 
