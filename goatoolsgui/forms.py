@@ -7,7 +7,7 @@ class GoIdsForm(forms.Form):
     required=False,
     widget=forms.ClearableFileInput(
       attrs={
-        'class': 'goids-form__input goids-form__input--file',
+        'class': 'input-file',
         'onchange': 'readFile(this.files)'
       }
     )
@@ -18,7 +18,8 @@ class GoIdsForm(forms.Form):
     required=False,
     widget=forms.ClearableFileInput(
       attrs={
-        'class': 'goids-form__input goids-form__input--file'
+        'class': 'input-file',
+        'onchange': 'addFileName(this.files)'
       }
     )
   )
@@ -26,10 +27,10 @@ class GoIdsForm(forms.Form):
   goids = forms.CharField(
     label='Enter your go ids',
     max_length=10000,
-    widget=forms.TextInput(
+    widget=forms.Textarea(
       attrs={
         'placeholder': 'ex: GO:0008629',
-        'class': 'goids-form__input goids-form__input--text'
+        'class': 'form-control'
       }
     )
   )
@@ -40,7 +41,7 @@ class GoIdsForm(forms.Form):
     widget=forms.TextInput(
       attrs={
         'placeholder': 'ex: yourfilename',
-        'class': 'goids-form__input goids-form__input--text'
+        'class': 'form-control'
       }
     )
   )

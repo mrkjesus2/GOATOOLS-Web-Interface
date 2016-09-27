@@ -99,6 +99,15 @@ function clearForm() {
 }
 
 /**
+ * Called when a sections file is uploaded:
+ * Puts the file name in the customized file uploader
+ * @param {[type]} file [description]
+ */
+addFileName(file) {
+  // TODO: Write this function
+}
+
+/**
  * Functions used on interaction with the GoId form
  */
 function showFileInputs() {
