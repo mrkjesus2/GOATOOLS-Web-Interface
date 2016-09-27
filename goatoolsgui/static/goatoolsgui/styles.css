@@ -28,3 +28,29 @@
   outline: 1px dotted #000;
   outline: -webkit-focus-ring-color auto 5px;
 }
+
+.form-label {
+  font-size: 18px;
+}
+
+.info-circle-container {
+  padding: 7.5px 7.5px 0;
+  width: 40px;
+  height: 37px;
+  vertical-align: bottom;
+}
+
+/*
+* Used by info-with-circle.svg
+ */
+.info-circle {
+  padding: 7.5px 7.5px 0;
+  width: 40px;
+  height: 37px;
+  vertical-align: bottom;
+  fill: #19b71b;
+}
+
+.info-circle:hover {
+  fill: #286090;
+}
