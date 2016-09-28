@@ -1,3 +1,8 @@
+.container {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
 /*
 * Customized file <input>'s
 */
@@ -24,7 +29,7 @@
 * Footer
 */
 footer {
-  padding: 50px 10px;
+  margin-bottom: 0!important;
 }
 
 
@@ -114,7 +119,7 @@ footer {
   .navbar-collapse.collapse {
     display: block!important;
     height: auto!important;
-    padding-bottom: 0
+    padding-bottom: 0;
     overflow: visible!important;
   }
 
