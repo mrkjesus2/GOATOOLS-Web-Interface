@@ -24,11 +24,13 @@
 
   <body>
     <!-- The main content container -->
-    <div class="container col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
       {% include "goatoolsgui/header.html" %}
+    <div class="container">
       <!-- TODO: Do I need another block here for information? -->
       {% block content %}{% endblock %}
       {% include "goatoolsgui/footer.html" %}
     </div>
   </body>
 </html>
+
+<!-- col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 -->

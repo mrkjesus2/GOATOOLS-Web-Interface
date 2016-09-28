@@ -1,19 +1,6 @@
-/* For my temporary sanity */
-// .go-form-line input {
-//   display: block;
-//   margin: 0.5em 0 2em;
-// }
-
-// input {
-//   width: 50%;
-//   height: 2em;
-// }
-// /* End Sanity */
-
-// #id_goids::after {
-//   content: "I have a file I would rather use"
-// }
-
+/*
+* Customized file <input>'s
+*/
 .input-file {
   width: 0.1px;
   height: 0.1px;
@@ -33,6 +20,17 @@
   font-size: 18px;
 }
 
+/*
+* Footer
+*/
+footer {
+  padding: 50px 10px;
+}
+
+
+/*
+* Information Circles
+*/
 .info-circle-container {
   padding: 7.5px 7.5px 0;
   width: 40px;
@@ -42,7 +40,7 @@
 
 /*
 * Used by info-with-circle.svg
- */
+*/
 .info-circle {
   padding: 7.5px 7.5px 0;
   width: 40px;
@@ -53,4 +51,91 @@
 
 .info-circle:hover {
   fill: #286090;
+}
+
+// TEST
+@media (max-width: 767px) {
+  .navbar-nav .open .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+  }
+  .navbar-nav .open .dropdown-menu > li > a,
+  .navbar-nav .open .dropdown-menu .dropdown-header {
+    padding: 5px 15px 5px 25px;
+  }
+  .navbar-nav .open .dropdown-menu > li > a {
+    line-height: 20px;
+  }
+  .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-nav .open .dropdown-menu > li > a:focus {
+    background-image: none;
+  }
+}
+
+/*
+* Overide Bootstrap navbar collapse
+*/
+@media (min-width: 435px) and (max-width: 767px) {
+  .navbar-nav>li {
+    float:left;
+  }
+
+  .navbar-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .navbar-right {
+    float: right!important;
+    margin-right: -15px;
+  }
+
+  .navbar-nav {
+    margin: 0;
+  }
+
+  .container-fluid>.navbar-collapse {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .navbar-collapse {
+    width: auto;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .navbar-collapse.collapse {
+    display: block!important;
+    height: auto!important;
+    padding-bottom: 0
+    overflow: visible!important;
+  }
+
+  .container-fluid>.navbar-header {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .navbar-header {
+    float: left;
+  }
+
+  .navbar>.container-fluid .navbar-brand {
+    margin-left: -15px;
+  }
+
+  .container-fluid {
+    padding-right: 0;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
 }
