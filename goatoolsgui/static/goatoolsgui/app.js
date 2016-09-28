@@ -121,3 +121,26 @@ function hideGoIdTextInput() {
 }
 
 // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
+
+// Temp to speed development
+// (function() {
+//   $('[data-toggle="modal"]')[0].click();
+// })();
+
+// Enable tooltips in bootstrap
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip({
+    trigger: 'hover'
+  });
+});
+
+// Show correct info when modal opens
+$('#InformationModal').on('show.bs.modal', function(event) {
+  var targets = $('.modal-' + event.relatedTarget.id);
+  targets.removeClass('hidden');
+});
+
+// Hide info when modal closes - prevents too much info in next modal
+$('#InformationModal').on('hidden.bs.modal', function(event) {
+  $('.modal-info').addClass('hidden');
+});

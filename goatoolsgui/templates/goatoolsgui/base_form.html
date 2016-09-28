@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block content %}
+<!-- TODO: Handle no-js? -->
 <section class="intro">
   <h2></h2> <!-- Suppress validation warning -->
   <p class="lead ">
@@ -14,20 +15,20 @@
 
 <form class="" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-  <!--
-  GO ID's Input
-  -->
+<!--
+GO ID's Input
+-->
   <div class="form-group">
     <label for="{{ form.goids.id_for_label }}" class="form-label">
       Enter GO id's:
-      <!-- Entypo pictograms by Daniel Bruce — www.entypo.com -->
-      <span data-toggle="modal" data-target="#goFileModal">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2" width="19" height="19" class="info-circle"><path d="M9.6 0C4.3 0 0 4.3 0 9.6c0 5.3 4.3 9.6 9.6 9.6 5.3 0 9.6-4.3 9.6-9.6 0-5.3-4.3-9.6-9.6-9.6zm0.9 3.5c0.9 0 1.2 0.5 1.2 1.2 0 0.8-0.6 1.5-1.7 1.5-0.9 0-1.3-0.4-1.3-1.2 0-0.6 0.5-1.5 1.8-1.5zM8.1 15.4c-0.6 0-1.1-0.4-0.7-2.1L8.2 10.2C8.3 9.7 8.3 9.6 8.2 9.6 8 9.6 7.2 9.9 6.7 10.2L6.3 9.7c1.6-1.3 3.3-2.1 4.1-2.1 0.6 0 0.7 0.8 0.4 1.9l-0.8 3.2c-0.1 0.6-0.1 0.8 0.1 0.8 0.2 0 0.8-0.2 1.4-0.7L11.9 13.3C10.4 14.8 8.7 15.4 8.1 15.4Z"/>
+      <span data-toggle="tooltip" title="More Information">
+        <span id="go-info" data-toggle="modal" data-target="#InformationModal">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2" width="19" height="19" class="info-circle"><path d="M9.6 0C4.3 0 0 4.3 0 9.6c0 5.3 4.3 9.6 9.6 9.6 5.3 0 9.6-4.3 9.6-9.6 0-5.3-4.3-9.6-9.6-9.6zm0.9 3.5c0.9 0 1.2 0.5 1.2 1.2 0 0.8-0.6 1.5-1.7 1.5-0.9 0-1.3-0.4-1.3-1.2 0-0.6 0.5-1.5 1.8-1.5zM8.1 15.4c-0.6 0-1.1-0.4-0.7-2.1L8.2 10.2C8.3 9.7 8.3 9.6 8.2 9.6 8 9.6 7.2 9.9 6.7 10.2L6.3 9.7c1.6-1.3 3.3-2.1 4.1-2.1 0.6 0 0.7 0.8 0.4 1.9l-0.8 3.2c-0.1 0.6-0.1 0.8 0.1 0.8 0.2 0 0.8-0.2 1.4-0.7L11.9 13.3C10.4 14.8 8.7 15.4 8.1 15.4Z"/>
         </svg>
+        </span> <!-- Entypo pictograms by Daniel Bruce — www.entypo.com -->
       </span>
     </label>
-    <!-- Hidden by '.input-file' in forms.py -->
-    {{ form.gos_file }}
+    {{ form.gos_file }} <!-- Hidden by '.input-file' in forms.py -->
     <div class="input-group">
       <label for="{{ form.gos_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload<br><br>file
@@ -36,20 +37,20 @@
     </div>
   </div>
 
-  <!--
-  Section File Input
-  -->
+<!--
+Section File Input
+-->
   <div class="form-group">
     <label for="" class="form-label">
       Sections File:
-      <!-- Entypo pictograms by Daniel Bruce — www.entypo.com -->
-      <span data-toggle="modal" data-target="#sectionFileModal">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2" width="19" height="19" class="info-circle"><path d="M9.6 0C4.3 0 0 4.3 0 9.6c0 5.3 4.3 9.6 9.6 9.6 5.3 0 9.6-4.3 9.6-9.6 0-5.3-4.3-9.6-9.6-9.6zm0.9 3.5c0.9 0 1.2 0.5 1.2 1.2 0 0.8-0.6 1.5-1.7 1.5-0.9 0-1.3-0.4-1.3-1.2 0-0.6 0.5-1.5 1.8-1.5zM8.1 15.4c-0.6 0-1.1-0.4-0.7-2.1L8.2 10.2C8.3 9.7 8.3 9.6 8.2 9.6 8 9.6 7.2 9.9 6.7 10.2L6.3 9.7c1.6-1.3 3.3-2.1 4.1-2.1 0.6 0 0.7 0.8 0.4 1.9l-0.8 3.2c-0.1 0.6-0.1 0.8 0.1 0.8 0.2 0 0.8-0.2 1.4-0.7L11.9 13.3C10.4 14.8 8.7 15.4 8.1 15.4Z"/>
+      <span data-toggle="tooltip" title="More Information">
+        <span id="sections-info" data-toggle="modal" data-target="#InformationModal">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.2 19.2" width="19" height="19" class="info-circle"><path d="M9.6 0C4.3 0 0 4.3 0 9.6c0 5.3 4.3 9.6 9.6 9.6 5.3 0 9.6-4.3 9.6-9.6 0-5.3-4.3-9.6-9.6-9.6zm0.9 3.5c0.9 0 1.2 0.5 1.2 1.2 0 0.8-0.6 1.5-1.7 1.5-0.9 0-1.3-0.4-1.3-1.2 0-0.6 0.5-1.5 1.8-1.5zM8.1 15.4c-0.6 0-1.1-0.4-0.7-2.1L8.2 10.2C8.3 9.7 8.3 9.6 8.2 9.6 8 9.6 7.2 9.9 6.7 10.2L6.3 9.7c1.6-1.3 3.3-2.1 4.1-2.1 0.6 0 0.7 0.8 0.4 1.9l-0.8 3.2c-0.1 0.6-0.1 0.8 0.1 0.8 0.2 0 0.8-0.2 1.4-0.7L11.9 13.3C10.4 14.8 8.7 15.4 8.1 15.4Z"/>
         </svg>
+        </span> <!-- Entypo pictograms by Daniel Bruce — www.entypo.com -->
       </span>
     </label>
-    <!-- Hidden by '.input-file' in forms.py -->
-    {{ form.sections_file }}
+    {{ form.sections_file }} <!-- Hidden by '.input-file' in forms.py -->
     <div class="input-group">
       <label for="{{ form.sections_file.id_for_label }}" class="input-group-addon btn btn-info">
         Upload File:
@@ -58,7 +59,9 @@
     </div>
   </div>
 
-  <!-- Name File Download -->
+<!--
+Name File Download
+-->
   <div class="form-group">
     <label for="{{ form.filename.id_for_label }}" class="form-label">
       Name file download:
@@ -69,7 +72,9 @@
     </div>
   </div>
 
-  <!-- Form Buttons -->
+<!--
+Form Buttons
+-->
   <div class="form-group">
     <div class="row">
       <div class="col-xs-5 col-xs-offset-2">
@@ -82,12 +87,75 @@
   </div>
 </form>
 
-<section id="goFileModal" class="modal">
-  <h1>GO ID information</h1>
-</section>
-
-<section id="sectionFileModal" class="modal">
-  <h1>Sections File Information</h1>
-</section>
+<!--
+Modal
+-->
+<div id="InformationModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="GO ID Information">
+  <div class="modal-dialog" role="document">
+    <section class="modal-content">
+<!--
+Header
+ -->
+      <header class="modal-header">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="hidden modal-info show modal-go-info">GO ID Information</h3>
+        <h3 class="hidden modal-info modal-sections-info">Sections File Information</h3>
+      </header>
+<!--
+GO ID Info
+Please note the Title is in modal header
+-->
+      <article class="modal-body hidden modal-info modal-go-info">
+        <section>
+          <h4>Manually entering GO Id's</h4>
+          <p>
+            If you want to key in the ID's yourself, the format is <code>GO:1234567</code>.
+            The list can be either 'comma' or 'space' separated.
+          </p>
+        </section>
+        <section>
+          <h4>Using a file</h4>
+          <p>
+            You can save yourself a lot of time by using an existing file. The accepted formats
+            are .txt or .tsv files. If you commonly use another format for your GO ID files, send
+            an email to support for consideration.
+          </p>
+          <h4>Example files:</h4>
+          <iframe src="{% static 'goatoolsgui/gos-only.txt' %}" frameborder="1"></iframe>
+          <iframe src="{% static 'goatoolsgui/gos-only-inline-no-comma.txt' %}" frameborder="1"></iframe>
+          <iframe src="{% static 'goatoolsgui/gos-only-inline-comma.txt' %}" frameborder="1"></iframe>
+          <!-- <object data="{% static 'goatoolsgui/gos-only-inline-comma.txt' %}" type="text/plain"></object> -->
+        </section>
+      </article>
+<!--
+Sections File Info
+Please note the Title is in the modal header
+-->
+      <article class="modal-body hidden modal-info modal-sections-info">
+        <section>
+          <h4>What is a sections file?</h4>
+          <p>
+            Here will be information about what exactly a sections file is and
+            why you would use one.
+          </p>
+          <h4>How to make a sections file</h4>
+          <p>
+            Step by Step instructions on how to make a sections file
+          </p>
+          <h4>Example File</h4>
+          <iframe src="{% static 'goatoolsgui/sections-file.txt' %}" frameborder="1"></iframe>
+        </section>
+      </article>
+<!--
+Footer
+ -->
+      <footer class="modal-footer">
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Thank You</button>
+      </footer>
+    </section>
+  </div>
+</div>
 
 {% endblock %}
