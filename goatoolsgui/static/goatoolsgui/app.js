@@ -109,23 +109,7 @@ function addFileName(files) {
   el.innerHTML = file.name;
 }
 
-/**
- * Functions used on interaction with the GoId form
- */
-function showFileInputs() {
-  // TODO: Write this function
-}
-
-function hideGoIdTextInput() {
-  // TODO: Write this function
-}
-
 // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
-
-// Temp to speed development
-// (function() {
-//   $('[data-toggle="modal"]')[0].click();
-// })();
 
 // Enable tooltips in bootstrap
 $(function() {
@@ -143,4 +127,20 @@ $('#InformationModal').on('show.bs.modal', function(event) {
 // Hide info when modal closes - prevents too much info in next modal
 $('#InformationModal').on('hidden.bs.modal', function(event) {
   $('.modal-info').addClass('hidden');
+});
+
+// Add fixedHeaderTable.js
+var hdrHeight = $('header').height();
+var ftrHeight = $('footer').height();
+var lnkHeight = $('.results-links').outerHeight();
+var wndwHeight = window.innerHeight;
+var wndwWidth = window.innerWidth;
+
+$(document).ready(function() {
+  var height = wndwHeight - hdrHeight - ftrHeight - lnkHeight;
+  $('#results-table').fixedHeaderTable({
+    // width: 300,
+    height: height,
+    autoresize: true
+  });
 });
