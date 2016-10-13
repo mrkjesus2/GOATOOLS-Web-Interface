@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.10/howto/deployment/wsgi/
 import os, sys
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "go_site.settings")
+# sys.path.append('/var/www/projects/gosite')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "go_site.settings.production")
 
 application = get_wsgi_application()

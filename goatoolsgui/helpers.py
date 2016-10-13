@@ -4,7 +4,7 @@
 import sys
 sys.path.append('/home/vagrant/goatools_alpha')
 import os
-os.chdir('/var/www/gosite/data_files/')
+# os.chdir('/var/www/projects/gosite/data_files/')
 # End comment
 
 import goatools
