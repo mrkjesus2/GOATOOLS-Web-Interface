@@ -1,0 +1,228 @@
+/*
+* ===== Global =====
+*/
+.container {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+/*
+* Footer
+*/
+footer {
+  margin-bottom: 0!important;
+}
+
+
+
+/*
+* ===== Form Page =====
+*/
+/*
+* Customized file <input>'s
+*/
+.input-file {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.input-file:focus + div label,
+.input-file + div label:hover {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
+.form-label {
+  font-size: 18px;
+}
+
+/*
+* Information Circles
+*/
+.info-circle-container {
+  padding: 7.5px 7.5px 0;
+  width: 40px;
+  height: 37px;
+  vertical-align: bottom;
+}
+
+/*
+* Used by info-with-circle.svg
+*/
+.info-circle {
+  padding: 7.5px 7.5px 0;
+  width: 40px;
+  height: 37px;
+  vertical-align: bottom;
+  fill: #19b71b;
+}
+
+.info-circle:hover {
+  fill: #286090;
+}
+
+
+
+/*
+* ===== Results Page =====
+*/
+.results-links {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.table-container {
+  width: 100%;
+}
+
+.go-header {
+  background-color: #d8d6d6;
+}
+
+/*
+* ----- fixedHeaderTable.js -----
+*/
+/* @group Reset */
+.fht-table,
+.fht-table thead,
+.fht-table tfoot,
+.fht-table tbody,
+.fht-table tr,
+.fht-table th,
+.fht-table td {
+  /* position */
+  margin: 0;
+  /* size */
+  padding: 0;
+  /* text */
+  font-size: 100%;
+  font: inherit;
+  vertical-align: top;
+}
+
+.fht-table {
+  /* appearance */
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* @end Reset */
+
+/* @group Content */
+.fht-table-wrapper,
+.fht-table-wrapper .fht-thead,
+.fht-table-wrapper .fht-tfoot,
+.fht-table-wrapper .fht-fixed-column .fht-tbody,
+.fht-table-wrapper .fht-fixed-body .fht-tbody,
+.fht-table-wrapper .fht-tbody {
+  /* appearance */
+  overflow: hidden;
+  /* position */
+  position: relative;
+}
+
+.fht-table-wrapper .fht-fixed-body .fht-tbody,
+.fht-table-wrapper .fht-tbody {
+  /* appearance */
+  overflow: auto;
+}
+
+.fht-table-wrapper .fht-table .fht-cell {
+  /* appearance */
+  overflow: hidden;
+  /* size */
+  height: 1px;
+}
+
+.fht-table-wrapper .fht-fixed-column,
+.fht-table-wrapper .fht-fixed-body {
+  /* position */
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.fht-table-wrapper .fht-fixed-column {
+  /* position */
+  z-index: 1;
+}
+/* @end Content */
+
+
+/*
+* ===== Media Queries =====
+*/
+/*
+* Smaller Padding for small screens
+*/
+@media (max-width: 767px) {
+  .container {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+}
+
+/*
+* Overide Bootstrap navbar collapse
+*/
+@media (min-width: 435px) and (max-width: 767px) {
+  .navbar-nav>li {
+    float:left;
+  }
+
+  .navbar-nav>li>a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .navbar-right {
+    float: right!important;
+    margin-right: -15px;
+  }
+
+  .navbar-nav {
+    margin: 0;
+  }
+
+  .container-fluid>.navbar-collapse {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .navbar-collapse {
+    width: auto;
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .navbar-collapse.collapse {
+    display: block!important;
+    height: auto!important;
+    padding-bottom: 0;
+    overflow: visible!important;
+  }
+
+  .container-fluid>.navbar-header {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .navbar-header {
+    float: left;
+  }
+
+  .navbar>.container-fluid .navbar-brand {
+    margin-left: -15px;
+  }
+
+  .container-fluid {
+    padding-right: 0;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+}
