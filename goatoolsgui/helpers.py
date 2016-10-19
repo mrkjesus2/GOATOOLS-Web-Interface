@@ -8,15 +8,20 @@ import os
 # End comment
 
 import goatools
-from goatools_alpha.gosubdag_grouper import wr_xlsx_gos, wr_xlsx_gos_sectionsfile
+from goatools_alpha.gosubdag_grouper import GrouperUserGos, wr_xlsx_gos, wr_xlsx_gos_sectionsfile, wr_sections_txt
+from goatools_alpha import gosubdag_grouper as gt
 from datetime import datetime
 import json
 
+# print os.getcwd()
+# os.chdir('/var/www/projects/gosite/data_files/')
+# flat_groups = gt.GrouperDflts()
 
 # TODO: Pass a boolean stating wheter a file download is wanted?
 def submit_gos(form, form_file_path=None):
   goids = str(form.get('goids')).translate(None, ',').split()
   filename = str(form.get('filename'))
+  print(goids)
 
   """
   Any file that is passed will be a 'sections' file and must be passed to
@@ -63,3 +68,13 @@ def nts_to_json(data):
 
   # print(response_object['flat'][0]) # Access one table row
 
+#
+def make_sections_file(section_name, goids, grprdflt=FLAT_GROUPS):
+  start_time = datetime.now()
+  group_obj = GrouperUserGos(section_name, goids)
+  group_obj.grprobj.wr_txt_section_hdrgos(section_name + '_hdrgos.txt')
+  end_time = datetime.now()
+  print '\n'
+  print end_time - start_time
+  print '\n'
+  return
