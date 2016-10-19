@@ -39,3 +39,4 @@ Thumbs.db
 
 **/goatools_alpha/
 data_files/
+db.sqlite3
