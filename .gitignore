@@ -38,5 +38,5 @@ ehthumbs.db
 Thumbs.db
 
 **/goatools_alpha/
-data_files/
-db.sqlite3
+data_files/**
+*.sqlite3
