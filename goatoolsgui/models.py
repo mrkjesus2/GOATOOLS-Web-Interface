@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from goatools_alpha.socket_client_n_server import GrouperSocketClient as Socket
 from .helpers import ensure_path_exists
+import json
 
 # This causes no file ./manage.py error
 # from goatools_alpha.grouper_socket import GrouperSocketClient as Socket
@@ -41,7 +42,7 @@ class GoIds(models.Model):
     super(GoIds, self).delete()
 
 # Returns 'list_2d' in object with sections and related goids
-  def get_sections(self, sections):
+  def get_sections_goids(self, sections):
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
 
@@ -56,10 +57,8 @@ class GoIds(models.Model):
         'sections':sections
       }
     )
-
-    for key in data:
-      print key
     return data
+
 
   def get_sections_details(self, sections):
     rq = 'get_sections_nts'
@@ -73,9 +72,12 @@ class GoIds(models.Model):
         'sections':sections
       }
     )
-
+    print
+    print type(data['nts_2d'])
+    print
     # return data['list_2d'] or data['nts_2d']
-    return data['list_2d']
+    return data
+
 
 # Why does this expect a sections-file
   def make_sections_file(self, sections):
@@ -102,11 +104,11 @@ class GoIds(models.Model):
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        # 'sections_file':file,
+        'sections':sections,
         'outfile':file
       }
     )
-    return
+    return data
 
 
   def get_xlsx_data(self, sections):

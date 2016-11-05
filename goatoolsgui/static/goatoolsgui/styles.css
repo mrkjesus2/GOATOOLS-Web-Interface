@@ -65,6 +65,26 @@ footer {
   fill: #286090;
 }
 
+/*
+* Sections File Modal
+*/
+.editor {
+  font-size: 14px;
+}
+
+.editor div {
+  margin: 0.5em;
+}
+
+.editor .editor__goid-line {
+  margin-left: 1em;
+}
+
+.editor__goid-line:hover {
+  background-color: blue;
+  color: white;
+  cursor: move;
+}
 
 
 /*

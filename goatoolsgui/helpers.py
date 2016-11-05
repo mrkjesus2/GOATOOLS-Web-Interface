@@ -10,6 +10,7 @@ import goatools
 from goatools_alpha import gosubdag_grouper as gta
 from datetime import datetime
 import json
+import collections
 
 # Here to speed development
 os.chdir('/var/www/projects/gosite/data_files/')
@@ -123,3 +124,8 @@ def ensure_path_exists(path):
     except:
       print "\nCouldn't make directory\n"
     return
+
+def json_obj_to_dict(obj):
+  decoder = json.JSONDecoder(object_pairs_hook=collections.OrderedDict)
+  decoded_obj = decoder.decode(obj)
+  return decoded_obj

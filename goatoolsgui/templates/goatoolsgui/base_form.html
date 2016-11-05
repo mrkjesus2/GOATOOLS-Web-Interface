@@ -57,7 +57,18 @@ Section File Input
       </label>
       <span id="sections-file-name" class="form-control">Optional</span>
     </div>
-  </div>
+<!--
+Generate Sections File Form
+-->
+    <div class="input-group">
+      or
+    </div>
+    <div class="input-group">
+      {{ form.blob_file }}
+      {{ form.group_name  }}
+      {{ form.section_names }}
+      <button type="button" class="btn btn-primary" onclick="getSectionsFile()">Generate</button>
+    </div>
 
 <!--
 Name File Download
@@ -149,7 +160,7 @@ Please note the Title is in the modal header
         </section>
       </article>
 <!--
-Footer
+Modal Footer
  -->
       <footer class="modal-footer">
         <button class="btn btn-primary" type="button" data-dismiss="modal">Thank You</button>
@@ -157,5 +168,12 @@ Footer
     </section>
   </div>
 </div>
+
+<!--
+Sections AJAX Modal
+ -->
+<pre id="editor" class='editor'>
+  <!-- Content is added by addSectionsToPage -->
+</pre>
 
 {% endblock %}

@@ -25,12 +25,41 @@ class GoIdsForm(forms.Form):
     )
   )
 
+  blob_file = forms.CharField(
+    required=False,
+    widget=forms.HiddenInput()
+  )
+
   goids = forms.CharField(
     label='Enter your go ids',
     max_length=10000,
     widget=forms.Textarea(
       attrs={
         'placeholder': 'ex: GO:0008629',
+        'class': 'form-control'
+      }
+    )
+  )
+
+  group_name = forms.CharField(
+    label="Name your group",
+    required=False,
+    max_length=36,
+    widget=forms.TextInput(
+      attrs={
+        'placeholder': 'Do I want a placeholder',
+        'class': 'form-control'
+      }
+    )
+  )
+
+  section_names = forms.CharField(
+    label="Add your custom sections",
+    required=False,
+    max_length=100,
+    widget=forms.TextInput(
+      attrs={
+        'placeholder': 'Placeholder here',
         'class': 'form-control'
       }
     )
@@ -48,4 +77,3 @@ class GoIdsForm(forms.Form):
     )
   )
   # headerids = forms.CharField(label='Enter your header ids: ', max_length=1000, required=False)
-
