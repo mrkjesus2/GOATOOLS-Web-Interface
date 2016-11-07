@@ -37,9 +37,9 @@ GO ID's Input
     </div>
   </div>
 
-<!--
-Section File Input
--->
+  <!--
+  Section File Input
+  -->
   <div class="form-group">
     <label for="" class="form-label">
       Sections File:
@@ -57,9 +57,9 @@ Section File Input
       </label>
       <span id="sections-file-name" class="form-control">Optional</span>
     </div>
-<!--
-Generate Sections File Form
--->
+    <!--
+    Generate Sections File Form
+    -->
     <div class="input-group">
       or
     </div>
@@ -68,11 +68,14 @@ Generate Sections File Form
       {{ form.group_name  }}
       {{ form.section_names }}
       <button type="button" class="btn btn-primary" onclick="getSectionsFile()">Generate</button>
+      <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editor-modal">
+        View/Edit
+      </button>
     </div>
 
-<!--
-Name File Download
--->
+  <!--
+  Name File Download
+  -->
   <div class="form-group">
     <label for="{{ form.filename.id_for_label }}" class="form-label">
       Name file download:
@@ -83,9 +86,9 @@ Name File Download
     </div>
   </div>
 
-<!--
-Form Buttons
--->
+  <!--
+  Form Buttons
+  -->
   <div class="form-group">
     <div class="row">
       <div class="col-xs-5 col-xs-offset-2">
@@ -99,14 +102,14 @@ Form Buttons
 </form>
 
 <!--
-Modal
+Information Modals
 -->
 <div id="InformationModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="GO ID Information">
   <div class="modal-dialog" role="document">
     <section class="modal-content">
-<!--
-Header
- -->
+      <!--
+      Header
+       -->
       <header class="modal-header">
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -114,10 +117,10 @@ Header
         <h3 class="hidden modal-info show modal-go-info">GO ID Information</h3>
         <h3 class="hidden modal-info modal-sections-info">Sections File Information</h3>
       </header>
-<!--
-GO ID Info
-Please note the Title is in modal header
--->
+      <!--
+      GO ID Info
+      Please note the Title is in modal header
+      -->
       <article class="modal-body hidden modal-info modal-go-info">
         <section>
           <h4>Manually entering GO Id's</h4>
@@ -140,10 +143,10 @@ Please note the Title is in modal header
           <!-- <object data="{% static 'goatoolsgui/gos-only-inline-comma.txt' %}" type="text/plain"></object> -->
         </section>
       </article>
-<!--
-Sections File Info
-Please note the Title is in the modal header
--->
+      <!--
+      Sections File Info
+      Please note the Title is in the modal header
+      -->
       <article class="modal-body hidden modal-info modal-sections-info">
         <section>
           <h4>What is a sections file?</h4>
@@ -159,9 +162,9 @@ Please note the Title is in the modal header
           <iframe src="{% static 'goatoolsgui/sections-file.txt' %}" frameborder="1"></iframe>
         </section>
       </article>
-<!--
-Modal Footer
- -->
+      <!--
+      Modal Footer
+       -->
       <footer class="modal-footer">
         <button class="btn btn-primary" type="button" data-dismiss="modal">Thank You</button>
       </footer>
@@ -172,8 +175,29 @@ Modal Footer
 <!--
 Sections AJAX Modal
  -->
-<pre id="editor" class='editor'>
-  <!-- Content is added by addSectionsToPage -->
-</pre>
+<div id="editor-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TODO">
+  <div class="modal-dialog" role="document">
+    <section class="modal-content">
+      <header class="modal-header">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-info">Edit your generated sections file</h3>
+        <p>This is the editor modal header</p>
+      </header>
+
+      <div class="modal-body modal-info">
+        <pre id="editor" class='editor'>
+          <!-- Content is added by addSectionsToPage -->
+        </pre>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Close Modal</button>
+        <button class="btn btn-primary" type="button" data-dismiss="modal">Update File</button>
+      </footer>
+    </section>
+  </div>
+</div>
 
 {% endblock %}

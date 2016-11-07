@@ -160,7 +160,7 @@ function getSectionsFile() {
     console.log('Sections not split');
   }
 
-  // console.log(sections);
+  console.log("Getting Sections Information");
   // console.log(typeof(sections));
   var csrftoken = getCookie('csrftoken');
 
