@@ -265,8 +265,10 @@ function createTxtFileHtml(lines) {
       var sectionContainer = document.createElement('div');
 
       // Trying drag and drop
-      sectionContainer.setAttribute("ondragover", "dragover_handler(event)");
-      sectionContainer.setAttribute("ondrop", "drop_handler(event)");
+      sectionContainer.setAttribute('ondragover', 'dragover_handler(event, this)');
+      sectionContainer.setAttribute('ondrop', 'drop_handler(event, this)');
+      sectionContainer.setAttribute('ondragleave', 'container_drag_leave(event, this)');
+      sectionContainer.setAttribute('ondragenter', 'container_drag_enter(event, this)');
 
       sectionLines.forEach(function(item) {
         if (!item.includes('GO:') && item.length > 0) {
@@ -276,13 +278,18 @@ function createTxtFileHtml(lines) {
           var sectionLine = document.createElement('div');
           sectionLine.className = 'editor__section-line';
           sectionLine.innerHTML = '# SECTION: ' + item;
+          sectionLine.setAttribute('ondragover', 'line_target_drag_over(event, this)');
+          sectionLine.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
 
           sectionContainer.append(sectionLine);
         } else if (item.length > 0) {
           var goidLine = document.createElement('div');
           goidLine.className = 'editor__goid-line';
-          goidLine.id = item.substr(0, 9);
+          goidLine.id = item.substr(0, 10);
           goidLine.draggable = true;
+          goidLine.setAttribute('ondragstart', 'dragstart_handler(event)');
+          goidLine.setAttribute('ondragover', 'line_target_drag_over(event, this)');
+          goidLine.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
           goidLine.innerHTML = item;
 
           sectionContainer.append(goidLine);
@@ -298,10 +305,51 @@ function createTxtFileHtml(lines) {
 /*
 * Trying HTML drag and drop
 */
-function dragover_handler(ev) {
-  console.log("Dragged over element");
+function dragstart_handler(ev) {
+  console.log('Drag Started');
+  ev.dataTransfer.setData('text/plain', ev.target.id);
 }
 
-function drop_handler(ev) {
-  console.log("Dropped on element");
+function dragover_handler(ev, el) {
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = 'move';
+  if (el.className.indexOf('editor__section-container--drag-over') === -1) {
+    el.className += ' editor__section-container--drag-over';
+  }
 }
+
+function drop_handler(ev, el) {
+  // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
+  ev.preventDefault();
+  var id = ev.dataTransfer.getData('text');
+
+  el.insertBefore(document.getElementById(id), ev.toElement.nextSibling);
+
+  var target = ev.toElement;
+  var targetParent = target.parentElement;
+
+  target.className = target.className.replace(' editor__goid-line--drag-over', '');
+  targetParent.className = targetParent.className.replace(' editor__section-container--drag-over', '');
+}
+
+// Styles to be applied while dragging
+function container_drag_enter(ev, el) {
+  // console.log('Drage Enter');
+}
+
+function container_drag_leave(ev, el) {
+  el.className = el.className.replace(' editor__section-container--drag-over', '');
+}
+
+function line_target_drag_over(ev, el) {
+  // console.log('Drag Over Line');
+  if (el.className.indexOf('editor__goid-line--drag-over') === -1) {
+    el.className += ' editor__goid-line--drag-over';
+  }
+}
+
+function line_target_drag_leave(ev, el) {
+  // console.log('Drag Leave Line');
+  el.className = el.className.replace(' editor__goid-line--drag-over', '');
+}
+

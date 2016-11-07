@@ -70,14 +70,35 @@ footer {
 */
 .editor {
   font-size: 14px;
+  // line-height: 2em;
 }
 
-.editor div {
+.editor__group_name ,
+.editor__section-container {
   margin: 0.5em;
 }
 
-.editor .editor__goid-line {
-  margin-left: 1em;
+.editor__section-container--drag-over {
+  border: 2px dotted black;
+}
+
+.editor__section-line {
+  padding: 0 0 1em 0;
+}
+.editor__goid-line {
+  // margin-left: 1em;
+  padding: 0 1em 1em;
+  // border: 1px dotted gray;
+}
+
+.editor__goid-line--drag-over {
+  padding-bottom: 3em;
+  // border: 2px solid black;
+}
+
+.editor__goid-line--drag-over + .editor__goid-line {
+  padding-top: 1em;
+  // border: 1px dotted black;
 }
 
 .editor__goid-line:hover {
