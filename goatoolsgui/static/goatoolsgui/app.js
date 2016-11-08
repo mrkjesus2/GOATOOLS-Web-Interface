@@ -143,25 +143,27 @@ $(document).ready(function() {
   });
 });
 
-function getSectionsFile() {
+// TODO REMOVE: Here for fewer clicks
+$(document).ready(function() {
+  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
+  $('#section_names').val('sections1, sections2');
+  $('#dev-shortcut').click();
+  // setTimeout(function() {
+  //   $('#new-dev').click();
+  // }, 1000);
+});
+
+
+/**
+ * Makes an AJAX call to generatesections for Sections File Data
+ * @param  {string} group    Name for the user's group
+ * @param  {object} sections Contains section names with an array of related goids
+ * @param  {array} goids    List of the user's goid's from initial form
+ */
+function getSectionsFile(group, sections, goids) {
   // TODO: Enforce GoId's are entered in form
-  var goids = $('#goids').val().replace(/ /g, '');
-  var group = $('#group_name').val() || 'gene-ontology';
-  var sections = {};
-  var sectionNames = $('#section_names').val() || null;
-
-  if (sectionNames) {
-    sectionNames = sectionNames.replace(/,/g, '').split(' ');
-    sectionNames.forEach(function(name) {
-      sections[name] = ['GO:0002376', 'GO:0002682'];
-    });
-    sections = JSON.stringify(sections);
-  } else {
-    console.log('Sections not split');
-  }
-
   console.log("Getting Sections Information");
-  // console.log(typeof(sections));
+
   var csrftoken = getCookie('csrftoken');
 
   $.ajax({
@@ -180,15 +182,16 @@ function getSectionsFile() {
     },
 
     success: function(test) {
+      console.log('Ajax Success');
       // Display sectionsfile
       var lines = divideTxtFileBySection(test);
       createTxtFileHtml(lines);
       // addSectionsToPage(test.list_2d);
 
-
+      $('#editor-test').append(test);
       // Attach sections file
-      var sectionsFile = new Blob([test], {type : 'text/plain'});
-      var url = URL.createObjectURL(sectionsFile);
+      // var sectionsFile = new Blob([test], {type : 'text/plain'});
+      // var url = URL.createObjectURL(sectionsFile);
     },
 
     error: function(xhr, errmsg, err) {
@@ -198,99 +201,193 @@ function getSectionsFile() {
   });
 };
 
-$(document).ready(function() {
-  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
-  $('#section_names').val('sections1, sections2');
-});
+/**
+ * Takes data from the initial form or from the sections file editor and calls
+ * getSectionsFile to make an AJAX request for Sections Data
+ */
+function updateSections() {
+  var rootEl = document.getElementById('editor');
+  var goids = $('#goids').val().replace(/ /g, '');
+  var sections = {};
+  var sectionNames;
+  var group;
 
-// https://docs.djangoproject.com/en/dev/ref/csrf/
-function csrfSafeMethod(method) {
-  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+  if (rootEl.children.length === 0) {
+    // Handle empty editor
+    console.log('Editor is empty');
 
-function getCookie(name) {
-  var cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-      var cookie = jQuery.trim(cookies[i]);
-      if (cookie.substring(0, name.length + 1) === name + '=') {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
+    group = $('#group_name').val() || 'gene-ontology';
+    sectionNames = $('#section_names').val() || null;
+
+    // Create section with empty goid array
+    if (sectionNames) {
+      sectionNames = sectionNames.replace(/,/g, '').split(' ');
+
+      sectionNames.forEach(function(name) {
+        sections[name] = ['GO:0002682'];
+      });
+      console.log(sections);
+    }
+  } else {
+    // Handle edited information
+    console.log('There is editor content');
+
+    group = rootEl.getElementsByClassName('editor__group-name')[0].innerHTML.replace('# GROUP NAME: ', '');
+    var sectionsEls = rootEl.getElementsByClassName('editor__section-container');
+
+    console.log(sectionsEls);
+    // Loop over each section to create a section object
+    for (var i = 0; i < sectionsEls.length; i++) {
+      var name = sectionsEls[i].id;
+      var sectionGoids = [];
+
+      // Skip the sections line and get the goids for the current section
+      for (var j = 1; j < sectionsEls[name].children.length; j++) {
+        sectionGoids.push(sectionsEls[name].children[j].id);
       }
+      sections[name] = sectionGoids;
     }
   }
-  return cookieValue;
+
+  sections = JSON.stringify(sections);
+
+  getSectionsFile(group, sections, goids);
 }
 
-function addSectionsToPage(sections) {
-  var $el = $('#editor');
-  sections.forEach(function(section) {
-    console.log(section[0]);
-    // Add section line
-    var list = $el.append('<ul>');
-    list.append('<li>{Find appropriate text}' + section[0] + '</li>');
 
-    // Add goid information line
-    section[1].forEach(function(goid) {
-      list.append('<li>' + goid + '</li>');
-      console.log(goid);
-    });
-    list.append('</ul>');
-  });
-}
 
+
+/**
+ * Sections File Editor
+ */
 function divideTxtFileBySection(file) {
+  console.log('Divide Text File');
   var lines = file.split('# SECTION: ');
   return lines;
 }
 
+/**
+ * Add a new section name to the sections file editor
+ * @param {string} name The name of the user's new section for goids
+ */
+function addSectionName(el) {
+  // Create a new section line with a default name
+  var container = makeSectionContainer();
+  var line = makeSectionLine('<span contenteditable="true">Your new name</span>');
+  var target = document.getElementById('editor');
+
+  container.id = 'default-section-name';
+  container.append(line);
+  target.insertBefore(container, target.children[1]);
+
+  // Select the new section for easier editing
+  // line.children[0].focus();
+  selectEditableSection(line.children[0]);
+  line.children[0].addEventListener('keydown', sectionNameListener);
+
+  // Call blur() when enter or escape is pressed
+
+  // selectEditableSection(input[0]);
+}
+
+// TODO: Need to scroll down the page when moving goids
+
+function sectionNameListener(ev) {
+  var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+  var container = ev.srcElement.parentElement.parentElement;
+
+  container.id = ev.srcElement.innerText.replace(cssValidRegex, '');
+  container.id = container.id.replace(/ /g, '-');
+  console.log(ev, ev.keyCode);
+  if (ev.keyCode === 13 || ev.keycode === 27) {
+    ev.preventDefault();
+    console.log(ev.srcElement.innerText);
+    ev.srcElement.blur();
+  }
+}
+
+/**
+ * Use this if you want all the text highlighted
+ */
+function selectEditableSection(el) {
+  var range = document.createRange();
+  range.selectNodeContents(el);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function makeGroupLine(line) {
+  var groupLine = document.createElement('div');
+  groupLine.className = 'editor__group-name';
+  groupLine.innerHTML = line;
+  return groupLine;
+}
+
+function makeSectionContainer() {
+  var container = document.createElement('div');
+
+  container.className = 'editor__section-container';
+  container.setAttribute('ondragover', 'dragover_handler(event, this)');
+  container.setAttribute('ondrop', 'drop_handler(event, this)');
+  container.setAttribute('ondragleave', 'container_drag_leave(event, this)');
+  container.setAttribute('ondragenter', 'container_drag_enter(event, this)');
+
+  return container;
+}
+
+function makeSectionLine(item) {
+  var line = document.createElement('div');
+
+  line.className = 'editor__section-line';
+  line.innerHTML = '# SECTION: ' + item;
+  line.setAttribute('ondragover', 'line_target_drag_over(event, this)');
+  line.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
+
+  return line;
+}
+
+function makeGoidLine(item) {
+  var line = document.createElement('div');
+
+  line.className = 'editor__goid-line';
+  line.id = item.substr(0, 10);
+  line.draggable = true;
+  line.setAttribute('ondragstart', 'dragstart_handler(event)');
+  line.setAttribute('ondragover', 'line_target_drag_over(event, this)');
+  line.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
+  line.innerHTML = item;
+
+  return line
+}
+
 function createTxtFileHtml(lines) {
+  // console.log('Create File HTML');
   var $el = $('#editor');
+
+  // TODO: Clear before appending new data
+
   var fragment = document.createDocumentFragment();
   var sectionFragment = document.createDocumentFragment();
   var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
 
   lines.forEach(function(line) {
     if (line.includes('# GROUP')) {
-      var groupLine = document.createElement('div');
-      groupLine.className = 'editor__group-name';
-      groupLine.innerHTML = line;
-
-      fragment.append(groupLine);
+      fragment.append(makeGroupLine(line));
     }
     else {
       var sectionLines = line.split('\n');
-      // var goidContainer = '<div id="%replace%" class="section-goids"></div>';
-      var sectionContainer = document.createElement('div');
-
-      // Trying drag and drop
-      sectionContainer.setAttribute('ondragover', 'dragover_handler(event, this)');
-      sectionContainer.setAttribute('ondrop', 'drop_handler(event, this)');
-      sectionContainer.setAttribute('ondragleave', 'container_drag_leave(event, this)');
-      sectionContainer.setAttribute('ondragenter', 'container_drag_enter(event, this)');
+      var sectionContainer = makeSectionContainer();
 
       sectionLines.forEach(function(item) {
         if (!item.includes('GO:') && item.length > 0) {
-          sectionContainer.className = 'editor__section-container';
           sectionContainer.id = item.replace(cssValidRegex, '');
 
-          var sectionLine = document.createElement('div');
-          sectionLine.className = 'editor__section-line';
-          sectionLine.innerHTML = '# SECTION: ' + item;
-          sectionLine.setAttribute('ondragover', 'line_target_drag_over(event, this)');
-          sectionLine.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
+          var sectionLine = makeSectionLine(item);
 
           sectionContainer.append(sectionLine);
         } else if (item.length > 0) {
-          var goidLine = document.createElement('div');
-          goidLine.className = 'editor__goid-line';
-          goidLine.id = item.substr(0, 10);
-          goidLine.draggable = true;
-          goidLine.setAttribute('ondragstart', 'dragstart_handler(event)');
-          goidLine.setAttribute('ondragover', 'line_target_drag_over(event, this)');
-          goidLine.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
-          goidLine.innerHTML = item;
+          var goidLine = makeGoidLine(item);
 
           sectionContainer.append(goidLine);
         }
@@ -353,3 +450,25 @@ function line_target_drag_leave(ev, el) {
   el.className = el.className.replace(' editor__goid-line--drag-over', '');
 }
 
+/**
+ * CSRF Token Methods
+ */
+// https://docs.djangoproject.com/en/dev/ref/csrf/
+function csrfSafeMethod(method) {
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = jQuery.trim(cookies[i]);
+      if (cookie.substring(0, name.length + 1) === name + '=') {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}

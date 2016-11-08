@@ -67,7 +67,7 @@ GO ID's Input
       {{ form.blob_file }}
       {{ form.group_name  }}
       {{ form.section_names }}
-      <button type="button" class="btn btn-primary" onclick="getSectionsFile()">Generate</button>
+      <button id="dev-shortcut" type="button" class="btn btn-primary" onclick="updateSections()" data-toggle="modal" data-target="#editor-modal">Generate</button>
       <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editor-modal">
         View/Edit
       </button>
@@ -182,8 +182,8 @@ Sections AJAX Modal
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h3 class="modal-info">Edit your generated sections file</h3>
-        <p>This is the editor modal header</p>
+        <!-- <h3 class="modal-info">Edit your generated sections file</h3> -->
+        <!-- <p>This is the editor modal header</p> -->
       </header>
 
       <div class="modal-body modal-info">
@@ -193,8 +193,9 @@ Sections AJAX Modal
       </div>
 
       <footer class="modal-footer">
+        <button id="new-dev" type="button" onclick="addSectionName(this)">New Section</button>
         <button class="btn btn-primary" type="button" data-dismiss="modal">Close Modal</button>
-        <button class="btn btn-primary" type="button" data-dismiss="modal">Update File</button>
+        <button id="update-dev" class="btn btn-primary" type="button" onclick="updateSections()">Update File</button>
       </footer>
     </section>
   </div>

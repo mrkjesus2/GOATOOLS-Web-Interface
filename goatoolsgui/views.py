@@ -95,7 +95,6 @@ def generateSections(request):
 
   sections_file = user_data.make_sections_file(sections)['outfile']
   response = FileResponse(open(sections_file, 'rb'))
-  print response
 
   # response = JsonResponse(user_data.get_sections_details(sections), safe=False)
   return response
