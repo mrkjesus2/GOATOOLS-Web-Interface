@@ -290,8 +290,6 @@ function addSectionName(el) {
   // selectEditableSection(input[0]);
 }
 
-// TODO: Need to scroll down the page when moving goids
-
 function sectionNameListener(ev) {
   var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
   var container = ev.srcElement.parentElement.parentElement;
@@ -407,11 +405,46 @@ function dragstart_handler(ev) {
   ev.dataTransfer.setData('text/plain', ev.target.id);
 }
 
+var timer;
+
 function dragover_handler(ev, el) {
   ev.preventDefault();
   ev.dataTransfer.dropEffect = 'move';
   if (el.className.indexOf('editor__section-container--drag-over') === -1) {
     el.className += ' editor__section-container--drag-over';
+  }
+
+  // console.log('clientY:', ev.clientY, ' screenY:', ev.screenY,
+  //   ' layerY:', ev.layerY, ' movementY:', ev.movementY, ' offsetY:', ev.offsetY,
+  //   ' pageY:', ev.pageY, ' y:', ev.y, ' innerHeight:', window.innerHeight);
+
+  // console.log(ev.timeStamp);
+  if (!timer)
+    timer = ev.timeStamp;
+  else if (ev.timeStamp - 50 > timer) {
+    timer = ev.timeStamp;
+    scrollIfBoundary(ev.pageY);
+  //   console.log('Do Something');
+  }
+  // console.log(timer);
+
+    // requestAnimationFrame(function() {
+    //   scrollIfBoundary(ev.pageY);
+    // });
+}
+
+var height = window.innerHeight;
+var modal = document.getElementById('editor-modal');
+
+function scrollIfBoundary(position) {
+  var buffer = 50;
+
+  if (position < buffer) {
+    console.log("Scrolling Up");
+    modal.scrollTop -= 17;
+  } else if (position > height - buffer) {
+    console.log("Scrolling Down");
+    modal.scrollTop += 17;
   }
 }
 
@@ -427,6 +460,8 @@ function drop_handler(ev, el) {
 
   target.className = target.className.replace(' editor__goid-line--drag-over', '');
   targetParent.className = targetParent.className.replace(' editor__section-container--drag-over', '');
+
+  clearInterval(timer);
 }
 
 // Styles to be applied while dragging

@@ -1,12 +1,16 @@
 from __future__ import unicode_literals
 import os
 
+# Temporary, should be covered in helpers.py
+import sys
+sys.path.append('/home/vagrant/goatools_alpha')
+
 from django.db import models
 from jsonfield import JSONField
 from django.conf import settings
 from django.core.files.base import ContentFile
-from goatools_alpha.socket_client_n_server import GrouperSocketClient as Socket
 from .helpers import ensure_path_exists
+from goatools_alpha.socket_client_n_server import GrouperSocketClient as Socket
 import json
 
 # This causes no file ./manage.py error
