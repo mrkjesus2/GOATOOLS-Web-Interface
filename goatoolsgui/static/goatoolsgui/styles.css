@@ -73,7 +73,7 @@ footer {
   // line-height: 2em;
 }
 
-.editor__group_name ,
+.editor__group_line ,
 .editor__section-container {
   padding: 0.5em;
 }
@@ -93,13 +93,13 @@ footer {
 
 .editor__goid-line--drag-over {
   padding-bottom: 3em;
-  transition: padding-bottom 0.3s;
+  // transition: padding-bottom 0.3s;
   // border: 2px solid black;
 }
 
 .editor__goid-line--drag-over + .editor__goid-line {
   padding-top: 1em;
-  transition: padding-top 0.3s;
+  // transition: padding-top 0.3s;
   // border: 1px dotted black;
 }
 

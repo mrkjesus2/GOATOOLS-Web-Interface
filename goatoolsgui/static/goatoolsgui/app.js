@@ -1,19 +1,12 @@
-/* global window document FileReader*/
+/* global $ window document FileReader*/
+/* eslint-disable no-alert */
 
-function goIdsToArray() {
-  // Convert a series of GoIds to an array
-}
-
-function callServer() {
-  // Make an AJAX call to the server with GO Ids
-}
-
+// TODO: Refactor this function
+// (No longer takes a section file, isValidTextFile may not need to be separate)
 /**
  * [parseTxtFile description]
  * @param  {[type]} fileContents [description]
  */
-// TODO: Refactor this function
-// (No longer takes a section file, isValidTextFile may not need to be separate)
 function parseTxtFile(fileContents) {
   var goIds = document.getElementsByName('goids')[0];
   // Clear in case the file is changed
@@ -31,27 +24,30 @@ function parseTxtFile(fileContents) {
   }
 }
 
-/*
-* Takes a file and checks that it is a text/* file
+/**
+ * Check that a file is a valid .txt file
+ * @param  {object}  file File object
+ * @return {Boolean} True for valid file
  */
 function isValidTextFile(file) {
-  var extension = file.name.substr(file.name.lastIndexOf('.')+1);
+  var extension = file.name.substr(file.name.lastIndexOf('.') + 1);
   if (!file) {
-    alert("The file failed to load");
+    window.alert("The file failed to load");
   } else if (extension === 'txt' || extension === 'tsv') {
     return true;
   } else {
-    alert(file.name + " is not a valid text file.");
+    window.alert(file.name + " is not a valid text file.");
     // TODO: Clear the file field
   }
 }
 
 /**
+ * onclick in forms.py
  * [readFile description]
  * @param  {[type]} files [description]
  */
-function readFile(files) {
-  clearForm();
+function readFile(files) { // eslint-disable-line no-unused-vars
+  document.getElementsByName('goids')[0].value = '';
   var file = files[0];
 
   // Check for FileReader support
@@ -66,93 +62,40 @@ function readFile(files) {
       };
 
       reader.onabort = function() {
-        alert('The operation was aborted. \n' +
+        window.alert('The operation was aborted. \n' +
           'Please Try Again');
       };
 
       reader.onerror = function(e) {
         console.log(e);
-        alert('There was an error during the operation. \n' +
+        window.alert('There was an error during the operation. \n' +
           'Please Try Again');
       };
 
       reader.onprogress = function(e) {
-        // console.log('Progress: ', e);
+        console.log('Progress: ', e);
       };
 
       reader.readAsText(file);
     }
   } else {
-    alert('The file APIs are not fully supported by your browser');
+    window.alert('The file APIs are not fully supported by your browser');
   }
 }
 
 /**
- * [clearForm description]
- */
-function clearForm() {
-  document.getElementsByName('goids')[0].value = '';
-  // document.getElementsByName('headerids')[0].value = ''; Here incase header input is necessary
-  // document.getElementsByName('filename')[0].value = '';
-}
-
-/**
+ * onclick in forms.py
  * Called when a sections file is uploaded:
  * Puts the file name in the customized file uploader
- * @param {[type]} file [description]
+ * @param {[type]} files [description]
  */
-function addFileName(files) {
+function addFileName(files) { // eslint-disable-line no-unused-vars
   var file = files[0];
   var el = document.getElementById('sections-file-name');
   el.innerHTML = file.name;
 }
 
 // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
-
-// Enable tooltips in bootstrap
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip({
-    trigger: 'hover'
-  });
-});
-
-// Show correct info when modal opens
-$('#InformationModal').on('show.bs.modal', function(event) {
-  var targets = $('.modal-' + event.relatedTarget.id);
-  targets.removeClass('hidden');
-});
-
-// Hide info when modal closes - prevents too much info in next modal
-$('#InformationModal').on('hidden.bs.modal', function(event) {
-  $('.modal-info').addClass('hidden');
-});
-
-// Add fixedHeaderTable.js
-var hdrHeight = $('header').height();
-var ftrHeight = $('footer').height();
-var lnkHeight = $('.results-links').outerHeight();
-var wndwHeight = window.innerHeight;
-var wndwWidth = window.innerWidth;
-
-$(document).ready(function() {
-  var height = wndwHeight - hdrHeight - ftrHeight - lnkHeight;
-  $('#results-table').fixedHeaderTable({
-    // width: 300,
-    height: height,
-    autoresize: true
-  });
-});
-
-// TODO REMOVE: Here for fewer clicks
-$(document).ready(function() {
-  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
-  $('#section_names').val('sections1, sections2');
-  $('#dev-shortcut').click();
-  // setTimeout(function() {
-  //   $('#new-dev').click();
-  // }, 1000);
-});
-
 
 /**
  * Makes an AJAX call to generatesections for Sections File Data
@@ -162,8 +105,7 @@ $(document).ready(function() {
  */
 function getSectionsFile(group, sections, goids) {
   // TODO: Enforce GoId's are entered in form
-  console.log("Getting Sections Information");
-
+  // console.log("Getting Sections Information");
   var csrftoken = getCookie('csrftoken');
 
   $.ajax({
@@ -182,13 +124,11 @@ function getSectionsFile(group, sections, goids) {
     },
 
     success: function(test) {
-      console.log('Ajax Success');
+      // console.log('Ajax Success');
       // Display sectionsfile
-      var lines = divideTxtFileBySection(test);
-      createTxtFileHtml(lines);
-      // addSectionsToPage(test.list_2d);
+      var sectionsStringArray = divideTxtFileBySection(test);
+      createTxtFileHtml(sectionsStringArray);
 
-      $('#editor-test').append(test);
       // Attach sections file
       // var sectionsFile = new Blob([test], {type : 'text/plain'});
       // var url = URL.createObjectURL(sectionsFile);
@@ -199,13 +139,14 @@ function getSectionsFile(group, sections, goids) {
       console.log(err);
     }
   });
-};
+}
 
 /**
+ * onclick in base_form.html
  * Takes data from the initial form or from the sections file editor and calls
  * getSectionsFile to make an AJAX request for Sections Data
  */
-function updateSections() {
+function updateSections() { // eslint-disable-line no-unused-vars
   var rootEl = document.getElementById('editor');
   var goids = $('#goids').val().replace(/ /g, '');
   var sections = {};
@@ -214,7 +155,7 @@ function updateSections() {
 
   if (rootEl.children.length === 0) {
     // Handle empty editor
-    console.log('Editor is empty');
+    // console.log('Editor is empty');
 
     group = $('#group_name').val() || 'gene-ontology';
     sectionNames = $('#section_names').val() || null;
@@ -226,16 +167,13 @@ function updateSections() {
       sectionNames.forEach(function(name) {
         sections[name] = ['GO:0002682'];
       });
-      console.log(sections);
+      // console.log(sections);
     }
   } else {
     // Handle edited information
-    console.log('There is editor content');
-
-    group = rootEl.getElementsByClassName('editor__group-name')[0].innerHTML.replace('# GROUP NAME: ', '');
+    group = rootEl.getElementsByClassName('editor__group-line')[0].innerHTML.replace('# GROUP NAME: ', '');
     var sectionsEls = rootEl.getElementsByClassName('editor__section-container');
 
-    console.log(sectionsEls);
     // Loop over each section to create a section object
     for (var i = 0; i < sectionsEls.length; i++) {
       var name = sectionsEls[i].id;
@@ -254,58 +192,61 @@ function updateSections() {
   getSectionsFile(group, sections, goids);
 }
 
-
-
-
 /**
  * Sections File Editor
+ * @param {string} file A string representing the sections.txt file
+ * @return {array} An array of strings representing each section
  */
 function divideTxtFileBySection(file) {
-  console.log('Divide Text File');
+  // console.log('Divide Text File');
   var lines = file.split('# SECTION: ');
   return lines;
 }
 
 /**
+ * onclick in base_form.html
  * Add a new section name to the sections file editor
- * @param {string} name The name of the user's new section for goids
  */
-function addSectionName(el) {
+function addSectionName() { // eslint-disable-line no-unused-vars
   // Create a new section line with a default name
-  var container = makeSectionContainer();
-  var line = makeSectionLine('<span contenteditable="true">Your new name</span>');
   var target = document.getElementById('editor');
+  var container = makeSectionContainer();
+  var line = makeEditorLine(
+    '<span contenteditable="true">Your new name</span>', 'section'
+  );
 
   container.id = 'default-section-name';
   container.append(line);
+
+  // Insert user's new section
   target.insertBefore(container, target.children[1]);
 
-  // Select the new section for easier editing
-  // line.children[0].focus();
+  // Select the new section automatically for easier editing
   selectEditableSection(line.children[0]);
   line.children[0].addEventListener('keydown', sectionNameListener);
-
-  // Call blur() when enter or escape is pressed
-
-  // selectEditableSection(input[0]);
 }
 
+/**
+ * Handles keydown events on newly created sections
+ * @param  {object} ev The keydown event
+ * @return {undefined}
+ */
 function sectionNameListener(ev) {
   var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
   var container = ev.srcElement.parentElement.parentElement;
 
   container.id = ev.srcElement.innerText.replace(cssValidRegex, '');
   container.id = container.id.replace(/ /g, '-');
-  console.log(ev, ev.keyCode);
+
   if (ev.keyCode === 13 || ev.keycode === 27) {
     ev.preventDefault();
-    console.log(ev.srcElement.innerText);
     ev.srcElement.blur();
   }
 }
 
 /**
- * Use this if you want all the text highlighted
+ * Highlights editable text in passed element
+ * @param {HTMLElement} el Element to select for editing
  */
 function selectEditableSection(el) {
   var range = document.createRange();
@@ -315,78 +256,84 @@ function selectEditableSection(el) {
   sel.addRange(range);
 }
 
-function makeGroupLine(line) {
-  var groupLine = document.createElement('div');
-  groupLine.className = 'editor__group-name';
-  groupLine.innerHTML = line;
-  return groupLine;
-}
-
-function makeSectionContainer() {
+/**
+ * Create a container element for a section
+ * @param  {string} line The section name
+ * @return {HTMLElement}      Container div
+ */
+function makeSectionContainer(line) {
   var container = document.createElement('div');
-
+  var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+  console.log(line);
+  if (line) {
+    container.id = line.replace(cssValidRegex, '');
+  }
   container.className = 'editor__section-container';
-  container.setAttribute('ondragover', 'dragover_handler(event, this)');
-  container.setAttribute('ondrop', 'drop_handler(event, this)');
-  container.setAttribute('ondragleave', 'container_drag_leave(event, this)');
-  container.setAttribute('ondragenter', 'container_drag_enter(event, this)');
+  container.setAttribute('ondrop', 'sectionDropOver(event, this)');
 
   return container;
 }
 
-function makeSectionLine(item) {
+/**
+ * Create an element for an Editor line
+ * @param  {string} item The line text
+ * @param  {string} type Type of line that is created 'group', 'section', 'goid'
+ * @return {HTMLElement}      The line that is created
+ */
+function makeEditorLine(item, type) {
   var line = document.createElement('div');
+  var lineClass = 'editor__' + type + '-line';
+  var lineText = item;
 
-  line.className = 'editor__section-line';
-  line.innerHTML = '# SECTION: ' + item;
-  line.setAttribute('ondragover', 'line_target_drag_over(event, this)');
-  line.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
+  if (type === 'section') {
+    lineText = '# SECTION: ' + item;
+  }
+
+  if (type === 'goid') {
+    line.id = item.substr(0, 10);
+    line.draggable = true;
+    line.addEventListener('dragstart', goidDragStart, false);
+    line.addEventListener('dragend', goidDragEnd, false);
+  }
+
+  line.className = lineClass;
+  line.innerHTML = lineText;
 
   return line;
 }
 
-function makeGoidLine(item) {
-  var line = document.createElement('div');
-
-  line.className = 'editor__goid-line';
-  line.id = item.substr(0, 10);
-  line.draggable = true;
-  line.setAttribute('ondragstart', 'dragstart_handler(event)');
-  line.setAttribute('ondragover', 'line_target_drag_over(event, this)');
-  line.setAttribute('ondragleave', 'line_target_drag_leave(event, this)');
-  line.innerHTML = item;
-
-  return line
-}
-
-function createTxtFileHtml(lines) {
+/**
+ * Creates HTML representation of the array created from sections.txt
+ * @param  {array} sectionsArray Array of strings representing the .txt file
+ * @return {undefined}
+ */
+function createTxtFileHtml(sectionsArray) {
   // console.log('Create File HTML');
-  var $el = $('#editor');
-
   // TODO: Clear before appending new data
-
+  var el = document.getElementById('editor');
   var fragment = document.createDocumentFragment();
   var sectionFragment = document.createDocumentFragment();
-  var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
 
-  lines.forEach(function(line) {
-    if (line.includes('# GROUP')) {
-      fragment.append(makeGroupLine(line));
-    }
-    else {
-      var sectionLines = line.split('\n');
-      var sectionContainer = makeSectionContainer();
+  sectionsArray.forEach(function(section) {
+    if (section.includes('# GROUP')) {
+      // Append GROUP NAME line
+      fragment.append(makeEditorLine(section, 'group'));
+    } else {
+      // Create section container and child lines
+      var sectionLines = section.split('\n');
+      var sectionContainer;
 
-      sectionLines.forEach(function(item) {
-        if (!item.includes('GO:') && item.length > 0) {
-          sectionContainer.id = item.replace(cssValidRegex, '');
+      sectionLines.forEach(function(line) {
+        if (!line.includes('GO:') && line.length > 0) {
+          // Make container
+          sectionContainer = makeSectionContainer(line);
 
-          var sectionLine = makeSectionLine(item);
-
+          // Make section name line and append to section container
+          var sectionLine = makeEditorLine(line, 'section');
           sectionContainer.append(sectionLine);
-        } else if (item.length > 0) {
-          var goidLine = makeGoidLine(item);
-
+        } else if (line.length > 0) {
+          // Make and append goid line
+          var goidLine = makeEditorLine(line, 'goid');
           sectionContainer.append(goidLine);
         }
       });
@@ -394,61 +341,112 @@ function createTxtFileHtml(lines) {
     }
     fragment.append(sectionFragment);
   });
-  $el.append(fragment);
+  el.append(fragment);
 }
 
 /*
 * Trying HTML drag and drop
 */
-function dragstart_handler(ev) {
-  console.log('Drag Started');
-  ev.dataTransfer.setData('text/plain', ev.target.id);
+
+// Variables needed for scroll function
+var scrollId = 0;
+var stopScroll = true;
+var cursor; // Set by goid line drag handler
+var modal = document.getElementById('editor-modal'); // Query once, improve performmance
+var height = window.innerHeight; // Query once, improve performance
+
+/**
+ * Allow scroll while dragging lines
+ * @param  { num } timestamp  Return id from requestAnimationFrame
+ * @return { undefined }
+ */
+function scroll() {
+  var scrollY = modal.scrollTop;
+
+  if (cursor < 50) {
+    modal.scrollTop = scrollY - 10;
+  } else if (cursor > height - 50) {
+    modal.scrollTop = scrollY + 10;
+  } else if (cursor < 150) {
+    modal.scrollTop = scrollY - 5;
+  } else if (cursor > height - 150) {
+    modal.scrollTop = scrollY + 5;
+  }
+
+  if (!stopScroll) {
+    scrollId = window.requestAnimationFrame(scroll);
+  }
 }
 
-var timer;
+/**
+ * Goid Line Drag Handlers
+ */
 
-function dragover_handler(ev, el) {
+/**
+ * Handle the event fired when dragging starts
+ * @param  {object} ev The event object
+ * @return {undefined}
+ */
+function goidDragStart(ev) {
+  // TODO: Unbind on drag end
+
+  // Add event listeners to 'editor__section-container'
+  var containers = document.getElementsByClassName('editor__section-container');
+
+  for (var i = 0; i < containers.length; i++) {
+    var container = containers[i];
+
+    container.addEventListener('dragenter', sectionDragEnter, false);
+    container.addEventListener('dragleave', sectionDragLeave, false);
+    container.addEventListener('dragover', sectionDragOver, false);
+  }
+
+  // Set the data to be transferred by dragging
+  ev.dataTransfer.setData('text/plain', ev.target.id);
+
+  // Allow the modal content to scroll while dragging
+  stopScroll = false;
+  scrollId = window.requestAnimationFrame(scroll);
+}
+
+/**
+ * Handle the event fired when dragging ends
+ * @param  {object} ev The event object
+ * @return {undefined}
+ */
+function goidDragEnd() {
+  // End the scrolling loop
+  cursor = null;
+  stopScroll = true;
+  window.cancelAnimationFrame(scroll);
+}
+
+/**
+ * Section Drag Handlers
+ */
+
+/**
+ * Handle the dragover event fired while over 'editor__section-container'
+ * @param  {event} ev The event object
+ * @param  {HTMLElement} el The element that fired the event
+ * @return {undefined}
+ */
+function sectionDragOver(ev) {
   ev.preventDefault();
   ev.dataTransfer.dropEffect = 'move';
-  if (el.className.indexOf('editor__section-container--drag-over') === -1) {
-    el.className += ' editor__section-container--drag-over';
-  }
 
-  // console.log('clientY:', ev.clientY, ' screenY:', ev.screenY,
-  //   ' layerY:', ev.layerY, ' movementY:', ev.movementY, ' offsetY:', ev.offsetY,
-  //   ' pageY:', ev.pageY, ' y:', ev.y, ' innerHeight:', window.innerHeight);
-
-  // console.log(ev.timeStamp);
-  if (!timer)
-    timer = ev.timeStamp;
-  else if (ev.timeStamp - 50 > timer) {
-    timer = ev.timeStamp;
-    scrollIfBoundary(ev.pageY);
-  //   console.log('Do Something');
-  }
-  // console.log(timer);
-
-    // requestAnimationFrame(function() {
-    //   scrollIfBoundary(ev.pageY);
-    // });
+  // Update the cursor position for the scroll loop
+  cursor = ev.pageY;
 }
 
-var height = window.innerHeight;
-var modal = document.getElementById('editor-modal');
-
-function scrollIfBoundary(position) {
-  var buffer = 50;
-
-  if (position < buffer) {
-    console.log("Scrolling Up");
-    modal.scrollTop -= 17;
-  } else if (position > height - buffer) {
-    console.log("Scrolling Down");
-    modal.scrollTop += 17;
-  }
-}
-
-function drop_handler(ev, el) {
+/**
+ * Handle the event fired when a line is dropped on 'editor__section-container'
+ * @param  {object} ev The event object
+ * @param  {HTMLElement} el The element that fired the event
+ * @return {undefined}
+ */
+function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
+  console.timeStamp('Drop Over Hanler');
   // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
   ev.preventDefault();
   var id = ev.dataTransfer.getData('text');
@@ -461,44 +459,78 @@ function drop_handler(ev, el) {
   target.className = target.className.replace(' editor__goid-line--drag-over', '');
   targetParent.className = targetParent.className.replace(' editor__section-container--drag-over', '');
 
-  clearInterval(timer);
+  // Stop the scroll loop used while dragging
+  stopScroll = true;
+  window.cancelAnimationFrame(scrollId);
 }
 
-// Styles to be applied while dragging
-function container_drag_enter(ev, el) {
-  // console.log('Drage Enter');
-}
+/**
+ * Handle the event fired when entering a 'editor__section-container' element
+ * @param  {object} ev The event object
+ * @param  {HTMLElement} el The element that fired the event
+ * @return {undefined}
+ */
+function sectionDragEnter(ev) {
+  ev.preventDefault();
+  // if (el.className.indexOf('editor__section-container--drag-over') === -1) {
+  //   el.className += ' editor__section-container--drag-over';
+  // }
 
-function container_drag_leave(ev, el) {
-  el.className = el.className.replace(' editor__section-container--drag-over', '');
-}
-
-function line_target_drag_over(ev, el) {
-  // console.log('Drag Over Line');
-  if (el.className.indexOf('editor__goid-line--drag-over') === -1) {
-    el.className += ' editor__goid-line--drag-over';
+  if (ev.target !== this) {
+    // Add goid line classname if it doesn't exist
+    if (ev.target.className.indexOf('editor__goid-line--drag-over') === -1) {
+      ev.target.className += ' editor__goid-line--drag-over';
+    }
+  } else {
+    // Add classname if it doesn't exist
   }
 }
 
-function line_target_drag_leave(ev, el) {
-  // console.log('Drag Leave Line');
-  el.className = el.className.replace(' editor__goid-line--drag-over', '');
+/**
+ * Handle the event fired when leaving a 'editor__section-container' element
+ * @param  {objec} ev The event object
+ * @param  {HTMLElement} el The element that fired the event
+ * @return {undefined}
+ */
+function sectionDragLeave(ev) {
+  if (ev.target === this) {
+    ev.target.className = ev.target.className.replace(
+      ' editor__section-container--drag-over', ''
+    );
+    console.log(ev.target);
+  } else {
+    console.log('Left a section');
+    console.log("Left a line");
+    ev.target.className = ev.target.className.replace(
+      ' editor__goid-line--drag-over', ''
+      );
+  }
 }
 
 /**
  * CSRF Token Methods
  */
-// https://docs.djangoproject.com/en/dev/ref/csrf/
+
+/**
+ * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
+ * @param  {[type]} method [description]
+ * @return {[type]}        [description]
+ */
 function csrfSafeMethod(method) {
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
+/**
+ * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
+ * @param  {[type]} name [description]
+ * @return {[type]}      [description]
+ */
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     var cookies = document.cookie.split(';');
     for (var i = 0; i < cookies.length; i++) {
-      var cookie = jQuery.trim(cookies[i]);
+      var cookie = $.trim(cookies[i]);
       if (cookie.substring(0, name.length + 1) === name + '=') {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
@@ -507,3 +539,56 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+
+// Enable tooltips in bootstrap
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip({
+    trigger: 'hover'
+  });
+});
+
+// Show correct info when modal opens
+$('#InformationModal').on('show.bs.modal', function(event) {
+  var targets = $('.modal-' + event.relatedTarget.id);
+  targets.removeClass('hidden');
+});
+
+// Hide info when modal closes - prevents too much info in next modal
+$('#InformationModal').on('hidden.bs.modal', function() {
+  $('.modal-info').addClass('hidden');
+});
+
+// Add fixedHeaderTable.js
+var hdrHeight = $('header').height();
+var ftrHeight = $('footer').height();
+var lnkHeight = $('.results-links').outerHeight();
+var wndwHeight = window.innerHeight;
+// var wndwWidth = window.innerWidth;
+
+$(document).ready(function() {
+  var height = wndwHeight - hdrHeight - ftrHeight - lnkHeight;
+  $('#results-table').fixedHeaderTable({
+    // width: 300,
+    height: height,
+    autoresize: true
+  });
+});
+
+/**
+ * Development Helpers
+ * TODO: Remove these when ready
+ */
+
+$(document).ready(function() {
+  // eslint-disable-next-line max-len
+  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
+  $('#section_names').val('sections1, sections2');
+  $('#dev-shortcut').click();
+  // var timer = setInterval(function() {
+  //   $('#dev-shortcut').click();
+  // }, 500);
+
+  // setTimeout(function() {
+  //   clearInterval(timer);
+  // }, 2250);
+});

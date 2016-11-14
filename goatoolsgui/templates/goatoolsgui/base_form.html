@@ -177,7 +177,7 @@ Sections AJAX Modal
  -->
 <div id="editor-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="TODO">
   <div class="modal-dialog" role="document">
-    <section class="modal-content">
+    <section id="editor-modal__content" class="modal-content">
       <header class="modal-header">
         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -193,7 +193,7 @@ Sections AJAX Modal
       </div>
 
       <footer class="modal-footer">
-        <button id="new-dev" type="button" onclick="addSectionName(this)">New Section</button>
+        <button type="button" onclick="addSectionName(this)">New Section</button>
         <button class="btn btn-primary" type="button" data-dismiss="modal">Close Modal</button>
         <button id="update-dev" class="btn btn-primary" type="button" onclick="updateSections()">Update File</button>
       </footer>
