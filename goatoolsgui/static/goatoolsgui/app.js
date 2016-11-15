@@ -37,7 +37,6 @@ function isValidTextFile(file) {
     return true;
   } else {
     window.alert(file.name + " is not a valid text file.");
-    // TODO: Clear the file field
   }
 }
 
@@ -89,14 +88,16 @@ function readFile(files) { // eslint-disable-line no-unused-vars
  * Puts the file name in the customized file uploader
  * @param {[type]} files [description]
  */
-function addFileName(files) { // eslint-disable-line no-unused-vars
+function addSectionsFile(files) { // eslint-disable-line no-unused-vars
+  // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
   var file = files[0];
-  var el = document.getElementById('sections-file-name');
-  el.innerHTML = file.name;
+  if (isValidTextFile(file)) {
+    var el = document.getElementById('sections-file-name');
+    el.innerHTML = file.name;
+  }
 }
 
-// TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
-
+var sectionsStringArray;
 /**
  * Makes an AJAX call to generatesections for Sections File Data
  * @param  {string} group    Name for the user's group
@@ -104,41 +105,58 @@ function addFileName(files) { // eslint-disable-line no-unused-vars
  * @param  {array} goids    List of the user's goid's from initial form
  */
 function getSectionsFile(group, sections, goids) {
-  // TODO: Enforce GoId's are entered in form
-  // console.log("Getting Sections Information");
-  var csrftoken = getCookie('csrftoken');
+  // AJAX call if there are goids present in the form
+  if (goids) {
+    console.log("Getting Sections Information");
+    var csrftoken = getCookie('csrftoken');
 
-  $.ajax({
-    url: "generatesections/",
-    type: "POST",
-    data: {
-      'goids': goids,
-      'group-name': group,
-      'sections': sections
-    },
+    $.ajax({
+      url: "generatesections/",
+      type: "POST",
+      data: {
+        'goids': goids,
+        'group-name': group,
+        'sections': sections
+      },
 
-    beforeSend: function(xhr, settings) {
-      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+
+      success: function(file) {
+        // console.log('Ajax Success');
+        // Display sectionsfile
+        sectionsStringArray = file.split('# SECTION: ');
+        createTxtFileHtml(sectionsStringArray);
+
+        // Remove disable from view button
+        document.getElementById('sections-view').disabled = false;
+
+        // Attach sections file
+        // var sectionsFile = new Blob([file], {type : 'text/plain'});
+        // var url = URL.createObjectURL(sectionsFile);
+      },
+
+      error: function(xhr, errmsg, err) {
+        console.log("Failure");
+        console.log(err);
       }
-    },
+    });
+  } else {
+    // Submit the form to raise validation error
+    var submitButton = document.getElementById('form-submit');
+    submitButton.click();
+  }
+}
 
-    success: function(test) {
-      // console.log('Ajax Success');
-      // Display sectionsfile
-      var sectionsStringArray = divideTxtFileBySection(test);
-      createTxtFileHtml(sectionsStringArray);
-
-      // Attach sections file
-      // var sectionsFile = new Blob([test], {type : 'text/plain'});
-      // var url = URL.createObjectURL(sectionsFile);
-    },
-
-    error: function(xhr, errmsg, err) {
-      console.log("Failure");
-      console.log(err);
-    }
-  });
+/**
+ * Use the previously fetched sectionStringArray to cancel user changes
+ * @return {undefined}
+ */
+function resetSections() { // eslint-disable-line no-unused-vars
+  createTxtFileHtml(sectionsStringArray);
 }
 
 /**
@@ -148,27 +166,30 @@ function getSectionsFile(group, sections, goids) {
  */
 function updateSections() { // eslint-disable-line no-unused-vars
   var rootEl = document.getElementById('editor');
-  var goids = $('#goids').val().replace(/ /g, '');
   var sections = {};
-  var sectionNames;
+  // var sectionNames;
   var group;
+  var goids = $('#goids').val();
+
+  if (goids) {
+    goids = goids.replace(/ /g, '');
+  }
 
   if (rootEl.children.length === 0) {
     // Handle empty editor
     // console.log('Editor is empty');
-
     group = $('#group_name').val() || 'gene-ontology';
-    sectionNames = $('#section_names').val() || null;
+    // sectionNames = $('#section_names').val() || null;
 
+  // Here in case I want a Section Names input on the form
     // Create section with empty goid array
-    if (sectionNames) {
-      sectionNames = sectionNames.replace(/,/g, '').split(' ');
+    // if (sectionNames) {
+    //   sectionNames = sectionNames.replace(/,/g, '').split(' ');
 
-      sectionNames.forEach(function(name) {
-        sections[name] = ['GO:0002682'];
-      });
-      // console.log(sections);
-    }
+    //   sectionNames.forEach(function(name) {
+    //     sections[name] = ['GO:0002682'];
+    //   });
+    // }
   } else {
     // Handle edited information
     group = rootEl.getElementsByClassName('editor__group-line')[0].innerHTML.replace('# GROUP NAME: ', '');
@@ -187,9 +208,12 @@ function updateSections() { // eslint-disable-line no-unused-vars
     }
   }
 
-  sections = JSON.stringify(sections);
+  if (Object.keys(sections).length !== 0) {
+    sections = JSON.stringify(sections);
+  }
 
   getSectionsFile(group, sections, goids);
+  $('#editor-modal').modal('show');
 }
 
 /**
@@ -197,11 +221,11 @@ function updateSections() { // eslint-disable-line no-unused-vars
  * @param {string} file A string representing the sections.txt file
  * @return {array} An array of strings representing each section
  */
-function divideTxtFileBySection(file) {
-  // console.log('Divide Text File');
-  var lines = file.split('# SECTION: ');
-  return lines;
-}
+// function divideTxtFileBySection(file) {
+//   // console.log('Divide Text File');
+//   var lines = file.split('# SECTION: ');
+//   return lines;
+// }
 
 /**
  * onclick in base_form.html
@@ -264,7 +288,7 @@ function selectEditableSection(el) {
 function makeSectionContainer(line) {
   var container = document.createElement('div');
   var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
-  console.log(line);
+
   if (line) {
     container.id = line.replace(cssValidRegex, '');
   }
@@ -309,11 +333,14 @@ function makeEditorLine(item, type) {
  */
 function createTxtFileHtml(sectionsArray) {
   // console.log('Create File HTML');
-  // TODO: Clear before appending new data
   var el = document.getElementById('editor');
   var fragment = document.createDocumentFragment();
   var sectionFragment = document.createDocumentFragment();
 
+  // Clear previous information
+  el.innerHTML = '';
+
+  // Create the new file information
   sectionsArray.forEach(function(section) {
     if (section.includes('# GROUP')) {
       // Append GROUP NAME line
@@ -388,8 +415,6 @@ function scroll() {
  * @return {undefined}
  */
 function goidDragStart(ev) {
-  // TODO: Unbind on drag end
-
   // Add event listeners to 'editor__section-container'
   var containers = document.getElementsByClassName('editor__section-container');
 
@@ -415,6 +440,16 @@ function goidDragStart(ev) {
  * @return {undefined}
  */
 function goidDragEnd() {
+  var containers = document.getElementsByClassName('editor__section-container');
+
+  // Unbind event listeners when not dragging
+  for (var i = 0; i < containers.length; i++) {
+    var container = containers[i];
+
+    container.removeEventListener('dragenter', sectionDragEnter, false);
+    container.removeEventListener('dragleave', sectionDragLeave, false);
+    container.removeEventListener('dragover', sectionDragOver, false);
+  }
   // End the scrolling loop
   cursor = null;
   stopScroll = true;
@@ -446,7 +481,7 @@ function sectionDragOver(ev) {
  * @return {undefined}
  */
 function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
-  console.timeStamp('Drop Over Hanler');
+  console.time('Drop Over Handler');
   // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
   ev.preventDefault();
   var id = ev.dataTransfer.getData('text');
@@ -462,6 +497,7 @@ function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
   // Stop the scroll loop used while dragging
   stopScroll = true;
   window.cancelAnimationFrame(scrollId);
+  console.timeEnd('Drop Over Hanler');
 }
 
 /**
@@ -555,7 +591,7 @@ $('#InformationModal').on('show.bs.modal', function(event) {
 
 // Hide info when modal closes - prevents too much info in next modal
 $('#InformationModal').on('hidden.bs.modal', function() {
-  $('.modal-info').addClass('hidden');
+  $('#InformationModal.modal-info').addClass('hidden');
 });
 
 // Add fixedHeaderTable.js
@@ -582,7 +618,7 @@ $(document).ready(function() {
 $(document).ready(function() {
   // eslint-disable-next-line max-len
   $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
-  $('#section_names').val('sections1, sections2');
+//   $('#section_names').val('sections1, sections2');
   $('#dev-shortcut').click();
   // var timer = setInterval(function() {
   //   $('#dev-shortcut').click();

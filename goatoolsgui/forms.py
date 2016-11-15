@@ -20,7 +20,7 @@ class GoIdsForm(forms.Form):
     widget=forms.ClearableFileInput(
       attrs={
         'class': 'input-file',
-        'onchange': 'addFileName(this.files)'
+        'onchange': 'addSectionsFile(this.files)'
       }
     )
   )

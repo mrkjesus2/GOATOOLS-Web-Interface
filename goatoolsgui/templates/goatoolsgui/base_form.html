@@ -65,10 +65,12 @@ GO ID's Input
     </div>
     <div class="input-group">
       {{ form.blob_file }}
-      {{ form.group_name  }}
-      {{ form.section_names }}
-      <button id="dev-shortcut" type="button" class="btn btn-primary" onclick="updateSections()" data-toggle="modal" data-target="#editor-modal">Generate</button>
-      <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editor-modal">
+      <!-- {{ form.group_name  }} -->
+      <!-- {{ form.section_names }} -->
+      <button id="dev-shortcut" type="button" class="btn btn-primary" onclick="updateSections()">
+        Generate
+      </button>
+      <button id="sections-view" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editor-modal" disabled>
         View/Edit
       </button>
     </div>
@@ -95,7 +97,7 @@ GO ID's Input
         <input class="btn btn-secondary" type="reset" />
       </div>
       <div class="col-xs-5">
-        <input class="btn btn-primary" type="submit" />
+        <input id="form-submit" class="btn btn-primary" type="submit" />
       </div>
     </div>
   </div>
@@ -179,7 +181,7 @@ Sections AJAX Modal
   <div class="modal-dialog" role="document">
     <section id="editor-modal__content" class="modal-content">
       <header class="modal-header">
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="resetSections()">
           <span aria-hidden="true">&times;</span>
         </button>
         <!-- <h3 class="modal-info">Edit your generated sections file</h3> -->
@@ -187,15 +189,21 @@ Sections AJAX Modal
       </header>
 
       <div class="modal-body modal-info">
+        <button class="btn btn-info btn-block" type="button" onclick="addSectionName(this)">
+          Add a New Section
+        </button>
         <pre id="editor" class='editor'>
           <!-- Content is added by addSectionsToPage -->
         </pre>
       </div>
 
       <footer class="modal-footer">
-        <button type="button" onclick="addSectionName(this)">New Section</button>
-        <button class="btn btn-primary" type="button" data-dismiss="modal">Close Modal</button>
-        <button id="update-dev" class="btn btn-primary" type="button" onclick="updateSections()">Update File</button>
+        <button id="update-dev" class="btn btn-warning" type="button" onclick="resetSections()">
+          Dismiss
+        </button>
+        <button class="btn btn-primary" type="button" data-dismiss="modal" onclick="updateSections()">
+          Save
+        </button>
       </footer>
     </section>
   </div>
