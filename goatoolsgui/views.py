@@ -25,18 +25,17 @@ def index(request):
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
         # user_data.save()
         user_data.get_xlsx_data(None)
+      # TODO: Get rid of this
       elif request.POST.get('blob_file'):
         user_data.sections_file = user_data.file_from_blob(request.POST.get('blob_file'))
         user_data.save()
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
         # user_data.save()
       else:
-        # user_data.json_data = submit_gos(request.POST)['flat']
-        # print('\n\nView Says:')
-        # print(user_data)
-        # print('\n\n')
+        # Set xlsx_data
+        user_data.json_data = user_data.get_xlsx_data(None)
         user_data.save()
-        user_data.get_sections(None)
+      # Set the user data in session
       request.session['user_data_id'] = user_data.id
 
       return HttpResponseRedirect(reverse('goatoolsgui:show'))
@@ -47,28 +46,39 @@ def index(request):
 
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
-  # print('\n\nShow Gos says:')
-  # print(goid_object)
   return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
 
 def sendFile(request):
   # TODO: Make sure that this is a robust solution
   user_gos_obj = GoIds.objects.get(pk=request.session['user_data_id'])
+  '''
+  Make the file
+  '''
+  # TODO: What if there are sections?
+  user_gos_obj.wr_xlsx_data(None)
 
-  # Opent the file to download
+  '''
+  Open the file to download
+  '''
   filename = user_gos_obj.file_out_name
-  file = open(filename, 'r')
+  file = user_gos_obj.xlsx_file.name
+  file_contents = open(file, 'r')
 
-  # Response header for file download
+  '''
+  Set the Response header for file download
+  '''
   # TODO: Does the MIME type need to change
-  response = HttpResponse(file, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  response['Content-Disposition'] = 'attachment; filename="%s.xlsx"' % filename
+  response = HttpResponse(file_contents, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+  response['Content-Disposition'] = 'attachment; filename="%s"' % filename
 
-  file.close()
-  user_gos_obj.delete()
+  '''
+  Close and delete the file
+  '''
+  file_contents.close()
+  user_gos_obj.xlsx_file.delete(save=True)
+
   return response
-
 
 def generateSections(request):
   '''

@@ -42,7 +42,7 @@ class GoIds(models.Model):
     if self.sections_file.name != '':
       os.remove(self.sections_file.name)
     print(self.file_out_name)
-    os.remove(self.file_out_name)
+    os.remove(self.xlsx_file.name)
     super(GoIds, self).delete()
 
 # Returns 'list_2d' in object with sections and related goids
