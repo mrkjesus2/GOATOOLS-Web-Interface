@@ -7,7 +7,7 @@ import os
 # End comment
 
 import goatools
-from goatools_alpha import gosubdag_grouper as gta
+# from goatools_alpha import gosubdag_grouper as gta
 from datetime import datetime
 import json
 import collections
@@ -38,7 +38,7 @@ def submit_gos(form, form_file_path=None):
     # print(open(form_file_path, 'r').read())
     # TODO: Check for 'flat' or 'section' key
     # Return found key or file to download?
-    data = gta.wr_xlsx_gos_sectionsfile(filename, goids, form_file_path)
+    # data = gta.wr_xlsx_gos_sectionsfile(filename, goids, form_file_path)
     print(data)
     return data
 
@@ -50,7 +50,7 @@ def submit_gos(form, form_file_path=None):
     print('\nNo file sent to submit_gos\n')
     # TODO: Check for 'flat' or 'sections' key
     # Return found key or the file to download
-    data = gta.wr_xlsx_gos(filename, goids)
+    # data = gta.wr_xlsx_gos(filename, goids)
     print(data)
     return data
 
@@ -86,7 +86,7 @@ def make_sections_file(user, group_name, goids, grprdflt=FLAT_GROUPS):
       pass
 
   # Make the file
-  gta.wr_sections_txt(filename, goids, grprdflt=FLAT_GROUPS)
+  # gta.wr_sections_txt(filename, goids, grprdflt=FLAT_GROUPS)
 
   # Create JSON representation of file
   content = open(filename, 'rb').read()
