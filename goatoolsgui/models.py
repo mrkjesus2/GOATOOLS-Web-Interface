@@ -122,6 +122,7 @@ class GoIds(models.Model):
     rq = 'get_xlsx_data'
 
     goids = self.go_ids.split(',')
+
     data = Socket().send_request(
       {
         'rqid':self.id,
