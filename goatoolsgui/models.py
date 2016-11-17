@@ -28,6 +28,7 @@ class GoIds(models.Model):
   xlsx_file = models.FileField(upload_to=user_directory_path, null=True)
   xlsx_data = models.TextField(max_length=80000)
   json_data = JSONField()
+  plot_data = JSONField()
 
   # Do I need to add
   # sections = models.CharField
@@ -143,7 +144,7 @@ class GoIds(models.Model):
     return data['nts_1d']
 
 
-# Sections don't seem to be making a difference
+  # Sections don't seem to be making a difference
   def wr_xlsx_data(self, sections):
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
@@ -186,3 +187,28 @@ class GoIds(models.Model):
     print self.xlsx_file
 
     return
+
+  def get_plot_groups(self, sections):
+    # Set the Current User Directory as output for .png files
+    directory = settings.BASE_DIR + '/' + user_directory_path(self, '')
+    ensure_path_exists(directory)
+    print ''
+    print "The Previous Director is:"
+    print directory
+    print ''
+
+
+    rq = 'plot_groups'
+    goids = self.go_ids.split(',')
+
+    data = Socket().send_request(
+      {
+        'rqid':self.id,
+        'rq':rq,
+        'usrgos':goids,
+        'section':sections,
+        'odir':directory
+      }
+    )
+
+    return data

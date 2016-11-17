@@ -35,6 +35,14 @@ def index(request):
         # Set xlsx_data
         user_data.json_data = user_data.get_xlsx_data(None)
         user_data.save()
+
+        # Trying plots
+        # user_data.plot_data = user_data.get_plot_groups()
+        print ''
+        print 'The Plot Data:'
+        user_data.get_plot_groups(None)
+        print ''
+
       # Set the user data in session
       request.session['user_data_id'] = user_data.id
 
