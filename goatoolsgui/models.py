@@ -211,3 +211,23 @@ class GoIds(models.Model):
       files[idx] = file.replace(directory, '')
 
     return files
+
+
+import threading
+# Thank you - http://stackoverflow.com/questions/11632034/async-functions-in-django-views
+class PlotGroupThread(threading.Thread):
+  def __init__(self, obj, sections, *args, **kwargs):
+    self.obj = obj
+    self.sections = sections
+    print ''
+    print 'PlotGroupThread Initialized'
+    print ''
+    super(PlotGroupThread, self).__init__(*args, **kwargs)
+
+  def run(self):
+    print ''
+    print 'PlotGroupThread Running'
+    print ''
+    self.obj.plot_data = self.obj.get_plot_groups(self.sections)
+    self.obj.save()
+

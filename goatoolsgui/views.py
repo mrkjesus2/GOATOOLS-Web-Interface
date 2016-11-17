@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse, FileResponse, JsonRe
 import json
 import collections
 
-from .models import GoIds
+from .models import GoIds, PlotGroupThread
 from .forms import GoIdsForm
 from .helpers import submit_gos, nts_to_json, make_sections_file, json_obj_to_dict
 
@@ -49,11 +49,11 @@ def index(request):
       else:
         # Set xlsx_data
         user_data.json_data = user_data.get_xlsx_data(None)
-        # Trying plots
-        user_data.plot_data = user_data.get_plot_groups(None)
         user_data.save()
 
-        print user_data.plot_data
+        # Trying plots
+        # goid_object.plot_data = goid_object.get_plot_groups(None)
+        PlotGroupThread(user_data, None).start()
 
       # Set the user data in session
       request.session['user_data_id'] = user_data.id
@@ -66,6 +66,7 @@ def index(request):
 
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
+
   return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
 
