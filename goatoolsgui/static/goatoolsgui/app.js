@@ -576,6 +576,9 @@ function getCookie(name) {
   return cookieValue;
 }
 
+/*
+   Bootstrap functionality
+ */
 // Enable tooltips in bootstrap
 $(function() {
   $('[data-toggle="tooltip"]').tooltip({
@@ -594,15 +597,24 @@ $('#InformationModal').on('hidden.bs.modal', function() {
   $('#InformationModal.modal-info').addClass('hidden');
 });
 
-// Add fixedHeaderTable.js
+$('#results__view-options a').click(function(ev) {
+  ev.preventDefault();
+  $(this).tab('show');
+});
+
+/*
+  Fixed Header Table JS
+ */
 var hdrHeight = $('header').height();
 var ftrHeight = $('footer').height();
+var tabHeight = $('#results-tabs').height();
 var lnkHeight = $('.results-links').outerHeight();
 var wndwHeight = window.innerHeight;
 // var wndwWidth = window.innerWidth;
 
 $(document).ready(function() {
-  var height = wndwHeight - hdrHeight - ftrHeight - lnkHeight;
+  var height = wndwHeight - hdrHeight - ftrHeight - tabHeight - lnkHeight;
+  console.log(height);
   $('#results-table').fixedHeaderTable({
     // width: 300,
     height: height,

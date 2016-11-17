@@ -5,58 +5,77 @@
 {% if goids %}
 
   <!--
-  Display the plot images
+    Nav Tabs
    -->
-  {% for image in goids.plot_data %}
-    <img class="img-responsive" src="{{ MEDIA_URL }}{{ goids.id }}/{{image}}" alt="TODO">
-  {% endfor %}
-<!-- TODO: Probably have to handle a 2d list eventually -->
-<!--
-  Results Table
- -->
-  <div id="tableBlock" class="table-container">
-    <table id="results-table" class="table table-bordered table-hover table-condensed">
-      <thead>
-        <tr>
-          <th>hd</th>
-          <th>NS</th>
-          <th>dcnt</th>
-          <th>level</th>
-          <th>depth</th>
-          <th>GO</th>
-          <th>D1</th>
-          <th>GO_name</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for goid in goids.json_data %}
-          <!-- Given a list
-              ['0': 'format_txt', '1': 'hdr_idx', '2': 'is_hdrgo', '3': 'is_usrgo',
-               '4': 'hdr1usr01', '5': 'NS', '6': 'dcnt', '7': 'level', '8': 'depth',
-               '9': 'GO', '10': 'D1', '11': 'GO_Name']
-          -->
-          <tr class="{% if goid.4 %} go-header {% endif %}">
-            <td>{{goid.4}}</td>
-            <td>{{goid.5}}</td>
-            <td>{{goid.6}}</td>
-            <td>{{goid.7}}</td>
-            <td>{{goid.8}}</td>
-            <td>{{goid.9}}</td>
-            <td>{{goid.10}}</td>
-            <td>{{goid.11}}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <ul id="results-tabs" class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a href="#table" id="table-tab" role="tab" data-toggle="tab" aria-controls="table" aria-expanded="true">View Table</a>
+    </li>
+    <li role="presentation">
+      <a href="#images" id="images-tab" role="tab" data-toggle="tab" aria-controls="images">View Plots</a>
+    </li>
+  </ul>
+
+  <div id="results-tab-content" class="tab-content">
+    <!--
+      Results Table
+     -->
+    <!-- TODO: Probably have to handle a 2d list eventually -->
+    <div id="table" class="tab-pane fade in active" role="tabpanel" aria-labelledby="table-tab">
+      <div id="tableBlock" class="table-container">
+        <table id="results-table" class="table table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>hd</th>
+              <th>NS</th>
+              <th>dcnt</th>
+              <th>level</th>
+              <th>depth</th>
+              <th>GO</th>
+              <th>D1</th>
+              <th>GO_name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for goid in goids.json_data %}
+              <!-- Given a list
+                  ['0': 'format_txt', '1': 'hdr_idx', '2': 'is_hdrgo', '3': 'is_usrgo',
+                   '4': 'hdr1usr01', '5': 'NS', '6': 'dcnt', '7': 'level', '8': 'depth',
+                   '9': 'GO', '10': 'D1', '11': 'GO_Name']
+              -->
+              <tr class="{% if goid.4 %} go-header {% endif %}">
+                <td>{{goid.4}}</td>
+                <td>{{goid.5}}</td>
+                <td>{{goid.6}}</td>
+                <td>{{goid.7}}</td>
+                <td>{{goid.8}}</td>
+                <td>{{goid.9}}</td>
+                <td>{{goid.10}}</td>
+                <td>{{goid.11}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!--
+        Links
+       -->
+      <div class="results-links">
+        <!-- TODO: Can I delete the file only if it is actually downloaded? -->
+        <!-- <a href="#">Citation Link</a> -->
+        <a class="btn btn-primary" href="{% url 'goatoolsgui:sendfile' %}">Download File</a>
+      </div>
+    </div>
+    <!--
+      Display the plot images
+     -->
+    <div id="images" class="tab-pane fade" role="tabpanel" aria-labelledby="images-tab">
+      {% for image in goids.plot_data %}
+        <img class="img-responsive" src="{{ MEDIA_URL }}{{ goids.id }}/{{image}}" alt="TODO">
+      {% endfor %}
+    </div>
   </div>
 {% endif %}
-<!--
-  Links
- -->
-<div class="results-links">
-  <!-- TODO: Can I delete the file only if it is actually downloaded? -->
-  <!-- <a href="#">Citation Link</a> -->
-  <a class="btn btn-primary" href="{% url 'goatoolsgui:sendfile' %}">Download File</a>
-</div>
+
 {% endblock %}
 
