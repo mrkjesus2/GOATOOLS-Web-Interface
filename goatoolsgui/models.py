@@ -192,11 +192,6 @@ class GoIds(models.Model):
     # Set the Current User Directory as output for .png files
     directory = settings.BASE_DIR + '/' + user_directory_path(self, '')
     ensure_path_exists(directory)
-    print ''
-    print "The Previous Director is:"
-    print directory
-    print ''
-
 
     rq = 'plot_groups'
     goids = self.go_ids.split(',')
@@ -211,4 +206,8 @@ class GoIds(models.Model):
       }
     )
 
-    return data
+    files = data['list_1d']
+    for idx, file in enumerate(files):
+      files[idx] = file.replace(directory, '')
+
+    return files

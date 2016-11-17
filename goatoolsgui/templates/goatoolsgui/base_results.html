@@ -3,6 +3,13 @@
 {% block content %}
 
 {% if goids %}
+
+  <!--
+  Display the plot images
+   -->
+  {% for image in goids.plot_data %}
+    <img class="img-responsive" src="{{ MEDIA_URL }}{{ goids.id }}/{{image}}" alt="TODO">
+  {% endfor %}
 <!-- TODO: Probably have to handle a 2d list eventually -->
 <!--
   Results Table

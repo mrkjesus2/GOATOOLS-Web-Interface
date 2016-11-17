@@ -11,9 +11,24 @@ from .helpers import submit_gos, nts_to_json, make_sections_file, json_obj_to_di
 
 # Create your views here.
 def index(request):
+  if request.session.is_empty():
+    print ''
+    print "THERE IS NO USER DATA"
+    print ''
   if request.method == 'POST':
     form = GoIdsForm(request.POST, request.FILES)
     if form.is_valid():
+      '''
+      TODO:
+      # Prevent creating new user if back button pressed on goatoolsgui:show
+      if request.session.is_empty():
+        user_data = GoIds()
+      else:
+        user_data = request.session['user_data_id']
+      '''
+      '''
+      Set the user data
+      '''
       user_data = GoIds()
       user_data.go_ids = request.POST.get('goids').replace(' ', '')
       user_data.file_out_name = request.POST.get('filename') + '.xlsx'
@@ -34,14 +49,11 @@ def index(request):
       else:
         # Set xlsx_data
         user_data.json_data = user_data.get_xlsx_data(None)
+        # Trying plots
+        user_data.plot_data = user_data.get_plot_groups(None)
         user_data.save()
 
-        # Trying plots
-        # user_data.plot_data = user_data.get_plot_groups()
-        print ''
-        print 'The Plot Data:'
-        user_data.get_plot_groups(None)
-        print ''
+        print user_data.plot_data
 
       # Set the user data in session
       request.session['user_data_id'] = user_data.id
