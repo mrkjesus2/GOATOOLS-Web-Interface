@@ -12,7 +12,7 @@
       <a href="#table" id="table-tab" role="tab" data-toggle="tab" aria-controls="table" aria-expanded="true">View Table</a>
     </li>
     <li role="presentation">
-      <a href="#images" id="images-tab" role="tab" data-toggle="tab" aria-controls="images">View Plots</a>
+      <a href="#plots" id="plots-tab" role="tab" data-toggle="tab" aria-controls="plots">View Plots</a>
     </li>
   </ul>
 
@@ -66,13 +66,11 @@
         <a class="btn btn-primary" href="{% url 'goatoolsgui:sendfile' %}">Download File</a>
       </div>
     </div>
-    <!--
+      <!--
       Display the plot images
      -->
-    <div id="images" class="tab-pane fade" role="tabpanel" aria-labelledby="images-tab">
-      {% for image in goids.plot_data %}
-        <img class="img-responsive" src="{{ MEDIA_URL }}{{ goids.id }}/{{image}}" alt="TODO">
-      {% endfor %}
+    <div id="plots" class="tab-pane fade" role="tabpanel" aria-labelledby="plots-tab">
+      <!-- Images to be added by AJAX request to  showPlots view -->
     </div>
   </div>
 {% endif %}

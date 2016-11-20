@@ -597,10 +597,46 @@ $('#InformationModal').on('hidden.bs.modal', function() {
   $('#InformationModal.modal-info').addClass('hidden');
 });
 
-$('#results__view-options a').click(function(ev) {
+$('#results-tabs a').on('shown.bs.tab', (function(ev) {
   ev.preventDefault();
-  $(this).tab('show');
-});
+
+  var ref = $(this).attr('href');
+  var tabContent = $('.tab-content');
+
+  // Call for the plots if we don't yet have them
+  if ($(ref).children().length === 0) {
+    console.log('We will get the plot information');
+    $.ajax({
+      url: "../plots/",
+      type: "GET",
+
+      success: function(response) {
+        console.log('Success');
+        console.time('AJAX Success Function');
+
+        // Create img elements from JSON response
+        response.forEach(function(url) {
+          var img = new Image();
+          img.src = url;
+          img.className = 'img-responsive';
+          // Append to #plots div
+          $(ref).append(img);
+        });
+
+        console.timeEnd('AJAX Success Function');
+      },
+
+      error: function(xhr, errmsg, err) {
+        console.log("Failure");
+        console.log(err);
+      }
+    });
+  }
+
+  // Hide all panes and show the one that was clicked
+  tabContent.find('.tab-pane').hide();
+  tabContent.find(ref).show();
+}));
 
 /*
   Fixed Header Table JS
@@ -614,7 +650,6 @@ var wndwHeight = window.innerHeight;
 
 $(document).ready(function() {
   var height = wndwHeight - hdrHeight - ftrHeight - tabHeight - lnkHeight;
-  console.log(height);
   $('#results-table').fixedHeaderTable({
     // width: 300,
     height: height,

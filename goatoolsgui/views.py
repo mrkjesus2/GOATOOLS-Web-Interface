@@ -67,8 +67,19 @@ def index(request):
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
 
+  print ''
+  print 'Show Gos says:'
+  print goid_object.plot_data
+  print ''
+
   return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
+def showPlots(request):
+  user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+
+  response = JsonResponse(user_data.plot_data, safe=False)
+
+  return response
 
 def sendFile(request):
   # TODO: Make sure that this is a robust solution

@@ -208,7 +208,8 @@ class GoIds(models.Model):
 
     files = data['list_1d']
     for idx, file in enumerate(files):
-      files[idx] = file.replace(directory, '')
+      # Set the url for the image
+      files[idx] = file.replace(directory, '../media/' + str(self.id) + '/')
 
     return files
 
