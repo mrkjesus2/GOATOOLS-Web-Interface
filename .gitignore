@@ -41,3 +41,4 @@ Thumbs.db
 data_files/**
 *.sqlite3
 static/**
+secret_settings.py
