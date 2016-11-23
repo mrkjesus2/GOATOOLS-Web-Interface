@@ -26,6 +26,7 @@
 *.log
 *.sql
 *.sqlite
+*.sqlite3
 
 # OS generated files #
 ######################
@@ -37,8 +38,12 @@
 ehthumbs.db
 Thumbs.db
 
-**/goatools_alpha/
+
+# My Files #
+############
 data_files/**
-*.sqlite3
 static/**
 secret_settings.py
+
+# Don't want to expose Debra's code #
+**/goatools_alpha/
