@@ -113,7 +113,7 @@ USE_TZ = True
 STATIC_ROOT = '/var/www/projects/gosite/static/'
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = '/var/www/projects/gosite/data_files/tmp/'
+MEDIA_ROOT = '/var/www/projects/gosite/'
 MEDIA_URL = '/media/'
 # Enable if collectstatic doesn't work
 # STATIC_ROOT = '/var/www/projects/gosite/static'

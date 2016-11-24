@@ -12,12 +12,27 @@ from django.core.files.base import ContentFile
 from .helpers import ensure_path_exists
 from goatools_alpha.socket.socket_client import GrouperSocketClient as Socket
 import json
+from django.core.files.storage import default_storage
+# from django.db.models.signals import post_save
+from goatools_alpha.read_goids import read_sections
 
 # This causes no file ./manage.py error
 # from goatools_alpha.grouper_socket import GrouperSocketClient as Socket
 
 def user_directory_path(instance, filename):
-  return 'data_files/tmp/{0}/{1}'.format(instance.id, filename)
+  return settings.BASE_DIR + '/data_files/users/{0}/{1}'.format(instance.id, filename)
+
+# '''
+# Called by GoIds post_save
+# '''
+# def create_sections(sender, instance, *args, **kwargs):
+#   print('\nCreating Sections\n')
+#   if instance.sections_file and not instance.sections:
+#     # Get the sections and save to the instance
+#     instance.sections = read_sections(instance.sections_file.name)
+#     instance.save()
+#   else:
+#     print('No sections file here')
 
 # Create your models here.
 # TODO: Should I Use the ORM provided by Models
@@ -29,6 +44,7 @@ class GoIds(models.Model):
   xlsx_data = models.TextField(max_length=80000)
   json_data = JSONField()
   plot_data = JSONField()
+  sections = JSONField(null=True)
 
   # Do I need to add
   # sections = models.CharField
@@ -46,8 +62,20 @@ class GoIds(models.Model):
     os.remove(self.xlsx_file.name)
     super(GoIds, self).delete()
 
+  def save(self):
+    if self.sections_file:
+      print('\nReading Sections\n')
+
+      # TODO: Add a unique filename
+      file = default_storage.save('data_files/tmp/testing.txt', ContentFile(self.sections_file.read()))
+      self.sections = read_sections(settings.MEDIA_ROOT + file)
+      file = default_storage.delete('data_files/tmp/testing.txt')
+    super(GoIds, self).save()
+
+
 # Returns 'list_2d' in object with sections and related goids
   def get_sections_goids(self, sections):
+    print('\nGetting Section GOIDs\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
 
@@ -66,6 +94,7 @@ class GoIds(models.Model):
 
 
   def get_sections_details(self, sections):
+    print('\nGetting Section Details\n')
     rq = 'get_sections_nts'
     goids = self.go_ids.split(',')
 
@@ -86,6 +115,7 @@ class GoIds(models.Model):
 
 # Why does this expect a sections-file
   def make_sections_file(self, sections):
+    print('\nMaking Sections File\n')
     '''
     Create a default sections file if user hasn't uploaded a file
     '''
@@ -102,7 +132,7 @@ class GoIds(models.Model):
     rq = 'wr_txt_sections'
     goids = self.go_ids.split(',')
     # TODO: Is this safe in production?
-    file = settings.BASE_DIR + '/' + self.sections_file.name
+    file = self.sections_file.name
 
     data = Socket().send_request(
       {
@@ -117,6 +147,7 @@ class GoIds(models.Model):
 
 
   def get_xlsx_data(self, sections):
+    print('\nGetting XLSX Data\n')
     '''
     Send request to Socket server for data
     '''
@@ -137,20 +168,20 @@ class GoIds(models.Model):
     Return either 2d or 1d list of xlsx data
     '''
     if sections:
-      print('\nget_xlsx_data returning 2d list\n')
+      # print('\nget_xlsx_data returning 2d list\n')
       return data['nts_2d']
     else:
-      print('\nget_xlsx_data returning 1d list\n')
-    return data['nts_1d']
+      # print('\nget_xlsx_data returning 1d list\n')
+      return data['nts_1d']
 
 
   # Sections don't seem to be making a difference
   def wr_xlsx_data(self, sections):
+    print('\nWriting XLSX Data\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
     # Returns ['status', 'hdrs', 'list_len', list_1d', 'rqid', 'nts_1d', 'rq']
     # If sections are provided 1d keys are 2d
-    print('\nTesting\n')
 
     # self.xlsx_file.save('testing_contentfile.xlsx', ContentFile(data['nts_1d']))
 
@@ -158,7 +189,7 @@ class GoIds(models.Model):
     Create the directories and file to prevent
     'No such file or directory' error in GOATOOLS
     '''
-    directory = settings.BASE_DIR + '/' + user_directory_path(self, '')
+    directory = user_directory_path(self, '')
     file = directory + self.file_out_name
     ensure_path_exists(directory)
 
@@ -189,8 +220,9 @@ class GoIds(models.Model):
     return
 
   def get_plot_groups(self, sections):
+    print('\nGetting Plot Groups\n')
     # Set the Current User Directory as output for .png files
-    directory = settings.BASE_DIR + '/' + user_directory_path(self, '')
+    directory = user_directory_path(self, '')
     ensure_path_exists(directory)
 
     rq = 'plot_groups'
@@ -232,3 +264,4 @@ class PlotGroupThread(threading.Thread):
     self.obj.plot_data = self.obj.get_plot_groups(self.sections)
     self.obj.save()
 
+# post_save.connect(create_sections, sender=GoIds)

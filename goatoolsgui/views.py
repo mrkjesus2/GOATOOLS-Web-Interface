@@ -9,6 +9,9 @@ from .models import GoIds, PlotGroupThread
 from .forms import GoIdsForm
 from .helpers import submit_gos, nts_to_json, make_sections_file, json_obj_to_dict
 
+from goatools_alpha.read_goids import read_sections
+import os
+
 # Create your views here.
 def index(request):
   if request.session.is_empty():
@@ -36,10 +39,11 @@ def index(request):
       # Temporarily save 'Sections File' and send to submit_gos()
       if request.FILES.get('sections_file'):
         user_data.sections_file = request.FILES.get('sections_file')
+        user_data.json_data = user_data.get_xlsx_data(None)
         user_data.save()
+
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
         # user_data.save()
-        user_data.get_xlsx_data(None)
       # TODO: Get rid of this
       elif request.POST.get('blob_file'):
         user_data.sections_file = user_data.file_from_blob(request.POST.get('blob_file'))

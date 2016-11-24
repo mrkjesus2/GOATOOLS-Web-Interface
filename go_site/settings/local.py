@@ -1,5 +1,5 @@
 from go_site.settings.base import *
-from go_site.settings.secret_settings.py import *
+from go_site.settings.secret_settings import *
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
