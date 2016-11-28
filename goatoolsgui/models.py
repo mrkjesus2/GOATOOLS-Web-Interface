@@ -22,18 +22,6 @@ from goatools_alpha.read_goids import read_sections
 def user_directory_path(instance, filename):
   return settings.BASE_DIR + '/data_files/users/{0}/{1}'.format(instance.id, filename)
 
-# '''
-# Called by GoIds post_save
-# '''
-# def create_sections(sender, instance, *args, **kwargs):
-#   print('\nCreating Sections\n')
-#   if instance.sections_file and not instance.sections:
-#     # Get the sections and save to the instance
-#     instance.sections = read_sections(instance.sections_file.name)
-#     instance.save()
-#   else:
-#     print('No sections file here')
-
 # Create your models here.
 # TODO: Should I Use the ORM provided by Models
 class GoIds(models.Model):
@@ -62,59 +50,60 @@ class GoIds(models.Model):
     os.remove(self.xlsx_file.name)
     super(GoIds, self).delete()
 
-  def save(self):
+  def save(self, **kwargs):
+    # TODO: Make sure this doesn't run on an empty file
     if self.sections_file:
       print('\nReading Sections\n')
 
       # TODO: Add a unique filename
-      file = default_storage.save('data_files/tmp/testing.txt', ContentFile(self.sections_file.read()))
-      self.sections = read_sections(settings.MEDIA_ROOT + file)
-      file = default_storage.delete('data_files/tmp/testing.txt')
+      file = default_storage.save('tmp/testing.txt', ContentFile(self.sections_file.read()))
+      try:
+        self.sections = read_sections(settings.MEDIA_ROOT + file)
+      except AttributeError:
+        print "Sections File was empty"
+      file = default_storage.delete('tmp/testing.txt')
     super(GoIds, self).save()
 
 
 # Returns 'list_2d' in object with sections and related goids
-  def get_sections_goids(self, sections):
+  def get_sections_goids(self):
     print('\nGetting Section GOIDs\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
 
     rq = 'get_sections_goids'
-    goids = self.go_ids.split(',')
+    goids = self.go_ids.replace(' ', '').split(',')
 
     data = Socket().send_request(
       {
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'sections':sections
+        'sections':self.sections
       }
     )
     return data
 
 
-  def get_sections_details(self, sections):
+  def get_sections_details(self):
     print('\nGetting Section Details\n')
     rq = 'get_sections_nts'
-    goids = self.go_ids.split(',')
-
+    goids = self.go_ids.replace(' ', '').split(',')
+    print goids
     data = Socket().send_request(
       {
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'sections':sections
+        'sections':self.sections
       }
     )
-    print
-    print type(data['nts_2d'])
-    print
     # return data['list_2d'] or data['nts_2d']
     return data
 
 
 # Why does this expect a sections-file
-  def make_sections_file(self, sections):
+  def make_sections_file(self):
     print('\nMaking Sections File\n')
     '''
     Create a default sections file if user hasn't uploaded a file
@@ -130,7 +119,7 @@ class GoIds(models.Model):
     Call the socket server to create the sections file
     '''
     rq = 'wr_txt_sections'
-    goids = self.go_ids.split(',')
+    goids = self.go_ids.replace(' ', '').split(',')
     # TODO: Is this safe in production?
     file = self.sections_file.name
 
@@ -139,35 +128,35 @@ class GoIds(models.Model):
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'sections':sections,
+        'sections':self.sections,
         'outfile':file
       }
     )
     return data
 
 
-  def get_xlsx_data(self, sections):
+  def get_xlsx_data(self):
     print('\nGetting XLSX Data\n')
     '''
     Send request to Socket server for data
     '''
     rq = 'get_xlsx_data'
 
-    goids = self.go_ids.split(',')
+    goids = self.go_ids.replace(' ', '').split(',')
 
     data = Socket().send_request(
       {
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'sections':sections
+        'sections':self.sections
       }
     )
 
     '''
     Return either 2d or 1d list of xlsx data
     '''
-    if sections:
+    if self.sections:
       # print('\nget_xlsx_data returning 2d list\n')
       return data['nts_2d']
     else:
@@ -176,7 +165,7 @@ class GoIds(models.Model):
 
 
   # Sections don't seem to be making a difference
-  def wr_xlsx_data(self, sections):
+  def wr_xlsx_data(self):
     print('\nWriting XLSX Data\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
@@ -198,14 +187,14 @@ class GoIds(models.Model):
     Call the socket server to make the Excel file
     '''
     rq = 'wr_xlsx'
-    goids = self.go_ids.split(',')
+    goids = self.go_ids.replace(' ', '').split(',')
 
     data = Socket().send_request(
       {
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'sections':sections,
+        'sections':self.sections,
         'outfile':file
       }
     )
@@ -214,26 +203,23 @@ class GoIds(models.Model):
     Set the file on the model
     '''
     self.xlsx_file = file
-    print '\nXLSX FILE\n'
-    print self.xlsx_file
-
     return
 
-  def get_plot_groups(self, sections):
+  def get_plot_groups(self):
     print('\nGetting Plot Groups\n')
     # Set the Current User Directory as output for .png files
     directory = user_directory_path(self, '')
     ensure_path_exists(directory)
 
     rq = 'plot_groups'
-    goids = self.go_ids.split(',')
+    goids = self.go_ids.replace(' ', '').split(',')
 
     data = Socket().send_request(
       {
         'rqid':self.id,
         'rq':rq,
         'usrgos':goids,
-        'section':sections,
+        'section':self.sections,
         'odir':directory
       }
     )
@@ -241,7 +227,7 @@ class GoIds(models.Model):
     files = data['list_1d']
     for idx, file in enumerate(files):
       # Set the url for the image
-      files[idx] = file.replace(directory, '../media/' + str(self.id) + '/')
+      files[idx] = file.replace(directory, '../media/users/' + str(self.id) + '/')
 
     return files
 
@@ -263,5 +249,3 @@ class PlotGroupThread(threading.Thread):
     print ''
     self.obj.plot_data = self.obj.get_plot_groups(self.sections)
     self.obj.save()
-
-# post_save.connect(create_sections, sender=GoIds)

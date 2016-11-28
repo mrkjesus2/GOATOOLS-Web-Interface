@@ -612,8 +612,8 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
 
       success: function(response) {
         console.log('Success');
+        console.log(response);
         console.time('AJAX Success Function');
-
         // Create img elements from JSON response
         response.forEach(function(url) {
           var img = new Image();
