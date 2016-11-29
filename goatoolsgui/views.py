@@ -39,7 +39,7 @@ def index(request):
       # Temporarily save 'Sections File' and send to submit_gos()
       if request.FILES.get('sections_file'):
         user_data.sections_file = request.FILES.get('sections_file')
-        user_data.json_data = user_data.get_xlsx_data(None)
+        user_data.json_data = user_data.get_xlsx_data()
         user_data.save()
 
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
@@ -52,7 +52,7 @@ def index(request):
         # user_data.save()
       else:
         # Set xlsx_data
-        user_data.json_data = user_data.get_xlsx_data(None)
+        user_data.json_data = user_data.get_xlsx_data()
         user_data.save()
 
         # Trying plots
@@ -92,7 +92,7 @@ def sendFile(request):
   Make the file
   '''
   # TODO: What if there are sections?
-  user_gos_obj.wr_xlsx_data(None)
+  user_gos_obj.wr_xlsx_data()
 
   '''
   Open the file to download
