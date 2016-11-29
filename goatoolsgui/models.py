@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import os
+import shutil
 
 # Temporary, should be covered in helpers.py
 import sys
@@ -41,19 +42,16 @@ class GoIds(models.Model):
     return self.go_ids
 
   def delete(self):
+    path = user_directory_path(self, '')
+    ensure_path_exists(path)
+    shutil.rmtree(path)
     # Model TODO: Going to need some checks here
-    # print(self.sections_file.name)
-    # TODO: Handle case where no sections file exists
-    if self.sections_file.name != '':
-      os.remove(self.sections_file.name)
-    print(self.file_out_name)
-    os.remove(self.xlsx_file.name)
     super(GoIds, self).delete()
 
   def save(self, **kwargs):
     # TODO: Make sure this doesn't run on an empty file
     if self.sections_file:
-      print('\nReading Sections\n')
+      # print('\nReading Sections\n')
 
       # TODO: Add a unique filename
       file = default_storage.save('tmp/testing.txt', ContentFile(self.sections_file.read()))
@@ -67,7 +65,7 @@ class GoIds(models.Model):
 
 # Returns 'list_2d' in object with sections and related goids
   def get_sections_goids(self):
-    print('\nGetting Section GOIDs\n')
+    # print('\nGetting Section GOIDs\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
 
@@ -86,10 +84,10 @@ class GoIds(models.Model):
 
 
   def get_sections_details(self):
-    print('\nGetting Section Details\n')
+    # print('\nGetting Section Details\n')
     rq = 'get_sections_nts'
     goids = self.go_ids.replace(' ', '').split(',')
-    print goids
+    # print goids
     data = Socket().send_request(
       {
         'rqid':self.id,
@@ -104,7 +102,7 @@ class GoIds(models.Model):
 
 # Why does this expect a sections-file
   def make_sections_file(self):
-    print('\nMaking Sections File\n')
+    # print('\nMaking Sections File\n')
     '''
     Create a default sections file if user hasn't uploaded a file
     '''
@@ -114,6 +112,7 @@ class GoIds(models.Model):
       path = user_directory_path(self, '')
       ensure_path_exists(path)
       self.sections_file.save('default_sections.txt', ContentFile(''))
+      self.sections_file.close()
 
     '''
     Call the socket server to create the sections file
@@ -136,7 +135,7 @@ class GoIds(models.Model):
 
 
   def get_xlsx_data(self):
-    print('\nGetting XLSX Data\n')
+    # print('\nGetting XLSX Data\n')
     '''
     Send request to Socket server for data
     '''
@@ -166,7 +165,7 @@ class GoIds(models.Model):
 
   # Sections don't seem to be making a difference
   def wr_xlsx_data(self):
-    print('\nWriting XLSX Data\n')
+    # print('\nWriting XLSX Data\n')
     # sections = [('section1', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"]),
     #             ('section2', ["GO:0007049", "GO:0022402", "GO:0022403", "GO:0000279", "GO:0006259"])]
     # Returns ['status', 'hdrs', 'list_len', list_1d', 'rqid', 'nts_1d', 'rq']
@@ -206,7 +205,7 @@ class GoIds(models.Model):
     return
 
   def get_plot_groups(self):
-    print('\nGetting Plot Groups\n')
+    # print('\nGetting Plot Groups\n')
     # Set the Current User Directory as output for .png files
     directory = user_directory_path(self, '')
     ensure_path_exists(directory)
