@@ -71,10 +71,10 @@ def index(request):
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
 
-  print ''
-  print 'Show Gos says:'
-  print goid_object.plot_data
-  print ''
+  # print ''
+  # print 'Show Gos says:'
+  # print goid_object.plot_data
+  # print ''
 
   return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 

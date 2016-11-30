@@ -237,14 +237,14 @@ class PlotGroupThread(threading.Thread):
   def __init__(self, obj, sections, *args, **kwargs):
     self.obj = obj
     self.sections = sections
-    print ''
-    print 'PlotGroupThread Initialized'
-    print ''
+    # print ''
+    # print 'PlotGroupThread Initialized'
+    # print ''
     super(PlotGroupThread, self).__init__(*args, **kwargs)
 
   def run(self):
-    print ''
-    print 'PlotGroupThread Running'
-    print ''
-    self.obj.plot_data = self.obj.get_plot_groups(self.sections)
+    # print ''
+    # print 'PlotGroupThread Running'
+    # print ''
+    self.obj.plot_data = self.obj.get_plot_groups()
     self.obj.save()
