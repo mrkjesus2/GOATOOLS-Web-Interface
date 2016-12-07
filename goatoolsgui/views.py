@@ -120,7 +120,9 @@ def generateSections(request):
   '''
   Create user session if it doesn't exist
   '''
-  if request.session.is_empty():
+  # if request.session.is_empty():
+  if not request.session.has_key('user_data_id'):
+    print '\nNo session data found\n'
     user_data = GoIds()
     user_data.save()
     request.session['user_data_id'] = user_data.id
@@ -139,7 +141,7 @@ def generateSections(request):
   else:
     sections = None
 
-  sections_file = user_data.make_sections_file(sections)['outfile']
+  sections_file = user_data.make_sections_file()['outfile']
   response = FileResponse(open(sections_file, 'rb'))
 
   # response = JsonResponse(user_data.get_sections_details(sections), safe=False)
