@@ -234,9 +234,9 @@ class GoIds(models.Model):
 import threading
 # Thank you - http://stackoverflow.com/questions/11632034/async-functions-in-django-views
 class PlotGroupThread(threading.Thread):
-  def __init__(self, obj, sections, *args, **kwargs):
+  def __init__(self, obj, *args, **kwargs):
     self.obj = obj
-    self.sections = sections
+    # self.sections = sections
     # print ''
     # print 'PlotGroupThread Initialized'
     # print ''

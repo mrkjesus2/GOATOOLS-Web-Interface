@@ -57,7 +57,7 @@ def index(request):
 
         # Trying plots
         # goid_object.plot_data = goid_object.get_plot_groups(None)
-        PlotGroupThread(user_data, None).start()
+        PlotGroupThread(user_data).start()
 
       # Set the user data in session
       request.session['user_data_id'] = user_data.id
