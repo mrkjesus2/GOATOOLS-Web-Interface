@@ -27,6 +27,27 @@ GO ID's Input
         </svg>
         </span> <!-- Entypo pictograms by Daniel Bruce — www.entypo.com -->
       </span>
+      <!--
+      Examples Button Dropdown
+      -->
+      <div class="btn-group">
+        <button
+          type="button"
+          class="example-btn btn btn-info dropdown-toggle"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Try an Example <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li onclick="getExampleData(this)" id="consistent-decrease"><a href="#">Consistent Decrease</a></li>
+          <li onclick="getExampleData(this)" id="consistent-increase"><a href="#">Consistent Increase</a></li>
+          <li onclick="getExampleData(this)" id="late-decrease"><a href="#">Late Decrease</a></li>
+          <li onclick="getExampleData(this)" id="late-increase"><a href="#">Late Increase</a></li>
+          <li onclick="getExampleData(this)" id="transient-increase"><a href="#">Transient Increase</a></li>
+        </ul>
+      </div>
     </label>
     {{ form.gos_file }} <!-- Hidden by '.input-file' in forms.py -->
     <div class="input-group">

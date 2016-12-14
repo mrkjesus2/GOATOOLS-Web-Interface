@@ -2,8 +2,7 @@
 
 {% block content %}
 
-{% if goids %}
-  <div>{{ goids.sections }}</div>
+{% if goids or goids_2d %}
   <!--
     Nav Tabs
    -->
@@ -20,7 +19,6 @@
     <!--
       Results Table
      -->
-    <!-- TODO: Probably have to handle a 2d list eventually -->
     <div id="table" class="tab-pane fade in active" role="tabpanel" aria-labelledby="table-tab">
       <div id="tableBlock" class="table-container">
         <table id="results-table" class="table table-bordered table-hover table-condensed">
@@ -36,25 +34,54 @@
               <th>GO_name</th>
             </tr>
           </thead>
-          <tbody>
-            {% for goid in goids.json_data %}
-              <!-- Given a list
-                  ['0': 'format_txt', '1': 'hdr_idx', '2': 'is_hdrgo', '3': 'is_usrgo',
-                   '4': 'hdr1usr01', '5': 'NS', '6': 'dcnt', '7': 'level', '8': 'depth',
-                   '9': 'GO', '10': 'D1', '11': 'GO_Name']
-              -->
-              <tr class="{% if goid.4 %} go-header {% endif %}">
-                <td>{{goid.4}}</td>
-                <td>{{goid.5}}</td>
-                <td>{{goid.6}}</td>
-                <td>{{goid.7}}</td>
-                <td>{{goid.8}}</td>
-                <td>{{goid.9}}</td>
-                <td>{{goid.10}}</td>
-                <td>{{goid.11}}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
+          {% if goids %}
+            <!--
+            Table body when provided a 1d list
+            -->
+            <tbody>
+              {% for goid in goids.json_data %}
+                <!-- Given a list
+                    ['0': 'format_txt', '1': 'hdr_idx', '2': 'is_hdrgo', '3': 'is_usrgo',
+                     '4': 'hdr1usr01', '5': 'NS', '6': 'dcnt', '7': 'level', '8': 'depth',
+                     '9': 'GO', '10': 'D1', '11': 'GO_Name']
+                -->
+                <tr class="{% if goid.4 %} go-header {% endif %}">
+                  <td>{{goid.4}}</td>
+                  <td>{{goid.5}}</td>
+                  <td>{{goid.6}}</td>
+                  <td>{{goid.7}}</td>
+                  <td>{{goid.8}}</td>
+                  <td>{{goid.9}}</td>
+                  <td>{{goid.10}}</td>
+                  <td>{{goid.11}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          {% endif %}
+          {% if goids_2d %}
+          <!--
+          Table body when provided a 1d list
+          -->
+            <tbody>
+              {% for section in goids_2d.json_data %}
+                <tr class="go-section">
+                  <td colspan="8">{{section.0}}</td>
+                </tr>
+                  {% for goid in section.1 %}
+                    <tr class="{% if goid.4 %} go-header {% endif %}">
+                      <td>{{goid.4}}</td>
+                      <td>{{goid.5}}</td>
+                      <td>{{goid.6}}</td>
+                      <td>{{goid.7}}</td>
+                      <td>{{goid.8}}</td>
+                      <td>{{goid.9}}</td>
+                      <td>{{goid.10}}</td>
+                      <td>{{goid.11}}</td>
+                    </tr>
+                  {% endfor %}
+              {% endfor %}
+            </tbody>
+          {% endif %}
         </table>
       </div>
       <!--
@@ -76,4 +103,3 @@
 {% endif %}
 
 {% endblock %}
-

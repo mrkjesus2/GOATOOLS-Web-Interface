@@ -99,6 +99,47 @@ function addSectionsFile(files) { // eslint-disable-line no-unused-vars
 
 var sectionsStringArray;
 /**
+ * Called when the user clicks on a dropdown of 'Try an Example' button - adds
+ * file content to a hidden input for use on the backend
+ * @param  {HTMLElement} el The element that was clicked
+ */
+function getExampleData(el) { // eslint-disable-line no-unused-vars
+  console.log("Let's get the example data, huh?");
+  console.log(el.id);
+  $.ajax({
+    url: 'exampledata',
+    type: 'GET',
+    data: {
+      type: el.id
+    },
+
+    success: function(response) {
+      var blob = new Blob([response.sections_data], {type: 'text/plain'}); // eslint-disable-line no-undef
+
+      var reader = new FileReader();
+      reader.addEventListener('loadend', function() {
+        var data = reader.result;
+        document.getElementById('blob_file').value = data;
+        document.getElementById('goids').value = response.goids;
+        document.getElementById('sections-file-name').innerText = response.sections_name;
+
+        sectionsStringArray = data.split('# SECTION: ');
+        createTxtFileHtml(sectionsStringArray);
+
+        // Remove disable from view button
+        document.getElementById('sections-view').disabled = false;
+      });
+      // console.log(reader.readAsArrayBuffer(blob));
+      reader.readAsText(blob);
+    },
+
+    error: function() {
+      console.log('getExampleData encountered an error');
+    }
+  });
+}
+
+/**
  * Makes an AJAX call to generatesections for Sections File Data
  * @param  {string} group    Name for the user's group
  * @param  {object} sections Contains section names with an array of related goids

@@ -79,6 +79,18 @@ class ViewsTestCase(TransactionTestCase):
 
 
 
+
+  '''
+  showGos View Tests
+  '''
+  def test_show_gos_should_return_2d_list_if_sections(self):
+    # if sections aren't saved before getting xlsx data
+    # the user is erroneosly returned a 1d list
+    return
+
+
+
+
   '''
   showPlots View Tests
   '''
@@ -148,3 +160,10 @@ class ViewsTestCase(TransactionTestCase):
       }
     )
     self.assertEqual(response.status_code, 200)
+
+
+
+
+'''
+getExampleData View Tests
+'''

@@ -1,6 +1,7 @@
 from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, FileResponse, JsonResponse
+from django.core.files.base import ContentFile
 
 import json
 import collections
@@ -9,7 +10,7 @@ from .models import GoIds, PlotGroupThread
 from .forms import GoIdsForm
 from .helpers import submit_gos, nts_to_json, make_sections_file, json_obj_to_dict
 
-from goatools_alpha.read_goids import read_sections
+from goatools_alpha.read_goids import read_sections, read_goids
 import os
 
 # Create your views here.
@@ -39,25 +40,25 @@ def index(request):
       # Temporarily save 'Sections File' and send to submit_gos()
       if request.FILES.get('sections_file'):
         user_data.sections_file = request.FILES.get('sections_file')
+        user_data.save()
         user_data.json_data = user_data.get_xlsx_data()
         user_data.save()
-
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
         # user_data.save()
-      # TODO: Get rid of this
       elif request.POST.get('blob_file'):
-        user_data.sections_file = user_data.file_from_blob(request.POST.get('blob_file'))
-        user_data.save()
+        file_contents = request.POST.get('blob_file')
+        user_data.sections_file.save('example-sections.txt', ContentFile(file_contents))
+
         # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
         # user_data.save()
-      else:
+    #   else:
         # Set xlsx_data
-        user_data.json_data = user_data.get_xlsx_data()
-        user_data.save()
+      user_data.json_data = user_data.get_xlsx_data()
+      user_data.save()
 
-        # Trying plots
-        # goid_object.plot_data = goid_object.get_plot_groups(None)
-        PlotGroupThread(user_data).start()
+      # Trying plots
+      # goid_object.plot_data = goid_object.get_plot_groups(None)
+      PlotGroupThread(user_data).start()
 
       # Set the user data in session
       request.session['user_data_id'] = user_data.id
@@ -71,12 +72,16 @@ def index(request):
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
 
-  # print ''
-  # print 'Show Gos says:'
-  # print goid_object.plot_data
-  # print ''
+  print ''
+  print 'Show Gos says:'
+  print type(goid_object.json_data[0][0]) == unicode
+  print ''
 
-  return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
+  if type(goid_object.json_data[0][0]) == unicode:
+    print 'We need to handle 2d list'
+    return render(request, 'goatoolsgui/base_results.html', {'goids_2d': goid_object})
+  else:
+    return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
 def showPlots(request):
   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
@@ -137,12 +142,33 @@ def generateSections(request):
   group = request.POST.get('group-name')
 
   if request.POST.get('sections'):
-    sections = json_obj_to_dict(request.POST['sections']).items()
+    user_data.sections = json_obj_to_dict(request.POST['sections']).items()
   else:
-    sections = None
+    user_data.sections = None
 
   sections_file = user_data.make_sections_file()['outfile']
   response = FileResponse(open(sections_file, 'rb'))
 
   # response = JsonResponse(user_data.get_sections_details(sections), safe=False)
   return response
+
+def sendExample(request):
+  print '\nSend Example has been called'
+  # Read the correct file based on id of clicked element
+  goids_filename = request.GET.get('type') + '.txt'
+  goids = read_goids(os.getcwd() + '/data_files/' + goids_filename)['goids']
+
+  # Return the sections file name that is used by all examples
+  sections_file_name = 'examples-sections.txt'
+  sections_file_path = '/var/www/projects/gosite/data_files/' + sections_file_name
+  sections_file = open(sections_file_path)
+  sections = sections_file.read()
+
+  json_obj = {
+    'goids': ', '.join(goids),
+    'sections_data': sections,
+    'sections_name': sections_file_name
+  }
+
+  # Return the goids that are in the file as comma separated string
+  return JsonResponse(json_obj)
