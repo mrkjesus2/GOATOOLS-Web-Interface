@@ -23,41 +23,35 @@ def index(request):
     form = GoIdsForm(request.POST, request.FILES)
     if form.is_valid():
       '''
-      TODO:
+      Set the user data
+      '''
       # Prevent creating new user if back button pressed on goatoolsgui:show
       if request.session.is_empty():
         user_data = GoIds()
       else:
-        user_data = request.session['user_data_id']
-      '''
-      '''
-      Set the user data
-      '''
-      user_data = GoIds()
+        user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+
+      # Set common user data
       user_data.go_ids = request.POST.get('goids').replace(' ', '')
       user_data.file_out_name = request.POST.get('filename') + '.xlsx'
       user_data.save()
+
       # Temporarily save 'Sections File' and send to submit_gos()
       if request.FILES.get('sections_file'):
         user_data.sections_file = request.FILES.get('sections_file')
         user_data.save()
-        user_data.json_data = user_data.get_xlsx_data()
-        user_data.save()
-        # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
-        # user_data.save()
+
+      # blob_file is used by gjoneska examples since we can't add files
+      # to the file input for the user
       elif request.POST.get('blob_file'):
         file_contents = request.POST.get('blob_file')
         user_data.sections_file.save('example-sections.txt', ContentFile(file_contents))
 
-        # user_data.json_data = submit_gos(request.POST, user_data.sections_file.url)['sections']
-        # user_data.save()
-    #   else:
-        # Set xlsx_data
+      # Set xlsx_data
       user_data.json_data = user_data.get_xlsx_data()
       user_data.save()
 
       # Trying plots
-      # goid_object.plot_data = goid_object.get_plot_groups(None)
       PlotGroupThread(user_data).start()
 
       # Set the user data in session
@@ -71,11 +65,11 @@ def index(request):
 
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
-
-  print ''
-  print 'Show Gos says:'
-  print type(goid_object.json_data[0][0]) == unicode
-  print ''
+  #
+  # print ''
+  # print 'Show Gos says:'
+  # print type(goid_object.json_data[0][0]) == unicode
+  # print ''
 
   if type(goid_object.json_data[0][0]) == unicode:
     print 'We need to handle 2d list'
