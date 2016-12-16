@@ -82,6 +82,11 @@ function readFile(files) { // eslint-disable-line no-unused-vars
   }
 }
 
+// Add listener to go-ids input to fill the text area
+$('#gos_file').change(function() {
+  readFile(this.files);
+});
+
 /**
  * onclick in forms.py
  * Called when a sections file is uploaded:
@@ -92,10 +97,16 @@ function addSectionsFile(files) { // eslint-disable-line no-unused-vars
   // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
   var file = files[0];
   if (isValidTextFile(file)) {
+    document.getElementById('blob_file').value = null;
     var el = document.getElementById('sections-file-name');
     el.innerHTML = file.name;
   }
 }
+
+// Add listener to sections file input to add filename
+$('#sections_file').change(function() {
+  addSectionsFile(this.files);
+});
 
 var sectionsStringArray;
 /**
@@ -114,6 +125,8 @@ function getExampleData(el) { // eslint-disable-line no-unused-vars
     },
 
     success: function(response) {
+      // Clear any sections file so the backend uses blob data
+      document.getElementById('sections_file').value = null;
       var blob = new Blob([response.sections_data], {type: 'text/plain'}); // eslint-disable-line no-undef
 
       var reader = new FileReader();
