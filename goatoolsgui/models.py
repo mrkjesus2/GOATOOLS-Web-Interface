@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
-# import os
+import os
 import shutil
+from glob import glob
 
 # Temporary, should be covered in helpers.py
 import sys
@@ -186,7 +187,14 @@ class GoIds(models.Model):
   def get_plot_groups(self):
     # print('\nGetting Plot Groups\n')
     # Set the Current User Directory as output for .png files
-    directory = user_directory_path(self, '')
+    directory = user_directory_path(self, '') + 'plots'
+
+    # Remove previous images
+    if self.plot_data:
+      for image in glob(str(directory) + '/*.png'):
+        os.remove(image)
+      self.plot_data = None
+
     ensure_path_exists(directory)
 
     rq = 'plot_groups'
@@ -205,7 +213,7 @@ class GoIds(models.Model):
     files = data['list_1d']
     for idx, file in enumerate(files):
       # Set the url for the image
-      files[idx] = file.replace(directory, '../media/users/' + str(self.id) + '/')
+      files[idx] = file.replace(directory, '../media/users/' + str(self.id) + '/plots')
 
     return files
 
