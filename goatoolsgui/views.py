@@ -36,7 +36,8 @@ def index(request):
 
       # Set sections file and sections returned from read_sections
       if request.FILES.get('sections_file'):
-        user_data.sections_file.delete()
+        if user_data.sections_file:
+          user_data.sections_file.delete()
         user_data.sections_file = request.FILES.get('sections_file')
         user_data.save()
         user_data.sections = read_sections(user_data.sections_file.name)

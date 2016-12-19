@@ -43,18 +43,24 @@ class ViewsTestCase(TransactionTestCase):
     url = reverse('goatoolsgui:index')
     sections_file = self.goids_obj['sections_file']
 
+    # Set sections file to none to prevent trying to delete the open file
+    self.instance.sections_file = None
+    self.instance.save()
+
     with open(sections_file) as file:
       response = self.client.post(
         url,
         {
-          'goids': self.instance.go_ids,
-          'filename': self.instance.file_out_name,
+          'goids': self.goids_obj['go_ids'],
+          'filename': self.goids_obj['file_out_name'],
           'sections_file': file
         },
         follow=True
       )
+    response_view = response.resolver_match.func
+
     # check for redirect to goatoolsgui:show
-    self.assertEqual(views.showGos, response.resolver_match.func)
+    self.assertEqual(views.showGos, response_view)
 
 
   def test_index_with_invalid_post_data(self):
