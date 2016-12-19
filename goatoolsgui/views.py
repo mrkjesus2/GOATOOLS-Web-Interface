@@ -4,12 +4,9 @@ from django.http import HttpResponseRedirect, HttpResponse, FileResponse, JsonRe
 from django.core.files.base import ContentFile
 from django.conf import settings
 
-import json
-import collections
-
 from .models import GoIds, PlotGroupThread
 from .forms import GoIdsForm
-from .helpers import submit_gos, nts_to_json, make_sections_file, json_obj_to_dict
+# from .helpers import make_sections_file, json_obj_to_dict
 
 from goatools_alpha.read_goids import read_sections, read_goids
 import os
@@ -37,7 +34,7 @@ def index(request):
       user_data.file_out_name = request.POST.get('filename') + '.xlsx'
       user_data.save()
 
-      # Temporarily save 'Sections File' and send to submit_gos()
+      # Set sections file and sections returned from read_sections
       if request.FILES.get('sections_file'):
         user_data.sections_file.delete()
         user_data.sections_file = request.FILES.get('sections_file')
@@ -72,6 +69,8 @@ def index(request):
   return render(request, 'goatoolsgui/base_form.html', {'form': form})
 
 
+
+
 def showGos(request):
   goid_object = GoIds.objects.get(pk=request.session['user_data_id'])
   #
@@ -86,12 +85,18 @@ def showGos(request):
   else:
     return render(request, 'goatoolsgui/base_results.html', {'goids': goid_object})
 
+
+
+
 def showPlots(request):
   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
 
   response = JsonResponse(user_data.plot_data, safe=False)
 
   return response
+
+
+
 
 def sendFile(request):
   # TODO: Make sure that this is a robust solution
@@ -124,7 +129,11 @@ def sendFile(request):
 
   return response
 
+
+
+
 def generateSections(request):
+  # TODO: Refine this function, no more sections or groups be submitted
   '''
   Create user session if it doesn't exist
   '''
@@ -154,6 +163,9 @@ def generateSections(request):
 
   # response = JsonResponse(user_data.get_sections_details(sections), safe=False)
   return response
+
+
+
 
 def sendExample(request):
   print '\nSend Example has been called'

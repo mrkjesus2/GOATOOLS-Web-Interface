@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import os
+# import os
 import shutil
 
 # Temporary, should be covered in helpers.py
@@ -12,10 +12,6 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from .helpers import ensure_path_exists
 from goatools_alpha.socket.socket_client import GrouperSocketClient as Socket
-import json
-from django.core.files.storage import default_storage
-# from django.db.models.signals import post_save
-from goatools_alpha.read_goids import read_sections
 
 # This causes no file ./manage.py error
 # from goatools_alpha.grouper_socket import GrouperSocketClient as Socket
