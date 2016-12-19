@@ -48,21 +48,6 @@ class GoIds(models.Model):
     # Model TODO: Going to need some checks here
     super(GoIds, self).delete()
 
-  def save(self, **kwargs):
-    # TODO: Make sure this doesn't run on an empty file
-    if self.sections_file:
-      # print('\nReading Sections\n')
-
-      # TODO: Add a unique filename
-      file = default_storage.save('tmp/testing.txt', ContentFile(self.sections_file.read()))
-      try:
-        self.sections = read_sections(settings.MEDIA_ROOT + file)
-      except AttributeError:
-        print "Sections File was empty"
-      file = default_storage.delete('tmp/testing.txt')
-    super(GoIds, self).save()
-
-
 # Returns 'list_2d' in object with sections and related goids
   def get_sections_goids(self):
     # print('\nGetting Section GOIDs\n')

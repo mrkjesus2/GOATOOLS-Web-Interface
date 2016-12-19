@@ -2,6 +2,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, FileResponse, JsonResponse
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 import json
 import collections
@@ -38,14 +39,22 @@ def index(request):
 
       # Temporarily save 'Sections File' and send to submit_gos()
       if request.FILES.get('sections_file'):
+        user_data.sections_file.delete()
         user_data.sections_file = request.FILES.get('sections_file')
         user_data.save()
+        user_data.sections = read_sections(user_data.sections_file.name)
 
       # blob_file is used by gjoneska examples since we can't add files
       # to the file input for the user
       elif request.POST.get('blob_file'):
+        filename = 'example-sections.txt'
+        filepath = settings.MEDIA_ROOT + 'users/' + str(user_data.id) + '/'
         file_contents = request.POST.get('blob_file')
-        user_data.sections_file.save('example-sections.txt', ContentFile(file_contents))
+
+        # Examples use the same sections_file - only save if it doesn't exist
+        if not user_data.sections_file == filepath + filename:
+          user_data.sections_file.save(filename, ContentFile(file_contents))
+          user_data.sections = read_sections(user_data.sections_file.name)
 
       # Set xlsx_data
       user_data.json_data = user_data.get_xlsx_data()
