@@ -100,12 +100,10 @@ def showPlots(request):
 
 
 def sendFile(request):
-  # TODO: Make sure that this is a robust solution
   user_gos_obj = GoIds.objects.get(pk=request.session['user_data_id'])
   '''
   Make the file
   '''
-  # TODO: What if there are sections?
   user_gos_obj.wr_xlsx_data()
 
   '''
@@ -118,7 +116,6 @@ def sendFile(request):
   '''
   Set the Response header for file download
   '''
-  # TODO: Does the MIME type need to change
   response = HttpResponse(file_contents, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   response['Content-Disposition'] = 'attachment; filename="%s"' % filename
 

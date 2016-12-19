@@ -19,8 +19,7 @@ from goatools_alpha.socket.socket_client import GrouperSocketClient as Socket
 def user_directory_path(instance, filename):
   return settings.BASE_DIR + '/data_files/users/{0}/{1}'.format(instance.id, filename)
 
-# Create your models here.
-# TODO: Should I Use the ORM provided by Models
+
 class GoIds(models.Model):
   go_ids = models.TextField(max_length=40000, default='GO:1234567')
   file_out_name = models.CharField(max_length=30, null=True)

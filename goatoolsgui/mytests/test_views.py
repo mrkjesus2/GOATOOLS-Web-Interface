@@ -80,7 +80,6 @@ class ViewsTestCase(TransactionTestCase):
 
 
   # def test_index_sets_user_data(self):
-  #   # TODO: Write this test
   #   return
   #
   # def test_index_should_not_create_new_user_navigating_back(self):

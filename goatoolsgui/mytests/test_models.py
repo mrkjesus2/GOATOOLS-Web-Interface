@@ -46,7 +46,6 @@ class GoidsMethodsTestCase(TestCase):
     obj.make_sections_file()
     self.assertIsNotNone(obj.sections_file.name)
 
-  # TODO: Should I test for a changed sections file
   def test_make_sections_file_with_sections(self):
     obj = self.goids_sections
     obj.make_sections_file()
