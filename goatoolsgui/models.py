@@ -41,7 +41,6 @@ class GoIds(models.Model):
     path = user_directory_path(self, '')
     ensure_path_exists(path)
     shutil.rmtree(path)
-    # Model TODO: Going to need some checks here
     super(GoIds, self).delete()
 
 # Returns 'list_2d' in object with sections and related goids

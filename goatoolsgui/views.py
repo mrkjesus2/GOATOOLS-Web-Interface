@@ -149,7 +149,6 @@ def generateSections(request):
   user_data.go_ids = request.POST.get('goids')
   sections_file = user_data.make_sections_file()['outfile']
 
-  # TODO: Does this file need to be closed
   response = FileResponse(open(sections_file, 'rb'))
   return response
 
