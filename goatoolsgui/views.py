@@ -131,35 +131,26 @@ def sendFile(request):
 
 
 def generateSections(request):
-  # TODO: Refine this function, no more sections or groups be submitted
   '''
   Create user session if it doesn't exist
   '''
-  # if request.session.is_empty():
-  if not request.session.has_key('user_data_id'):
-    print '\nNo session data found\n'
+  if request.session.has_key('user_data_id'):
+    # There is session data
+    user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+  else:
+    # No session data - Set up a user
     user_data = GoIds()
     user_data.save()
     request.session['user_data_id'] = user_data.id
-  else:
-    print '\nThere is session data\n'
-    user_data = GoIds.objects.get(pk=request.session['user_data_id'])
 
   '''
   Make the call and send response
   '''
   user_data.go_ids = request.POST.get('goids')
-  group = request.POST.get('group-name')
-
-  if request.POST.get('sections'):
-    user_data.sections = json_obj_to_dict(request.POST['sections']).items()
-  else:
-    user_data.sections = None
-
   sections_file = user_data.make_sections_file()['outfile']
-  response = FileResponse(open(sections_file, 'rb'))
 
-  # response = JsonResponse(user_data.get_sections_details(sections), safe=False)
+  # TODO: Does this file need to be closed
+  response = FileResponse(open(sections_file, 'rb'))
   return response
 
 

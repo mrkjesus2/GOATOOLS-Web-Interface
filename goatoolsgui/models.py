@@ -99,7 +99,6 @@ class GoIds(models.Model):
     '''
     rq = 'wr_txt_sections'
     goids = self.go_ids.replace(' ', '').split(',')
-    # TODO: Is this safe in production?
     file = self.sections_file.name
 
     data = Socket().send_request(
