@@ -1,27 +1,66 @@
 /* global $ window document FileReader*/
 /* eslint-disable no-alert */
 
-// TODO: Refactor this function
-// (No longer takes a section file, isValidTextFile may not need to be separate)
 /**
- * [parseTxtFile description]
- * @param  {[type]} fileContents [description]
+ * Adds the 'goids' from fileContents to the form input
+ * @param  {string} fileContents Contents fo the fileContents
  */
-function parseTxtFile(fileContents) {
+function parseGoidsFile(fileContents) {
   var goIds = document.getElementsByName('goids')[0];
   // Clear in case the file is changed
   goIds.value = '';
 
-  if (fileContents.indexOf('SECTION:') >= 0) {
-    console.log('section file');
-    // Find the sections
-      // Populate a sections input
-      // Find GOids associated with section
-    // Or do I just send the file to the server?
-  } else {
+  if (isGoidsFile(fileContents) && !isSectionsFile(fileContents)) {
     var ids = fileContents.match(/GO:\d*/gi).join(', ');
     goIds.value = ids.toString();
+  } else {
+    var errmsg = 'Please use a valid GOIDs file!';
+    window.alert(errmsg);
   }
+}
+
+/**
+ * Adds a sections file to the form input when called by readFileHandler
+ * @param {string} filename     The name of the file
+ * @param {string} fileContents Used to check that it is in fact a 'sections file'
+ */
+function addSectionsFileName(filename, fileContents) { // eslint-disable-line no-unused-vars
+  if (isSectionsFile(fileContents)) {
+    // Clear example sections in case they exist
+    document.getElementById('blob_file').value = null;
+
+    var el = document.getElementById('sections-file-name');
+    el.innerHTML = filename;
+  } else {
+    var errmsg = 'Please use a valid Sections file!';
+    window.alert(errmsg);
+  }
+}
+
+/**
+ * Check that a file is a 'goids file'
+ * @param  {string}  content The contents of the file to Check
+ * @return {Boolean}          True means yes it is
+ */
+function isGoidsFile(content) {
+  var regex = /GO:\d*/gi;
+
+  if (content.match(regex).length >= 0 && content.indexOf('SECTION:') === -1) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Check that a file is a 'sections file'
+ * @param  {string}  content The contents of the file to Check
+ * @return {Boolean}          True means yes it is
+ */
+function isSectionsFile(content) {
+  if (content.indexOf('SECTION:') >= 0) {
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -41,14 +80,11 @@ function isValidTextFile(file) {
 }
 
 /**
- * onclick in forms.py
- * [readFile description]
- * @param  {[type]} files [description]
+ * Read a file and call readFileHandler() with the contents and type of file
+ * @param  {File} file The file to readFile
+ * @param  {string} type Determines if it's a 'goids' or 'sections' file
  */
-function readFile(files) { // eslint-disable-line no-unused-vars
-  document.getElementsByName('goids')[0].value = '';
-  var file = files[0];
-
+function readFile(file, type) { // eslint-disable-line no-unused-vars
   // Check for FileReader support
   if (window.File && window.FileReader && window.FileList && window.Blob) {
     if (isValidTextFile(file)) {
@@ -56,8 +92,8 @@ function readFile(files) { // eslint-disable-line no-unused-vars
 
       reader.onload = function(e) {
         var contents = e.target.result;
-        // console.log(contents);
-        parseTxtFile(contents);
+
+        readFileHandler(file.name, contents, type);
       };
 
       reader.onabort = function() {
@@ -82,31 +118,34 @@ function readFile(files) { // eslint-disable-line no-unused-vars
   }
 }
 
-// Add listener to go-ids input to fill the text area
-$('#gos_file').change(function() {
-  readFile(this.files);
-});
-
 /**
- * onclick in forms.py
- * Called when a sections file is uploaded:
- * Puts the file name in the customized file uploader
- * @param {[type]} files [description]
+ * Handler call by readFile 'onload' event
+ * @param  {string} filename Name of the file that was readFile
+ * @param  {string} contents Contents of the file that was read
+ * @param  {string} type     Type of the file that is expected
  */
-function addSectionsFile(files) { // eslint-disable-line no-unused-vars
-  // TODO: Handle case where sections file is uploaded to gosid file input (vice-versa?)
-  var file = files[0];
-  if (isValidTextFile(file)) {
-    document.getElementById('blob_file').value = null;
-    var el = document.getElementById('sections-file-name');
-    el.innerHTML = file.name;
+function readFileHandler(filename, contents, type) {
+  if (type === 'gos_file') {
+    parseGoidsFile(contents);
+  } else if (type === 'sections_file') {
+    addSectionsFileName(filename, contents);
   }
 }
 
+// Add listener to go-ids input to fill the text area
+$('#gos_file').change(function() {
+  readFile(this.files[0], this.id);
+});
+
 // Add listener to sections file input to add filename
 $('#sections_file').change(function() {
-  addSectionsFile(this.files);
+  readFile(this.files[0], this.id);
 });
+
+function addErrMsg(el, msg) {
+  // select the element
+  // append a div with msg after element
+}
 
 var sectionsStringArray;
 /**
