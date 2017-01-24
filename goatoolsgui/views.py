@@ -58,7 +58,7 @@ def index(request):
       user_data.json_data = user_data.get_xlsx_data()
       user_data.save()
 
-      # Trying plots
+      # Get plots ready for ajax request
       PlotGroupThread(user_data).start()
 
       # Set the user data in session

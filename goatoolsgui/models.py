@@ -183,6 +183,23 @@ class GoIds(models.Model):
     self.xlsx_file = file
     return
 
+  def get_svg_plots(self):
+    rq = 'get_pltdotstrs'
+    goids = self.go_ids.replace(' ', '').split(',')
+
+    data = Socket().send_request(
+      {
+        'rqid':self.id,
+        'rq':rq,
+        'usrgos':goids,
+        'section':self.sections
+      }
+    )
+
+    svgstrings = data['list_1d']
+
+    return svgstrings
+
   def get_plot_groups(self):
     # print('\nGetting Plot Groups\n')
     # Set the Current User Directory as output for .png files
@@ -232,5 +249,5 @@ class PlotGroupThread(threading.Thread):
     # print ''
     # print 'PlotGroupThread Running'
     # print ''
-    self.obj.plot_data = self.obj.get_plot_groups()
+    self.obj.plot_data = self.obj.get_svg_plots()
     self.obj.save()
