@@ -96,8 +96,16 @@
       Display the plot images
      -->
     <div id="plots" class="tab-pane fade" role="tabpanel" aria-labelledby="plots-tab">
+      <!-- Progress Bar for image work -->
+      <div id="progress" class="progress">
+        <div id="progress-bar" class="progress-bar progress-bar-striped" role="100" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          Fetching the images
+        </div>
+        <span class="sr-only">0% complete</span>
+      </div>
       <!-- Images to be added by AJAX request to  showPlots view -->
     </div>
+
   </div>
 {% endif %}
 

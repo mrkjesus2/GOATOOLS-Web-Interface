@@ -697,24 +697,48 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
   var tabContent = $('.tab-content');
 
   // Call for the plots if we don't yet have them
-  if ($(ref).children().length === 0) {
-    console.log('We will get the plot information');
+  if ($(ref).children().length <= 1) {
+    // console.log('We will get the plot information');
+    var $progressBar = $('#progress-bar');
+    var $srProgress = $('#progress-bar + span');
+    var $parent = $('#plots');
+    var frag = document.createDocumentFragment();
+    // TODO: Speed up loading by initializing an animation here and canceling
+    // in first iteration for the sucess or failure for loop.
+    console.time('AJAX Time');
     $.ajax({
       url: "../plots/",
       type: "GET",
 
+      // TODO: The function can be faster without setTimeout, but need to indicate something is happening
       success: function(response) {
-        console.log('Success');
-        console.log(response);
+        $progressBar.text('');
         console.time('AJAX Success Function');
-        // Create img elements from JSON response
-        response.forEach(function(url) {
-          var img = new Image();
-          img.src = url;
-          img.className = 'img-responsive';
-          // Append to #plots div
-          $(ref).append(img);
+        // Create svg elements from JSON response
+        response.forEach(function(dotFileStr, idx) {
+        // for (var i = 0; i < response.length; i++) {
+          (function(dotFileStr, idx) {
+            setTimeout(function() {
+              // Update the progress before createing each image
+              var percent = (idx + 1) / response.length * 100;
+              $progressBar.css('width', percent + '%');
+              $srProgress.text(percent + '% complete');
+
+              // Create the svg image and append to fragment
+              // if you want pngs here is the 2nd arg - , {format: "png-image-element", scale: 2}
+              var plot = Viz(dotFileStr.replace(/dpi=[0-9]+,/g, ''));
+              var container = document.createElement('div');
+              container.innerHTML = plot;
+              frag.append(container);
+              if (response.length - 1 === idx) {
+                $parent.append(frag);
+                $('#progress').remove();
+                console.timeEnd('AJAX Time');
+              }
+            }, 200 * idx);
+          }(dotFileStr, idx));
         });
+        // $parent.append(frag);
 
         console.timeEnd('AJAX Success Function');
       },

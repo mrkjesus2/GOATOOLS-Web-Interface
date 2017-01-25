@@ -273,3 +273,7 @@ footer {
     display: none;
   }
 }
+
+.progress-bar {
+  color: black;
+}
