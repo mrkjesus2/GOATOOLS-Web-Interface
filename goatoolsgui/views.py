@@ -10,6 +10,7 @@ from .forms import GoIdsForm
 
 from goatools_alpha.read_goids import read_sections, read_goids
 import os
+import json
 
 # Create your views here.
 def index(request):
@@ -137,6 +138,12 @@ def generateSections(request):
   if request.session.has_key('user_data_id'):
     # There is session data
     user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+
+    # Convert JSON to 2d list for make_sections_file()
+    if request.POST.get('sections'):
+      sections = json.loads(request.POST.get('sections'))
+      sections_list = [ [k,v] for k, v in sections.items() ]
+      user_data.sections = sections_list
   else:
     # No session data - Set up a user
     user_data = GoIds()
@@ -150,6 +157,7 @@ def generateSections(request):
   sections_file = user_data.make_sections_file()['outfile']
 
   response = FileResponse(open(sections_file, 'rb'))
+
   return response
 
 
