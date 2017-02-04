@@ -89,7 +89,7 @@ function isValidTextFile(file) {
 function readFile(file, type) { // eslint-disable-line no-unused-vars
   // Check for FileReader support
   if (window.File && window.FileReader && window.FileList && window.Blob) {
-    if (isValidTextFile(file)) {
+    if (file instanceof Blob || isValidTextFile(file)) {
       var reader = new FileReader();
 
       reader.onload = function(e) {
@@ -104,7 +104,7 @@ function readFile(file, type) { // eslint-disable-line no-unused-vars
       };
 
       reader.onerror = function(e) {
-        console.log(e);
+        // console.log(e);
         window.alert('There was an error during the operation. \n' +
           'Please Try Again');
       };
@@ -131,6 +131,8 @@ function readFileHandler(filename, contents, type) {
     parseGoidsFile(contents);
   } else if (type === 'sections_file') {
     addSectionsFileName(filename, contents);
+  } else if (type === 'blob_file') {
+    Goatools.Form.addExampleSectionsFile(contents);
   }
 }
 
@@ -140,43 +142,44 @@ function readFileHandler(filename, contents, type) {
  * @param  {HTMLElement} el The element that was clicked
  */
 // var sectionsStringArray;
-function getExampleData(el) { // eslint-disable-line no-unused-vars
-  console.log("Let's get the example data, huh?");
-  console.log(el.id);
-  $.ajax({
-    url: 'exampledata',
-    type: 'GET',
-    data: {
-      type: el.id
-    },
-
-    success: function(response) {
-      // Clear any sections file so the backend uses blob data
-      document.getElementById('sections_file').value = null;
-      var blob = new Blob([response.sections_data], {type: 'text/plain'}); // eslint-disable-line no-undef
-
-      var reader = new FileReader();
-      reader.addEventListener('loadend', function() {
-        var data = reader.result;
-        document.getElementById('blob_file').value = data;
-        document.getElementById('goids').value = response.goids;
-        document.getElementById('sections-file-name').innerText = response.sections_name;
-
-        sectionsStringArray = data.split('# SECTION: ');
-        createTxtFileHtml(sectionsStringArray);
-
-        // Remove disable from view button
-        document.getElementById('sections-view').disabled = false;
-      });
-      // console.log(reader.readAsArrayBuffer(blob));
-      reader.readAsText(blob);
-    },
-
-    error: function() {
-      console.log('getExampleData encountered an error');
-    }
-  });
-}
+// function getExampleData(el) { // eslint-disable-line no-unused-vars
+//   console.log("Let's get the example data, huh?");
+//   console.log(el.id);
+//   $.ajax({
+//     url: 'exampledata',
+//     type: 'GET',
+//     data: {
+//       type: el.id
+//     },
+//
+//     success: function(response) {
+//       // Clear any sections file so the backend uses blob data
+//       // document.getElementById('sections_file').value = null;
+//
+//       // var blob = new Blob([response.sections_data], {type: 'text/plain'}); // eslint-disable-line no-undef
+//
+//       // var reader = new FileReader();
+//       reader.addEventListener('loadend', function() {
+//         var data = reader.result;
+//         document.getElementById('blob_file').value = data;
+//         document.getElementById('goids').value = response.goids;
+//         document.getElementById('sections-file-name').innerText = response.sections_name;
+//
+//         sectionsStringArray = data.split('# SECTION: ');
+//         createTxtFileHtml(sectionsStringArray);
+//
+//         // Remove disable from view button
+//         document.getElementById('sections-view').disabled = false;
+//       });
+//       // console.log(reader.readAsArrayBuffer(blob));
+//       // reader.readAsText(blob);
+//     },
+//
+//     error: function() {
+//       console.log('getExampleData encountered an error');
+//     }
+//   });
+// }
 
 /**
  * Makes an AJAX call to generatesections for Sections File Data

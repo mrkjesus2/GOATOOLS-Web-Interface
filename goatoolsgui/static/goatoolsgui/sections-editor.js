@@ -25,6 +25,53 @@ function callServer(url, data) {
   });
 };
 
+Goatools.Form = {
+  $exampleGroup: $('#example-group'),
+
+  init: function() {
+    this.$exampleGroup.click(function(ev) {
+      Goatools.Form.getExampleData(ev.target.parentElement.id);
+    });
+  },
+
+  getExampleData: function(id) {
+    callServer('exampledata', {'type': id}).then(function(response) {
+      readFile(Goatools.Form.createBlob(response.sections_data), 'blob_file');
+      Goatools.Form.addGoids(response.goids);
+      Goatools.Form.addSectionsFileName(response.sections_name);
+    });
+  },
+
+  addExampleSectionsFile: function(contents) {
+    // this.clearSectionsInput();
+    // console.log(this);
+    $('#blob_file').value = contents;
+
+    // To refactor
+    sectionsStringArray = contents.split('# SECTION: ');
+    createTxtFileHtml(sectionsStringArray);
+    document.getElementById('sections-view').disabled = false;
+  },
+
+  addGoids: function(goids) {
+    $('#goids').val(goids);
+  },
+
+  addSectionsFileName: function(name) {
+    $('#sections-file-name').text(name);
+  },
+
+  clearSectionsInput: function() {
+    $('#sections_file').val(null);
+  },
+
+  createBlob: function(string) {
+    var blob = new Blob([string], {type: 'text/plain'});
+    return blob;
+  }
+}
+
+Goatools.Form.init();
 Goatools.FileEditor = {
   $sectionsInputs: $('.sections-file__group'),
   // $unsavedWarning: $('.unsaved-warning'),
@@ -32,7 +79,7 @@ Goatools.FileEditor = {
 
   init: function() {
     console.log('Running Init');
-    this.$openButton.click(updateSections);
+    // this.$openButton.click(Goatools.SectionsFile.getFile());
   },
 
   show: function() {
@@ -119,7 +166,6 @@ Goatools.SectionsFile = {
     }
   }
 }
-Goatools.FileEditor.init();
 /**
  * Sections File Editor
  * @param {string} file A string representing the sections.txt file
