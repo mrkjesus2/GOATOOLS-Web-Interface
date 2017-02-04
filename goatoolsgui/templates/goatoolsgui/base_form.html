@@ -40,12 +40,12 @@ GO ID's Input
         >
           Try an Example <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
-          <li onclick="getExampleData(this)" id="consistent-decrease"><a href="#">Consistent Decrease</a></li>
-          <li onclick="getExampleData(this)" id="consistent-increase"><a href="#">Consistent Increase</a></li>
-          <li onclick="getExampleData(this)" id="late-decrease"><a href="#">Late Decrease</a></li>
-          <li onclick="getExampleData(this)" id="late-increase"><a href="#">Late Increase</a></li>
-          <li onclick="getExampleData(this)" id="transient-increase"><a href="#">Transient Increase</a></li>
+        <ul id="example-group" class="dropdown-menu">
+          <li id="consistent-decrease"><a href="#">Consistent Decrease</a></li>
+          <li id="consistent-increase"><a href="#">Consistent Increase</a></li>
+          <li id="late-decrease"><a href="#">Late Decrease</a></li>
+          <li id="late-increase"><a href="#">Late Increase</a></li>
+          <li id="transient-increase"><a href="#">Transient Increase</a></li>
         </ul>
       </div>
     </label>
@@ -89,7 +89,7 @@ GO ID's Input
         {{ form.blob_file }}
         <!-- {{ form.group_name  }} -->
         <!-- {{ form.section_names }} -->
-        <button id="editor__open-button" type="button" class="btn btn-primary">
+        <button id="editor__open-button" type="button" class="btn btn-primary" onclick="Goatools.SectionsFile.get()">
           Generate
         </button>
         <button id="sections-view" type="button" class="btn btn-secondary" onclick="Goatools.FileEditor.show()" disabled>
@@ -109,11 +109,11 @@ GO ID's Input
     <div class="panel panel-default sections-file__group hidden">
       <div class="panel-heading">
         <h3 class="panel-title">
-        <button class="close" type="button" aria-label="Close" onclick="Goatools.FileEditor.resetFile()">
+        <button class="close" type="button" aria-label="Close" onclick="Goatools.File.Sections.reset()">
           <span aria-hidden="true">&times;</span>
         </button>
         </h3>
-        <button id="editor__save-changes" class="btn btn-primary" type="button" onclick="Goatools.SectionsFile.updateFile()">
+        <button id="editor__save-changes" class="btn btn-primary" type="button" onclick="Goatools.File.Sections.update()">
           Save Changes
         </button>
       </div>
@@ -127,11 +127,11 @@ GO ID's Input
       </div>
       <div class="panel-heading">
         <h3 class="panel-title">
-        <button class="close" type="button" aria-label="Close" onclick="Goatools.FileEditor.resetFile()">
+        <button class="close" type="button" aria-label="Close" onclick="Goatools.File.Sections.reset()">
           <span aria-hidden="true">&times;</span>
         </button>
         </h3>
-        <button class="btn btn-primary" type="button" onclick="Goatools.FileEditor.resetFile()">
+        <button class="btn btn-primary" type="button" onclick="Goatools.File.Sections.update()">
           Save Changes
         </button>
       </div>

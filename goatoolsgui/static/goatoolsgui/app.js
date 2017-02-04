@@ -3,16 +3,6 @@ var sectionsStringArray;
 /* global $ window document FileReader*/
 /* eslint-disable no-alert */
 
-// Add listener to go-ids input to fill the text area
-$('#gos_file').change(function() {
-  Goatools.File.read(this.files[0], this.id);
-});
-
-// Add listener to sections file input to add filename
-$('#sections_file').change(function() {
-  Goatools.File.read(this.files[0], this.id);
-});
-
 /**
  * CSRF Token Methods
  */
@@ -161,7 +151,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   // eslint-disable-next-line max-len
-  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
+  // $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
 //   $('#section_names').val('sections1, sections2');
   // $('#dev-shortcut').click();
   // var timer = setInterval(function() {

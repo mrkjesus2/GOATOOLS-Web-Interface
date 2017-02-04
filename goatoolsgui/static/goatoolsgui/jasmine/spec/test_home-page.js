@@ -20,7 +20,7 @@ $(function() {
     var $el = $('.intro');
 
     it('does exist', function() {
-      expect($el.text().length).toBeGreaterThan(0);
+      expect($el.text().match(/[a-z]+/g).length).toBeGreaterThan(0);
     });
   });
 
@@ -34,7 +34,7 @@ $(function() {
     var text = $('footer.navbar p').text();
 
     it('does exist', function() {
-      expect($('footer').length).toBeGreaterThan(0);
+      expect($('.navbar-fixed-bottom').length).toBeGreaterThan(0);
     });
 
     it('has a copyright starting in 2016', function() {
@@ -46,6 +46,6 @@ $(function() {
       var date = new Date();
       var match = text.match('-' + date.getFullYear());
       expect(match.length).toBeGreaterThan(0);
-    })
+    });
   });
 }());
