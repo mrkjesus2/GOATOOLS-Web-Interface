@@ -1,124 +1,172 @@
 var Goatools = Goatools || {};
+
+Goatools.Form = {
+  $exampleGroup: $('#example-group'),
+
+  init: function() {
+    this.$exampleGroup.click(function(ev) {
+      Goatools.Form.getExampleData(ev.target.parentElement.id);
+    });
+  },
+
+  getExampleData: function(id) {
+    callServer('exampledata', {'type': id}).then(function(response) {
+      Goatools.File.read(Goatools.Form.createBlob(response.sections_data), 'blob_file');
+      Goatools.Form.addGoids(response.goids);
+      Goatools.Form.addSectionsFileName(response.sections_name);
+    });
+  },
+
+  addExampleSectionsFile: function(contents) {
+    // this.clearSectionsInput();
+    // console.log(this);
+    $('#blob_file').val(contents);
+
+    // To refactor
+    sectionsStringArray = contents.split('# SECTION: ');
+    createTxtFileHtml(sectionsStringArray);
+    document.getElementById('sections-view').disabled = false;
+  },
+
+  addGoids: function(goids) {
+    $('#goids').val(goids);
+  },
+
+  addSectionsFileName: function(name) {
+    $('#sections-file-name').text(name);
+  },
+
+  clearSectionsInput: function() {
+    $('#sections_file').val(null);
+  },
+
+  createBlob: function(string) {
+    var blob = new Blob([string], {type: 'text/plain'});
+    return blob;
+  }
+}
+
+Goatools.Form.init();
+
 /**
  * Adds the 'goids' from fileContents to the form input
  * @param  {string} fileContents Contents fo the fileContents
  */
-function parseGoidsFile(fileContents) {
-  var goIds = document.getElementsByName('goids')[0];
-  // Clear in case the file is changed
-  goIds.value = '';
-
-  if (isGoidsFile(fileContents) && !isSectionsFile(fileContents)) {
-    var ids = fileContents.match(/GO:\d*/gi).join(', ');
-    goIds.value = ids.toString();
-  } else {
-    var errmsg = 'Please use a valid GOIDs file!';
-    window.alert(errmsg);
-  }
-}
+// function parseGoidsFile(fileContents) {
+//   var goIds = document.getElementsByName('goids')[0];
+//   // Clear in case the file is changed
+//   goIds.value = '';
+//
+//   if (isGoidsFile(fileContents) && !isSectionsFile(fileContents)) {
+//     var ids = fileContents.match(/GO:\d*/gi).join(', ');
+//     goIds.value = ids.toString();
+//   } else {
+//     var errmsg = 'Please use a valid GOIDs file!';
+//     window.alert(errmsg);
+//   }
+// }
 
 /**
  * Adds a sections file to the form input when called by readFileHandler
  * @param {string} filename     The name of the file
  * @param {string} fileContents Used to check that it is in fact a 'sections file'
  */
-function addSectionsFileName(filename, fileContents) { // eslint-disable-line no-unused-vars
-  if (isSectionsFile(fileContents)) {
-    // Clear example sections in case they exist
-    document.getElementById('blob_file').value = null;
-
-    var sectionsArray = fileContents.split('# SECTION:');
-    createTxtFileHtml(sectionsArray);
-    $('#sections-view').disabled = false;
-
-    var el = document.getElementById('sections-file-name');
-    el.innerHTML = filename;
-  } else {
-    var errmsg = 'Please use a valid Sections file!';
-    window.alert(errmsg);
-  }
-}
+// function addSectionsFileName(filename, fileContents) { // eslint-disable-line no-unused-vars
+//   if (Goatools.File.Sections.isCorrectFormat(fileContents)) {
+//     // Clear example sections in case they exist
+//     document.getElementById('blob_file').value = null;
+//     var sectionsArray = fileContents.split('# SECTION:');
+//     $('#sections-view').disabled = false;
+//     createTxtFileHtml(sectionsArray);
+//
+//     var el = document.getElementById('sections-file-name');
+//     el.innerHTML = filename;
+//   } else {
+//     var errmsg = 'Please use a valid Sections file!';
+//     window.alert(errmsg);
+//   }
+// }
 
 /**
  * Check that a file is a 'goids file'
  * @param  {string}  content The contents of the file to Check
  * @return {Boolean}          True means yes it is
  */
-function isGoidsFile(content) {
-  var regex = /GO:\d*/gi;
-
-  if (content.match(regex).length >= 0 && content.indexOf('SECTION:') === -1) {
-    return true;
-  }
-  return false;
-}
+// function isGoidsFile(content) {
+//   var regex = /GO:\d*/gi;
+//
+//   if (content.match(regex).length >= 0 && content.indexOf('SECTION:') === -1) {
+//     return true;
+//   }
+//   return false;
+// }
 
 /**
  * Check that a file is a 'sections file'
  * @param  {string}  content The contents of the file to Check
  * @return {Boolean}          True means yes it is
  */
-function isSectionsFile(content) {
-  if (content.indexOf('SECTION:') >= 0) {
-    return true;
-  }
-  return false;
-}
+// function isSectionsFile(content) {
+//   if (content.indexOf('SECTION:') >= 0) {
+//     return true;
+//   }
+//   return false;
+// }
 
 /**
  * Check that a file is a valid .txt file
  * @param  {object}  file File object
  * @return {Boolean} True for valid file
  */
-function isValidTextFile(file) {
-  var extension = file.name.substr(file.name.lastIndexOf('.') + 1);
-  if (!file) {
-    window.alert("The file failed to load");
-  } else if (extension === 'txt' || extension === 'tsv') {
-    return true;
-  } else {
-    window.alert(file.name + " is not a valid text file.");
-  }
-}
+// function isValidTextFile(file) {
+//   var extension = file.name.substr(file.name.lastIndexOf('.') + 1);
+//   if (!file) {
+//     window.alert("The file failed to load");
+//   } else if (extension === 'txt' || extension === 'tsv') {
+//     return true;
+//   } else {
+//     window.alert(file.name + " is not a valid text file.");
+//   }
+// }
 
 /**
  * Read a file and call readFileHandler() with the contents and type of file
  * @param  {File} file The file to readFile
  * @param  {string} type Determines if it's a 'goids' or 'sections' file
  */
-function readFile(file, type) { // eslint-disable-line no-unused-vars
-  // Check for FileReader support
-  if (window.File && window.FileReader && window.FileList && window.Blob) {
-    if (file instanceof Blob || isValidTextFile(file)) {
-      var reader = new FileReader();
-
-      reader.onload = function(e) {
-        var contents = e.target.result;
-
-        readFileHandler(file.name, contents, type);
-      };
-
-      reader.onabort = function() {
-        window.alert('The operation was aborted. \n' +
-          'Please Try Again');
-      };
-
-      reader.onerror = function(e) {
-        // console.log(e);
-        window.alert('There was an error during the operation. \n' +
-          'Please Try Again');
-      };
-
-      reader.onprogress = function(e) {
-        console.log('Progress: ', e);
-      };
-
-      reader.readAsText(file);
-    }
-  } else {
-    window.alert('The file APIs are not fully supported by your browser');
-  }
-}
+// function readFile(file, type) { // eslint-disable-line no-unused-vars
+//   // Check for FileReader support
+//   if (window.File && window.FileReader && window.FileList && window.Blob) {
+//     if (file instanceof Blob || isValidTextFile(file)) {
+//       var reader = new FileReader();
+//
+//       reader.onload = function(e) {
+//         var contents = e.target.result;
+//
+//         readFileHandler(file.name, contents, type);
+//       };
+//
+//       reader.onabort = function() {
+//         window.alert('The operation was aborted. \n' +
+//           'Please Try Again');
+//       };
+//
+//       reader.onerror = function(e) {
+//         // console.log(e);
+//         window.alert('There was an error during the operation. \n' +
+//           'Please Try Again');
+//       };
+//
+//       reader.onprogress = function(e) {
+//         console.log('Progress: ', e);
+//       };
+//
+//       reader.readAsText(file);
+//     }
+//   } else {
+//     window.alert('The file APIs are not fully supported by your browser');
+//   }
+// }
 
 /**
  * Handler call by readFile 'onload' event
@@ -126,15 +174,15 @@ function readFile(file, type) { // eslint-disable-line no-unused-vars
  * @param  {string} contents Contents of the file that was read
  * @param  {string} type     Type of the file that is expected
  */
-function readFileHandler(filename, contents, type) {
-  if (type === 'gos_file') {
-    parseGoidsFile(contents);
-  } else if (type === 'sections_file') {
-    addSectionsFileName(filename, contents);
-  } else if (type === 'blob_file') {
-    Goatools.Form.addExampleSectionsFile(contents);
-  }
-}
+// function readFileHandler(filename, contents, type) {
+//   if (type === 'gos_file') {
+//     parseGoidsFile(contents);
+//   } else if (type === 'sections_file') {
+//     addSectionsFileName(filename, contents);
+//   } else if (type === 'blob_file') {
+//     Goatools.Form.addExampleSectionsFile(contents);
+//   }
+// }
 
 /**
  * Called when the user clicks on a dropdown of 'Try an Example' button - adds

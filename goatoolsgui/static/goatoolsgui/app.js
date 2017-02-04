@@ -5,12 +5,12 @@ var sectionsStringArray;
 
 // Add listener to go-ids input to fill the text area
 $('#gos_file').change(function() {
-  readFile(this.files[0], this.id);
+  Goatools.File.read(this.files[0], this.id);
 });
 
 // Add listener to sections file input to add filename
 $('#sections_file').change(function() {
-  readFile(this.files[0], this.id);
+  Goatools.File.read(this.files[0], this.id);
 });
 
 /**
