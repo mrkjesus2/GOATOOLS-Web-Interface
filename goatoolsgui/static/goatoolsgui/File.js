@@ -52,8 +52,8 @@ Goatools.File = {
       var isBlob = true;
 
       function setData(filename, contents) {
-        Form.setSections(response.sections_name, contents, isBlob);
-        Form.setGoids(response.goids);
+        Sections.setSections(response.sections_name, contents, isBlob);
+        Goids.setGoids(response.goids);
       }
 
       Goatools.File.read(blob, setData);
@@ -79,7 +79,7 @@ Goatools.File.Goids = {
   parse: function(filename, cont) {
     if (this.Goids.isValidType(cont) && !this.Sections.isValidType(cont)) {
       var ids = cont.match(/GO:\d*/gi).join(', ');
-      Form.setGoids(ids);
+      Goids.setGoids(ids);
     } else {
       var errmsg = 'Please use a valid GOIDs file!';
       window.alert(errmsg);

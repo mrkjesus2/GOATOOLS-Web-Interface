@@ -1,39 +1,25 @@
 /* global $ sectionsStringArray callServer createTxtFileHtml document Blob */
 // var Goatools = Goatools || {};
-var s;
 var Form = (function() {
   'use strict';
 
   var Module = {
     els: {
-      gosInput: $('#goids'),
-      gosFileInput: $('#gos_file'),
-      examples: $('#example-group'),
       form: $('#goid-form'),
     },
 
     init: function(options) {
       options = options || {};
-      s = this.els;
 
-      s.form.on('reset', onReset.bind(this));
-      s.gosFileInput.on('change', onGoidInput.bind(this));
-      s.examples.on('click', onExampleSelect.bind(this));
+      this.els.form.on('reset', onReset.bind(this));
     },
 
     teardown: function () {
-      s.form.off('reset', onReset.bind(this));
-      s.gosFileInput.off('change', onGoidInput.bind(this));
-      s.examples.off('click', onExampleSelect.bind(this));
+      this.els.form.off('reset', onReset.bind(this));
     },
 
     display: function() {
-      s.gosInput.val(this.goids);
-    },
-
-    setGoids: function(ids) {
-      this.goids = ids;
-      this.display();
+      // s.gosInput.val(this.goids);
     },
 
     setFileDownloadName: function(name) {
@@ -49,27 +35,24 @@ var Form = (function() {
 
   function onReset() {
     // Empty the hidden input
-    s.blobInput.val(null);
+    Sections.els.blobInput.val(null);
 
     // TODO: Empty the variables that have been set on this object
-  }
-
-  function onGoidInput(ev) {
-    Goatools.File.read(ev.target.files[0], Goatools.File.Goids.parse);
+    // Sections.reset();
+    // Goids.reset();
+    // FileDownload.reset();
   }
 
   function onFileNameInput(ev) {
 
-  }
-
-  function onExampleSelect(ev) {
-    Goatools.File.getExampleData(ev.target.parentElement.id);
   }
 }());
 
 
 (function() {
   'use strict';
+  var goids = Object.create(Goids);
+  goids.init();
   var editor = Object.create(FileEditor);
   editor.init();
   var sections = Object.create(Sections);
