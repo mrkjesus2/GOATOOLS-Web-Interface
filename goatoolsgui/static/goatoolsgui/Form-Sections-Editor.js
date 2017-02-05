@@ -1,7 +1,7 @@
 /* global document window $ */
 var Goatools = Goatools || {};
 
-Goatools.FileEditor = (function() {
+var FileEditor = (function() {
   'use strict';
 
   var Module = {
@@ -19,14 +19,17 @@ Goatools.FileEditor = (function() {
 
     show: function() {
       // Call a toggle Method on Sections component instead
-      s.sectionsGroups.eq(0).addClass('hidden');
-      s.sectionsGroups.eq(1).removeClass('hidden');
+      Sections.els.sectionsGroups.eq(0).addClass('hidden');
+      Sections.els.sectionsGroups.eq(1).removeClass('hidden');
     },
 
-    hide: function() {
-      // Call a toggle Method on Sections component instead
-      s.sectionsGroups.eq(1).addClass('hidden');
-      s.sectionsGroups.eq(0).removeClass('hidden');
+    hide: function(ev) {
+      var first = Sections.els.sectionsGroups.first();
+      var last = Sections.els.sectionsGroups.last();
+
+      // Being overridden by addToEditor
+      Sections.els.sectionsGroups.eq(1).addClass('hidden');
+      Sections.els.sectionsGroups.eq(0).removeClass('hidden');
     },
 
     addWarning: function() {
@@ -57,10 +60,10 @@ Goatools.FileEditor = (function() {
     Goatools.File.Sections.update()
   }
 
-  function onClose() {
-    this.hide();
+  function onClose(ev) {
+    Sections.setSections(); // Must be first or editor won't hide
+    this.hide(ev);
     this.removeWarning();
-    Form.setSections();
   }
 
 }());
@@ -349,7 +352,7 @@ function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
   // Stop the scroll loop used while dragging
   stopScroll = true;
   window.cancelAnimationFrame(scrollId);
-  Goatools.FileEditor.addWarning();
+  FileEditor.addWarning();
   console.timeEnd('Drop Over Handler');
 }
 

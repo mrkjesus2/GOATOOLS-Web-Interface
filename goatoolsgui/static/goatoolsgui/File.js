@@ -25,7 +25,7 @@ Goatools.File = {
         };
 
         reader.onprogress = function(e) {
-          console.log('Progress: ', e);
+          // console.log('Progress: ', e);
         };
 
         reader.readAsText(file);
@@ -97,14 +97,12 @@ Goatools.File.Sections = {
 
     callServer('generatesections/', data)
       .then(function(response) {
-        Form.setSections('generated-sections-file.txt', response);
+        Sections.setSections('generated-sections-file.txt', response);
     });
   },
 
   reset: function() {
-    Goatools.FileEditor.removeWarning();
     Form.setSections();
-    // Goatools.FileEditor.hide();
   },
 
   update: function() {
@@ -141,11 +139,10 @@ Goatools.File.Sections = {
   addName: function(name, contents) {
     // TODO: Refactor this? can we set variables on form object?
     if (this.Sections.isValidType(contents)) {
-      var sectionsArray = contents.split('# SECTION:');
+      // var sectionsArray = contents.split('# SECTION:');
+      // createTxtFileHtml(sectionsArray);
 
-      createTxtFileHtml(sectionsArray);
-
-      Form.setSections(name, sectionsArray);
+      Sections.setSections(name, contents);
     } else {
       var errmsg = 'Please use a valid Sections file!';
       window.alert(errmsg);
