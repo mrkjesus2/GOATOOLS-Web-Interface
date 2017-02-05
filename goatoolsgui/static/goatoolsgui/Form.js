@@ -1,63 +1,140 @@
-var Goatools = Goatools || {};
+/* global $ sectionsStringArray callServer createTxtFileHtml document Blob */
+// var Goatools = Goatools || {};
+var s;
+var Form = (function() {
+  'use strict';
 
-Goatools.Form = {
-  $exampleGroup: $('#example-group'),
+  var Module = {
+    settings: {
+      gosInput: $('#goids'),
+      gosFileInput: $('#gos_file'),
+      sectionsInput: $('#sections_file'),
+      sectionsFileName: $('#sections-file-name'),
+      blobInput: $('#blob_file'),
+      examples: $('#example-group'),
+      form: $('#goid-form'),
+      closeButtons: $('.close'),
+      editorButton: $('#editor__open-button'),
+      sectionsGroups: $('.sections-file__group')
+    },
 
-  init: function() {
-    this.$exampleGroup.click(function(ev) {
-      Goatools.Form.getExampleData(ev.target.parentElement.id);
-    });
-    $('#gos_file').change(function(ev) {
-      Goatools.File.read(this.files[0], Goatools.File.Goids.parse)
-    });
-    $('#sections_file').change(function() {
-      Goatools.File.read(this.files[0], Goatools.File.Sections.addName);
-    });
-  },
+    init: function(options) {
+      options = options || {};
+      s = this.settings;
 
-  getExampleData: function(id) {
-    callServer('exampledata', {'type': id}).then(function(response) {
-      var blob = Goatools.Form.createBlob(response.sections_data);
-      console.log(blob);
-      Goatools.File.read(blob, Goatools.Form.addExampleSectionsFile);
-      Goatools.Form.addGoids(response.goids);
-      Goatools.Form.addSectionsFileName(response.sections_name);
-    });
-  },
+      s.form.on('reset', onReset.bind(this));
+      s.gosFileInput.on('change', onGoidInput.bind(this));
+      s.sectionsInput.on('change', onSectionsInput.bind(this));
+      s.examples.on('click', onExampleSelect.bind(this));
+      // s.closeButtons.on('click', Goatools.File.Sections.reset);
 
-  addExampleSectionsFile: function(filename, contents) {
-    // this.clearSectionsInput();
-    // console.log(this);
-    $('#blob_file').val(contents);
+      s.editorButton.on('click', onGenerate.bind(this));
+    },
 
-    // To refactor
-    sectionsStringArray = contents.split('# SECTION: ');
-    createTxtFileHtml(sectionsStringArray);
-    document.getElementById('sections-view').disabled = false;
-  },
+    teardown: function () {
+      s.form.off('reset', onReset.bind(this));
+      s.gosFileInput.off('change', onGoidInput.bind(this));
+      s.sectionsInput.off('change', onSectionsInput.bind(this));
+      s.examples.off('click', onExampleSelect.bind(this));
+      s.closeButtons.off('click', Goatools.File.Sections.reset);
 
-  addGoids: function(goids) {
-    $('#goids').val(goids);
-  },
+      s.editorButton.off('click');
+    },
 
-  addSectionsFileName: function(name) {
-    $('#sections-file-name').text(name);
-  },
+    display: function() {
+      s.gosInput.val(this.goids);
+      s.sectionsFileName.text(this.sectionsFile);
+    },
 
-  clearSectionsInput: function() {
-    $('#sections_file').val(null);
-  },
+    setGoids: function(ids) {
+      this.goids = ids;
+      this.display();
+    },
 
-  createBlob: function(string) {
-    var blob = new Blob([string], {type: 'text/plain'});
-    return blob;
+    setSections: function(fileName, sections, wasBlob) {
+      if (arguments.length > 0) {
+        this.sectionsFile = fileName;
+        this.sections = sections;
+
+        if (wasBlob) {
+          s.sectionsInput.val(null);
+          s.blobInput.val(sections);
+        } else {
+          s.blobInput.val(null);
+        }
+      }
+      addToEditor.bind(this)();
+      this.display();
+    },
+
+    setFileDownloadName: function(name) {
+
+    }
+
+    // BEGIN TESTING API
+    // submitForm: submitForm,
+    // checkAuthentication: checkAuthentication
+    // END TESTING API
+  };
+  return Module;
+
+  function onReset() {
+    // Empty the hidden input
+    s.blobInput.val(null);
+
+    // TODO: Empty the variables that have been set on this object
   }
-}
 
-Goatools.Form.init();
+  function onGenerate(ev) {
+    Goatools.File.Sections.get();
+    s.editorButton.off('click');
+
+    s.editorButton
+      .text('View/Edit')
+      .removeClass('btn-primary')
+      .addClass('btn-info')
+      .on('click', editor.show);
+    // s.editorButton.on('click', Goatools.FileEditor.show());
+  }
+
+  function onGoidInput(ev) {
+    Goatools.File.read(ev.target.files[0], Goatools.File.Goids.parse);
+  }
+
+  function onSectionsInput(ev) {
+    Goatools.File.read(ev.target.files[0], Goatools.File.Sections.addName);
+  }
+
+  function onFileNameInput(ev) {
+
+  }
+
+  function onExampleSelect(ev) {
+    Goatools.File.getExampleData(ev.target.parentElement.id);
+  }
+
+  function addToEditor() {
+    createTxtFileHtml(this.sections.split('# SECTION:'));
+    Goatools.FileEditor.show();
+  }
+}());
+
+
+(function() {
+  'use strict';
+  var editor = Object.create(Goatools.FileEditor);
+  editor.init();
+  // console.log(editor);
+  var form = Object.create(Form);
+  form.init();
+  // console.log(form);
+}());
+
+
 
 
 function addErrMsg(el, msg) {
+  console.log(el, msg);
   // select the element
   // append a div with msg after element
 }

@@ -13,7 +13,7 @@
   </p>
 </section>
 
-<form class="" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
+<form id="goid-form" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
 <!--
 GO ID's Input
@@ -89,12 +89,15 @@ GO ID's Input
         {{ form.blob_file }}
         <!-- {{ form.group_name  }} -->
         <!-- {{ form.section_names }} -->
-        <button id="editor__open-button" type="button" class="btn btn-primary" onclick="Goatools.SectionsFile.get()">
+        <button id="editor__open-button" type="button" class="btn btn-primary">
           Generate
         </button>
-        <button id="sections-view" type="button" class="btn btn-secondary" onclick="Goatools.FileEditor.show()" disabled>
+        <!-- <button id="editor__open-button" type="button" class="btn btn-primary" onclick="Goatools.File.Sections.get()">
+          Generate
+        </button> -->
+        <!-- <button id="sections-view" type="button" class="btn btn-secondary" onclick="Goatools.FileEditor.show()" disabled>
           View/Edit
-        </button>
+        </button> -->
       </div>
     </div>
     <!--
@@ -109,11 +112,11 @@ GO ID's Input
     <div class="panel panel-default sections-file__group hidden">
       <div class="panel-heading">
         <h3 class="panel-title">
-        <button class="close" type="button" aria-label="Close" onclick="Goatools.File.Sections.reset()">
+        <button class="close" type="button" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         </h3>
-        <button id="editor__save-changes" class="btn btn-primary" type="button" onclick="Goatools.File.Sections.update()">
+        <button id="editor__save-changes" class="editor__save-btn btn btn-primary" type="button">
           Save Changes
         </button>
       </div>
@@ -127,11 +130,11 @@ GO ID's Input
       </div>
       <div class="panel-heading">
         <h3 class="panel-title">
-        <button class="close" type="button" aria-label="Close" onclick="Goatools.File.Sections.reset()">
+        <button class="close" type="button" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         </h3>
-        <button class="btn btn-primary" type="button" onclick="Goatools.File.Sections.update()">
+        <button class="editor__save-btn btn btn-primary" type="button">
           Save Changes
         </button>
       </div>

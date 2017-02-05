@@ -1,7 +1,39 @@
-var Goatools = Goatools || {}
-var sectionsStringArray;
-/* global $ window document FileReader*/
+/* global $ window document Viz*/
 /* eslint-disable no-alert */
+
+var Goatools = Goatools || {} // eslint-disable-line
+var sectionsStringArray;
+
+/**
+ * Function used to call the Goatools server for information
+ * @param  {string} url  The url to used
+ * @param  {object} data The data the endpoint expectations
+ * @return {function}      Allows using .then() to work with the response
+ */
+function callServer(url, data) { // eslint-disable-line no-unused-vars
+  var csrftoken = getCookie('csrftoken');
+  var reqType = url === 'generatesections/' ? 'POST' : 'GET';
+  console.log('SERVER IS BEING CALLED');
+  return $.ajax({
+    url: url,
+    type: reqType,
+    data: data,
+
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    },
+
+    success: function(response) {
+      return response;
+    },
+
+    error: function(xhr, errmsg, err) { // eslint-disable-line no-unused-vars
+      console.log('Ajax Error');
+    }
+  });
+}
 
 /**
  * CSRF Token Methods
@@ -151,7 +183,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   // eslint-disable-next-line max-len
-  // $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
+  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
 //   $('#section_names').val('sections1, sections2');
   // $('#dev-shortcut').click();
   // var timer = setInterval(function() {

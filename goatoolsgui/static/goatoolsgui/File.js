@@ -1,5 +1,6 @@
-'use strict'
-var Goatools = Goatools || {};
+'use strict';
+/* global $ Goatools window document Blob Form FileReader callServer sectionsStringArray createTxtFileHtml */
+var Goatools = Goatools || {}; // eslint-disable-line
 
 Goatools.File = {
   read: function(file, cb) {
@@ -17,7 +18,7 @@ Goatools.File = {
             'Please Try Again');
         };
 
-        reader.onerror = function(e) {
+        reader.onerror = function() {
           // console.log(e);
           window.alert('There was an error during the operation. \n' +
             'Please Try Again');
@@ -43,75 +44,75 @@ Goatools.File = {
     } else {
       window.alert(file.name + " is not a valid text file.");
     }
+  },
+
+  getExampleData: function(id) {
+    callServer('exampledata', {type: id}).then(function(response) {
+      var blob = Goatools.File.createBlob(response.sections_data);
+      var isBlob = true;
+
+      function setData(filename, contents) {
+        Form.setSections(response.sections_name, contents, isBlob);
+        Form.setGoids(response.goids);
+      }
+
+      Goatools.File.read(blob, setData);
+    });
+  },
+
+  createBlob: function(string) {
+    var blob = new Blob([string], {type: 'text/plain'});
+    return blob;
   }
-}
+};
 
 Goatools.File.Goids = {
-  isCorrectFormat: function(content) {
-    var regex = /GO:\d*/gi;
+  isValidType: function(content) {
+    var regx = /GO:\d*/gi;
 
-    if (content.match(regex).length >= 0 && content.indexOf('SECTION:') === -1) {
+    if (content.match(regx).length >= 0 && content.indexOf('SECTION:') === -1) {
       return true;
     }
     return false;
   },
 
-  parse: function(filename, contents) {
-    // Goatools.Form.goids =
-    // TODO: Refactor this? can we set variables on form object?
-    var goIds = document.getElementsByName('goids')[0];
-    // Clear in case the file is changed
-    goIds.value = '';
-
-    if (this.Goids.isCorrectFormat(contents) && !this.Sections.isCorrectFormat(contents)) {
-      var ids = contents.match(/GO:\d*/gi).join(', ');
-      goIds.value = ids;
-      return Goatools.Form.goidsVal = ids;
+  parse: function(filename, cont) {
+    if (this.Goids.isValidType(cont) && !this.Sections.isValidType(cont)) {
+      var ids = cont.match(/GO:\d*/gi).join(', ');
+      Form.setGoids(ids);
     } else {
       var errmsg = 'Please use a valid GOIDs file!';
       window.alert(errmsg);
     }
   }
-}
+};
 
 
 Goatools.File.Sections = {
   get: function(sections) {
     var data = {
-      'goids': $('#goids').val().replace(/ /g, ''),
-      'sections': sections || ''
-    }
+      goids: $('#goids').val().replace(/ /g, ''),
+      sections: sections || ''
+    };
 
-    callServer('generatesections/', data).then(function(response) {
-      console.log(response);
-      // Add the response to the page
-      // // Display sectionsfile
-      sectionsStringArray = response.split('# SECTION: ');
-
-      createTxtFileHtml(sectionsStringArray);
-
-      // Remove disabled from view button
-      document.getElementById('sections-view').disabled = false;
-
-      Goatools.FileEditor.removeUnsavedWarning();
-      Goatools.FileEditor.show();
+    callServer('generatesections/', data)
+      .then(function(response) {
+        Form.setSections('generated-sections-file.txt', response);
     });
   },
 
   reset: function() {
-    Goatools.FileEditor.removeUnsavedWarning();
-    Goatools.FileEditor.hide();
-    if (sectionsStringArray) {
-      createTxtFileHtml(sectionsStringArray);
-    }
+    Goatools.FileEditor.removeWarning();
+    Form.setSections();
+    // Goatools.FileEditor.hide();
   },
 
   update: function() {
     var $editor = $('#editor');
     var sections = {};
 
-    if($editor.children().length > 0) {
-      var $sections = $('.editor__section-container')
+    if ($editor.children().length > 0) {
+      var $sections = $('.editor__section-container');
 
       // Loop over each section
       $sections.each(function(i) {
@@ -130,7 +131,7 @@ Goatools.File.Sections = {
     }
   },
 
-  isCorrectFormat: function(content) {
+  isValidType: function(content) {
     if (content.indexOf('SECTION:') >= 0) {
       return true;
     }
@@ -139,18 +140,15 @@ Goatools.File.Sections = {
 
   addName: function(name, contents) {
     // TODO: Refactor this? can we set variables on form object?
-    if (this.Sections.isCorrectFormat(contents)) {
-      // Clear example sections in case they exist
-      document.getElementById('blob_file').value = null;
+    if (this.Sections.isValidType(contents)) {
       var sectionsArray = contents.split('# SECTION:');
-      $('#sections-view').disabled = false;
+
       createTxtFileHtml(sectionsArray);
 
-      var el = document.getElementById('sections-file-name');
-      el.innerHTML = name;
+      Form.setSections(name, sectionsArray);
     } else {
       var errmsg = 'Please use a valid Sections file!';
       window.alert(errmsg);
     }
   }
-}
+};

@@ -1,76 +1,69 @@
+/* global document window $ */
 var Goatools = Goatools || {};
 
-function callServer(url, data) {
-  var csrftoken = getCookie('csrftoken');
-  var type = url === 'generatesections/' ? 'POST' : 'GET';
+Goatools.FileEditor = (function() {
+  'use strict';
 
-  return $.ajax({
-    url: url,
-    type: type,
-    data: data,
+  var Module = {
+    els: {
+      saveBtn: $('.editor__save-btn'),
+      closeBtns: $('.close'),
+      panels: $('.panel-heading'),
+      container: $('.panel')
+    },
 
-    beforeSend: function(xhr, settings) {
-      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    init: function() {
+      this.els.saveBtn.on('click', onSave.bind(this));
+      this.els.closeBtns.on('click', onClose.bind(this));
+    },
+
+    show: function() {
+      // Call a toggle Method on Sections component instead
+      s.sectionsGroups.eq(0).addClass('hidden');
+      s.sectionsGroups.eq(1).removeClass('hidden');
+    },
+
+    hide: function() {
+      // Call a toggle Method on Sections component instead
+      s.sectionsGroups.eq(1).addClass('hidden');
+      s.sectionsGroups.eq(0).removeClass('hidden');
+    },
+
+    addWarning: function() {
+      var warningEl = $('<span/>', {
+        class: 'unsaved-warning',
+        text: 'You have unsaved changes'
+      });
+
+      this.els.container.addClass('panel-danger');
+
+      // Check for warning message, add if none
+      if ($('.unsaved-warning', this.els.panels).length === 0) {
+        this.els.panels.each(function() {
+          $(this).append(warningEl.clone());
+        });
       }
     },
 
-    success: function(response) {
-      return response;
-    },
-
-    error: function(xhr, errmsg, err) {
-      console.log('Ajax Error');
+    removeWarning: function() {
+      this.els.container.removeClass('panel-danger');
+      $('.unsaved-warning').remove();
     }
-  });
-};
+  };
+  return Module;
 
-Goatools.FileEditor = {
-  $sectionsInputs: $('.sections-file__group'),
-  // $unsavedWarning: $('.unsaved-warning'),
-  $openButton: $('#editor__open-button'),
-
-  init: function() {
-    console.log('Running Init');
-    // this.$openButton.click(Goatools.SectionsFile.getFile());
-  },
-
-  show: function() {
-    this.$sectionsInputs.eq(0).addClass('hidden');
-    this.$sectionsInputs.eq(1).removeClass('hidden');
-  },
-
-  hide: function() {
-    this.$sectionsInputs.eq(1).addClass('hidden');
-    this.$sectionsInputs.eq(0).removeClass('hidden');
-  },
-
-  addUnsavedWarning: function() {
-    this.$sectionsInputs.eq(1).addClass('panel-danger');
-    // Ensure there is only one warning message
-    if(document.getElementsByClassName('unsaved-warning').length === 0) {
-      this.$sectionsInputs.eq(1).children().eq(0).append('<span class="unsaved-warning">You have unsaved changes</span>');
-      this.$sectionsInputs.eq(1).children().eq(2).append('<span class="unsaved-warning">You have unsaved changes</span>');
-    };
-  },
-
-  removeUnsavedWarning: function() {
-    this.$sectionsInputs.eq(1).removeClass('panel-danger');
-    $('.unsaved-warning').remove();
-  },
-
-  addSection: function() {
-
-  },
-
-  addFile: function(contents) {
-
-  },
-
-  createFileHtml: function() {
-
+  function onSave() {
+    this.removeWarning();
+    Goatools.File.Sections.update()
   }
-}
+
+  function onClose() {
+    this.hide();
+    this.removeWarning();
+    Form.setSections();
+  }
+
+}());
 
 
 /**
@@ -189,7 +182,7 @@ function makeEditorLine(item, type) {
  * @return {undefined}
  */
 function createTxtFileHtml(sectionsArray) {
-  console.log('Create File HTML');
+  // console.log('Create File HTML');
   var el = document.getElementById('editor');
   var fragment = document.createDocumentFragment();
   var sectionFragment = document.createDocumentFragment();
@@ -348,13 +341,15 @@ function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
   var target = ev.toElement;
   var targetParent = target.parentElement;
 
-  target.className = target.className.replace(' editor__goid-line--drag-over', '');
-  targetParent.className = targetParent.className.replace(' editor__section-container--drag-over', '');
+  target.className = target.className
+                     .replace(' editor__goid-line--drag-over', '');
+  targetParent.className = targetParent.className
+                          .replace(' editor__section-container--drag-over', '');
 
   // Stop the scroll loop used while dragging
   stopScroll = true;
   window.cancelAnimationFrame(scrollId);
-  Goatools.FileEditor.addUnsavedWarning();
+  Goatools.FileEditor.addWarning();
   console.timeEnd('Drop Over Handler');
 }
 
