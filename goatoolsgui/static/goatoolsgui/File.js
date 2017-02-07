@@ -1,5 +1,5 @@
+/* global $ window Blob Form FileReader callServer Goids Sections*/
 'use strict';
-/* global $ Goatools window document Blob Form FileReader callServer sectionsStringArray createTxtFileHtml */
 var Goatools = Goatools || {}; // eslint-disable-line
 
 Goatools.File = {
@@ -14,35 +14,35 @@ Goatools.File = {
         };
 
         reader.onabort = function() {
-          window.alert('The operation was aborted. \n' +
-            'Please Try Again');
+          Form.addError('The operation was aborted. Please Try Again');
         };
 
         reader.onerror = function() {
           // console.log(e);
-          window.alert('There was an error during the operation. \n' +
+          Form.addError('There was an error during the operation. ' +
             'Please Try Again');
         };
 
-        reader.onprogress = function(e) {
+        reader.onprogress = function() {
           // console.log('Progress: ', e);
         };
 
         reader.readAsText(file);
       }
     } else {
-      window.alert('The file APIs are not fully supported by your browser');
+      Form.addError('The file APIs are not fully supported by your browser.' +
+        'This site may not work as expected');
     }
   },
 
   isValid: function(file) {
     var extension = file.name.substr(file.name.lastIndexOf('.') + 1);
     if (!file) {
-      window.alert("The file failed to load");
+      Form.addError("The file failed to load. Give it another try");
     } else if (extension === 'txt' || extension === 'tsv') {
       return true;
     } else {
-      window.alert(file.name + " is not a valid text file.");
+      Form.addError(file.name + " is not a valid text file.");
     }
   },
 
@@ -81,8 +81,7 @@ Goatools.File.Goids = {
       var ids = cont.match(/GO:\d*/gi).join(', ');
       Goids.setGoids(ids);
     } else {
-      var errmsg = 'Please use a valid GOIDs file!';
-      window.alert(errmsg);
+      Form.addError('Please use a valid GOIDs file!');
     }
   }
 };
@@ -98,7 +97,7 @@ Goatools.File.Sections = {
     callServer('generatesections/', data)
       .then(function(response) {
         Sections.setSections('generated-sections-file.txt', response);
-    });
+      });
   },
 
   reset: function() {
@@ -137,15 +136,10 @@ Goatools.File.Sections = {
   },
 
   addName: function(name, contents) {
-    // TODO: Refactor this? can we set variables on form object?
     if (this.Sections.isValidType(contents)) {
-      // var sectionsArray = contents.split('# SECTION:');
-      // createTxtFileHtml(sectionsArray);
-
       Sections.setSections(name, contents);
     } else {
-      var errmsg = 'Please use a valid Sections file!';
-      window.alert(errmsg);
+      Form.addError('Please use a valid Sections file!');
     }
   }
 };

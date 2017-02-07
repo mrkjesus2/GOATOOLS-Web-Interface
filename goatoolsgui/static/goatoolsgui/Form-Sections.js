@@ -1,4 +1,4 @@
-
+/* global $ FileEditor Goatools createTxtFileHtml */
 var Sections = (function() {
   'use strict';
 
@@ -55,4 +55,4 @@ var Sections = (function() {
     createTxtFileHtml(this.sections.split('# SECTION:'));
     FileEditor.show();
   }
-}());
+})();

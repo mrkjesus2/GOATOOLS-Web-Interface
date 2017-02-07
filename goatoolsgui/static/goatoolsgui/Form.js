@@ -1,12 +1,13 @@
-/* global $ sectionsStringArray callServer createTxtFileHtml document Blob */
-// var Goatools = Goatools || {};
+/* global $ Sections Goids FileEditor */
+
 var Form = (function() {
   'use strict';
 
   var Module = {
     els: {
-      form: $('#goid-form')
-      // downloadName: $('#form__file-download')
+      form: $('#goid-form'),
+      intro: $('.intro'),
+      submitBtn: $('#form__submit-btn')
     },
 
     init: function(options) {
@@ -15,12 +16,20 @@ var Form = (function() {
       this.els.form.on('reset', onReset.bind(this));
     },
 
-    teardown: function () {
+    teardown: function() {
       this.els.form.off('reset', onReset.bind(this));
     },
 
     display: function() {
       // s.gosInput.val(this.goids);
+    },
+
+    addError: function(msg) {
+      onError.bind(this)(msg);
+    },
+
+    removeErrors: function() {
+      offError.bind(this)();
     }
 
     // BEGIN TESTING API
@@ -31,11 +40,33 @@ var Form = (function() {
   return Module;
 
   function onReset() {
-    // TODO: Empty the variables that have been set on this object
     Sections.reset();
     Goids.reset();
   }
-}());
+
+  function onError(msg) {
+    var $el = $('<div/>', {
+      class: 'alert alert-danger',
+      role: 'alert',
+      text: msg
+    });
+
+    var $dismissBtn = $('<button/>', {
+      'class': 'close',
+      'type': 'button',
+      'aria-label': 'Close',
+      'onclick': 'Form.removeErrors()'
+    });
+
+    $dismissBtn.html('<span aria-hidden="true">&times;</span>');
+    $el.append($dismissBtn);
+    this.els.intro.append($el);
+  }
+
+  function offError() {
+    $('.alert').remove();
+  }
+})();
 
 
 (function() {
@@ -50,13 +81,4 @@ var Form = (function() {
   var form = Object.create(Form);
   form.init();
   // console.log(form);
-}());
-
-
-
-
-function addErrMsg(el, msg) {
-  console.log(el, msg);
-  // select the element
-  // append a div with msg after element
-}
+})();

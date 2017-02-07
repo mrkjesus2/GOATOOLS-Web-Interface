@@ -1,4 +1,4 @@
-/* global document window $ */
+/* global document window Sections $ */
 var Goatools = Goatools || {};
 
 var FileEditor = (function() {
@@ -64,6 +64,8 @@ var FileEditor = (function() {
   return Module;
 
   function onOpenBtnClick() {
+    // TODO: Need to make sure the form is valid before calling the server
+    // Form.els.submitBtn.click();
     changeBtn.bind(this)();
     Goatools.File.Sections.get();
   }
@@ -90,7 +92,7 @@ var FileEditor = (function() {
 
   function onSave() {
     this.removeWarning();
-    Goatools.File.Sections.update()
+    Goatools.File.Sections.update();
   }
 
   function onClose(ev) {
@@ -98,8 +100,7 @@ var FileEditor = (function() {
     this.hide(ev);
     this.removeWarning();
   }
-
-}());
+})();
 
 
 /**
@@ -217,7 +218,7 @@ function makeEditorLine(item, type) {
  * @param  {array} sectionsArray Array of strings representing the .txt file
  * @return {undefined}
  */
-function createTxtFileHtml(sectionsArray) {
+function createTxtFileHtml(sectionsArray) { // eslint-disable-line no-unused-vars
   // console.log('Create File HTML');
   var el = document.getElementById('editor');
   var fragment = document.createDocumentFragment();
@@ -325,7 +326,7 @@ function goidDragStart(ev) {
  * @param  {object} ev The event object
  * @return {undefined}
  */
-function goidDragEnd(ev) {
+function goidDragEnd() {
   var containers = document.getElementsByClassName('editor__section-container');
 
   // Unbind event listeners when not dragging

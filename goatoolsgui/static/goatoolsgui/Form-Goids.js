@@ -1,3 +1,4 @@
+/* global $ Goatools  */
 var Goids = (function() {
   'use strict';
 
@@ -35,4 +36,4 @@ var Goids = (function() {
   function onExampleClick(ev) {
     Goatools.File.getExampleData(ev.target.parentElement.id);
   }
-}());
+})();

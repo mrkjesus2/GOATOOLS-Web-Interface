@@ -2,7 +2,6 @@
 /* eslint-disable no-alert */
 
 var Goatools = Goatools || {} // eslint-disable-line
-var sectionsStringArray;
 
 /**
  * Function used to call the Goatools server for information
@@ -128,7 +127,7 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
 
               // Create the svg image and append to fragment
               // if you want pngs here is the 2nd arg - , {format: "png-image-element", scale: 2}
-              var plot = Viz(dotFileStr.replace(/dpi=[0-9]+,/g, ''));
+              var plot = Viz(dotFileStr.replace(/dpi=[0-9]+,/g, '')); // eslint-disable-line new-cap
               var container = document.createElement('div');
               container.innerHTML = plot;
               frag.append(container);
@@ -138,7 +137,7 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
                 console.timeEnd('AJAX Time');
               }
             }, 200 * idx);
-          }(dotFileStr, idx));
+          })(dotFileStr, idx);
         });
         // $parent.append(frag);
 
