@@ -6,7 +6,7 @@ var Form = (function() {
   var Module = {
     els: {
       form: $('#goid-form'),
-      intro: $('.intro'),
+      warningCont: $('#form__warning'),
       submitBtn: $('#form__submit-btn')
     },
 
@@ -28,8 +28,8 @@ var Form = (function() {
       onError.bind(this)(msg);
     },
 
-    removeErrors: function() {
-      offError.bind(this)();
+    removeError: function(ev) {
+      offError.bind(this)(ev);
     }
 
     // BEGIN TESTING API
@@ -45,8 +45,10 @@ var Form = (function() {
   }
 
   function onError(msg) {
+    var cont = this.els.warningCont;
+
     var $el = $('<div/>', {
-      class: 'alert alert-danger',
+      class: 'alert alert-danger alert-dismissable fade in',
       role: 'alert',
       text: msg
     });
@@ -55,16 +57,24 @@ var Form = (function() {
       'class': 'close',
       'type': 'button',
       'aria-label': 'Close',
-      'onclick': 'Form.removeErrors()'
+      'onclick': 'Form.removeError(this)'
+      // 'data-dismiss': 'alert'
     });
 
+    if (cont.children().length > 0) {
+      cont.children().remove();
+      cont.removeClass('in');
+    }
+
     $dismissBtn.html('<span aria-hidden="true">&times;</span>');
-    $el.append($dismissBtn);
-    this.els.intro.append($el);
+    $el.prepend($dismissBtn);
+    cont.append($el);
+    cont.collapse('show');
   }
 
-  function offError() {
-    $('.alert').remove();
+  function offError(ev) {
+    this.els.warningCont.collapse('hide');
+    $(ev).attr('data-dismiss', 'alert');
   }
 })();
 
