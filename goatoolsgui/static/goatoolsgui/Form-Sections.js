@@ -35,6 +35,14 @@ var Sections = (function() {
     // Not sure that I need this one
     display: function() {
       this.els.fileName.text(this.sectionsFile);
+    },
+
+    reset: function() {
+      this.sections = '';
+      this.els.blobInput.val(null);
+      this.sectionsFile = 'Optional';
+      this.display();
+      FileEditor.reset();
     }
   };
   return Module;

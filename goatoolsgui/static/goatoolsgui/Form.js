@@ -5,7 +5,8 @@ var Form = (function() {
 
   var Module = {
     els: {
-      form: $('#goid-form'),
+      form: $('#goid-form')
+      // downloadName: $('#form__file-download')
     },
 
     init: function(options) {
@@ -20,10 +21,6 @@ var Form = (function() {
 
     display: function() {
       // s.gosInput.val(this.goids);
-    },
-
-    setFileDownloadName: function(name) {
-
     }
 
     // BEGIN TESTING API
@@ -34,17 +31,9 @@ var Form = (function() {
   return Module;
 
   function onReset() {
-    // Empty the hidden input
-    Sections.els.blobInput.val(null);
-
     // TODO: Empty the variables that have been set on this object
-    // Sections.reset();
-    // Goids.reset();
-    // FileDownload.reset();
-  }
-
-  function onFileNameInput(ev) {
-
+    Sections.reset();
+    Goids.reset();
   }
 }());
 

@@ -20,6 +20,10 @@ var Goids = (function() {
     setGoids: function(ids) {
       this.goids = ids;
       this.display();
+    },
+
+    reset: function() {
+      this.goids = null;
     }
   };
   return Module;

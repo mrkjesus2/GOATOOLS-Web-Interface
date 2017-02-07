@@ -29,9 +29,15 @@ var FileEditor = (function() {
       }
     },
 
-    hide: function(ev) {
+    hide: function() {
       Sections.els.sectionsGroups.eq(1).addClass('hidden');
       Sections.els.sectionsGroups.eq(0).removeClass('hidden');
+    },
+
+    reset: function() {
+      this.hide();
+      resetOpenBtn.bind(this)();
+      $('#editor').children().remove();
     },
 
     addWarning: function() {
@@ -67,20 +73,20 @@ var FileEditor = (function() {
 
     this.els.openBtn
       .text('View/Edit')
-      .removeClass('btn-primary')
-      .addClass('btn-info')
+      // .removeClass('btn-primary')
+      // .addClass('btn-info')
       .on('click', FileEditor.show.bind(this));
   }
 
-  // function resetOpenBtn() {
-  //   this.els.openBtn.off('click');
-  //
-  //   this.els.openBtn
-  //     .text('Generate')
-  //     .removeClass('btn-info')
-  //     .addClass('btn-primary')
-  //     .on('click', onOpenBtnClick().bind(this));
-  // }
+  function resetOpenBtn() {
+    this.els.openBtn.off('click');
+
+    this.els.openBtn
+      .text('Generate')
+      // .removeClass('btn-info')
+      // .addClass('btn-primary')
+      .on('click', onOpenBtnClick.bind(this));
+  }
 
   function onSave() {
     this.removeWarning();
