@@ -72,32 +72,18 @@ GO ID's Input
       </span>
     </label>
     {{ form.sections_file }} <!-- Hidden by '.input-file' in forms.py -->
+    {{ form.blob_file }} <!-- Hidden by '.input-file' in forms.py -->
     <div class="sections-file__group">
       <div class="input-group">
-        <label for="{{ form.sections_file.id_for_label }}" class="input-group-addon btn btn-info">
-          Upload File:
-        </label>
+        <span class="input-group-btn">
+          <button id="editor__open-button" type="button" class="btn btn-info">
+            Generate
+          </button>
+          <label for="{{ form.sections_file.id_for_label }}" class="btn btn-primary">
+            Upload
+          </label>
+        </span>
         <span id="sections-file-name" class="form-control">Optional</span>
-      </div>
-      <!--
-      Generate Sections File Form
-      -->
-      <div class="input-group">
-        or
-      </div>
-      <div class="input-group">
-        {{ form.blob_file }}
-        <!-- {{ form.group_name  }} -->
-        <!-- {{ form.section_names }} -->
-        <button id="editor__open-button" type="button" class="btn btn-primary">
-          Generate
-        </button>
-        <!-- <button id="editor__open-button" type="button" class="btn btn-primary" onclick="Goatools.File.Sections.get()">
-          Generate
-        </button> -->
-        <!-- <button id="sections-view" type="button" class="btn btn-secondary" onclick="Goatools.FileEditor.show()" disabled>
-          View/Edit
-        </button> -->
       </div>
     </div>
     <!--

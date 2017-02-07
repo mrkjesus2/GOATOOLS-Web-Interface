@@ -6,6 +6,7 @@ var FileEditor = (function() {
 
   var Module = {
     els: {
+      openBtn: $('#editor__open-button'),
       saveBtn: $('.editor__save-btn'),
       closeBtns: $('.close'),
       panels: $('.panel-heading'),
@@ -15,19 +16,20 @@ var FileEditor = (function() {
     init: function() {
       this.els.saveBtn.on('click', onSave.bind(this));
       this.els.closeBtns.on('click', onClose.bind(this));
+      this.els.openBtn.on('click', onOpenBtnClick.bind(this));
     },
 
     show: function() {
-      // Call a toggle Method on Sections component instead
       Sections.els.sectionsGroups.eq(0).addClass('hidden');
       Sections.els.sectionsGroups.eq(1).removeClass('hidden');
+
+      // Change the openBtn when called programatically
+      if (this.els.openBtn.text().trim() === 'Generate') {
+        changeBtn.bind(this)();
+      }
     },
 
     hide: function(ev) {
-      var first = Sections.els.sectionsGroups.first();
-      var last = Sections.els.sectionsGroups.last();
-
-      // Being overridden by addToEditor
       Sections.els.sectionsGroups.eq(1).addClass('hidden');
       Sections.els.sectionsGroups.eq(0).removeClass('hidden');
     },
@@ -54,6 +56,31 @@ var FileEditor = (function() {
     }
   };
   return Module;
+
+  function onOpenBtnClick() {
+    changeBtn.bind(this)();
+    Goatools.File.Sections.get();
+  }
+
+  function changeBtn() {
+    this.els.openBtn.off('click');
+
+    this.els.openBtn
+      .text('View/Edit')
+      .removeClass('btn-primary')
+      .addClass('btn-info')
+      .on('click', FileEditor.show.bind(this));
+  }
+
+  // function resetOpenBtn() {
+  //   this.els.openBtn.off('click');
+  //
+  //   this.els.openBtn
+  //     .text('Generate')
+  //     .removeClass('btn-info')
+  //     .addClass('btn-primary')
+  //     .on('click', onOpenBtnClick().bind(this));
+  // }
 
   function onSave() {
     this.removeWarning();
