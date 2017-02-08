@@ -23,13 +23,14 @@ var Goids = (function() {
     setGoids: function(ids) {
       this.goids = ids;
       this.display();
+      areValid.bind(this)(this.goids);
     },
 
     reset: function() {
       this.goids = null;
     },
 
-    validate: function(ev) {
+    validate: function() {
       if (areValid.bind(this)(this.goids)) {
         return true;
       }
@@ -60,12 +61,9 @@ var Goids = (function() {
     if (leftovers.match(/\w/)) {
       addWarning.bind(this)();
       return false;
-
-    } else {
-      removeWarning.bind(this)();
-      return true;
-    //   removeWarning.bind(this)();
     }
+    removeWarning.bind(this)();
+    return true;
   }
 
   function addWarning() {
@@ -75,8 +73,10 @@ var Goids = (function() {
       text: 'There seems to be a problem with your IDs'
     });
 
-    $el.addClass('has-error');
-    $el.append($warnText);
+    if (!$el.hasClass('has-error')) {
+      $el.addClass('has-error');
+      $el.append($warnText);
+    }
   }
 
   function removeWarning() {
