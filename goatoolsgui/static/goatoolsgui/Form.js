@@ -6,14 +6,16 @@ var Form = (function() {
   var Module = {
     els: {
       form: $('#goid-form'),
-      warningCont: $('#form__warning'),
-      submitBtn: $('#form__submit-btn')
+      warningCont: $('#form__warning')
+      // submitBtn: $('#form__submit-btn')
     },
 
     init: function(options) {
       options = options || {};
 
       this.els.form.on('reset', onReset.bind(this));
+      // this.els.warningCont.on('submit', onSubmit.bind(this));
+      this.els.form.on('submit', onSubmit.bind(this));
     },
 
     teardown: function() {
@@ -42,6 +44,12 @@ var Form = (function() {
   function onReset() {
     Sections.reset();
     Goids.reset();
+  }
+
+  function onSubmit(ev) {
+    if (!Goids.validate()) {
+      ev.preventDefault();
+    }
   }
 
   function onError(msg) {

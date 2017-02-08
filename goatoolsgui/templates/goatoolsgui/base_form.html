@@ -15,14 +15,12 @@
 </section>
 
 <form id="goid-form" action="{% url 'goatoolsgui:index' %}" method="post" enctype="multipart/form-data">
-  <div class="form-group">
-  </div>
   {% csrf_token %}
   <!--
   GO ID's Input
   -->
-  <div class="form-group">
-    <label for="{{ form.goids.id_for_label }}" class="form-label">
+  <div id="form__goids-container" class="form-group">
+    <label for="{{ form.goids.id_for_label }}" class="control-label">
       Enter GO id's:
       <span data-toggle="tooltip" title="More Information">
         <span id="go-info" data-toggle="modal" data-target="#InformationModal">
@@ -59,15 +57,16 @@
         </label>
       </div>
     </div>
-      <!-- The textarea  -->
-      {{ form.goids }}
+
+    <!-- The textarea  -->
+    {{ form.goids }}
   </div>
 
   <!--
   Sections File Input
   -->
   <div class="form-group">
-    <label for="" class="form-label">
+    <label for="" class="control-label">
       Add Sections File:
       <span data-toggle="tooltip" title="More Information">
         <span id="sections-info" data-toggle="modal" data-target="#InformationModal">
@@ -136,7 +135,7 @@
   Name File Download
   -->
   <div class="form-group">
-    <label for="{{ form.filename.id_for_label }}" class="form-label">
+    <label for="{{ form.filename.id_for_label }}" class="control-label">
       Name file download:
     </label>
     <div id="form__file-download" class="input-group">
@@ -151,7 +150,7 @@
   <div class="form-group">
     <div class="row">
       <div class="col-xs-5 col-xs-offset-2">
-        <input class="btn btn-secondary" type="reset" />
+        <input class="btn btn-default" type="reset" />
       </div>
       <div class="col-xs-5">
         <input id="form__submit-btn" class="btn btn-primary" type="submit" />

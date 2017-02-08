@@ -4,6 +4,7 @@ var Goids = (function() {
 
   var Module = {
     els: {
+      cont: $('#form__goids-container'),
       input: $('#goids'),
       fileInput: $('#gos_file'),
       examples: $('#example-group')
@@ -12,6 +13,7 @@ var Goids = (function() {
     init: function() {
       this.els.fileInput.on('change', onFileChange.bind(this));
       this.els.examples.on('click', onExampleClick.bind(this));
+      this.els.input.on('keyup', checkInput.bind(this));
     },
 
     display: function() {
@@ -25,6 +27,13 @@ var Goids = (function() {
 
     reset: function() {
       this.goids = null;
+    },
+
+    validate: function(ev) {
+      if (areValid.bind(this)(this.goids)) {
+        return true;
+      }
+      return false;
     }
   };
   return Module;
@@ -35,5 +44,48 @@ var Goids = (function() {
 
   function onExampleClick(ev) {
     Goatools.File.getExampleData(ev.target.parentElement.id);
+  }
+
+  function checkInput(ev) {
+    ev.target.value = ev.target.value.toUpperCase();
+    if (ev.keyCode === 32 || ev.keyCode === 188) {
+      areValid.bind(this)(ev.target.value);
+    }
+  }
+
+  function areValid(str) {
+    var regx = /GO:[0-9]{0,7}/g;
+    var leftovers = str.replace(regx, '');
+
+    if (leftovers.match(/\w/)) {
+      addWarning.bind(this)();
+      return false;
+
+    } else {
+      removeWarning.bind(this)();
+      return true;
+    //   removeWarning.bind(this)();
+    }
+  }
+
+  function addWarning() {
+    var $el = this.els.cont;
+    var $warnText = $('<span/>', {
+      class: 'help-block',
+      text: 'There seems to be a problem with your IDs'
+    });
+
+    $el.addClass('has-error');
+    $el.append($warnText);
+  }
+
+  function removeWarning() {
+    var $el = this.els.cont;
+    var $lastChild = this.els.cont.children().last();
+
+    $el.removeClass('has-error');
+    if ($lastChild.hasClass('help-block')) {
+      $lastChild.remove();
+    }
   }
 })();
