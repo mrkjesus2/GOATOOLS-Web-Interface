@@ -31,6 +31,7 @@ class GoIdsForm(forms.Form):
   goids = forms.CharField(
     label='Enter your go ids',
     max_length=10000,
+    required=False,
     widget=forms.Textarea(
       attrs={
         'placeholder': 'ex: GO:0008629',

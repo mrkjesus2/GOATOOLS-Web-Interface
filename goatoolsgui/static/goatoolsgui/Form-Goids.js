@@ -31,9 +31,10 @@ var Goids = (function() {
     },
 
     validate: function() {
-      if (areValid.bind(this)(this.goids)) {
+      if (this.goids && areValid.bind(this)(this.goids)) {
         return true;
       }
+      addWarning.bind(this)();
       return false;
     }
   };
