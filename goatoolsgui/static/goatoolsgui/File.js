@@ -47,7 +47,7 @@ Goatools.File = {
   },
 
   getExampleData: function(id) {
-    callServer('exampledata', {type: id}).then(function(response) {
+    callServer('exampledata/', {'type': id}).then(function(response) {
       var blob = Goatools.File.createBlob(response.sections_data);
       var isBlob = true;
 
