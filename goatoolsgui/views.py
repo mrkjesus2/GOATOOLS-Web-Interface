@@ -167,8 +167,8 @@ def sendExample(request):
   print '\nSend Example has been called'
   # Read the correct file based on id of clicked element
   goids_filename = request.GET.get('type') + '.txt'
-  goids = read_goids(os.getcwd() + '/data_files/' + goids_filename)['goids']
-
+  # goids = read_goids(os.getcwd() + '/data_files/' + goids_filename)['goids']
+  goids = read_goids('var/www/projects/gosite/data_files/' + goids_filename)['goids']
   # Return the sections file name that is used by all examples
   sections_file_name = 'examples-sections.txt'
   sections_file_path = '/var/www/projects/gosite/data_files/' + sections_file_name
