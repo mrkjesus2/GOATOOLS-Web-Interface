@@ -1,4 +1,4 @@
-/* global document window Sections $ */
+/* global document window $ */
 var Goatools = Goatools || {};
 Goatools.Form = Goatools.Form || {};
 Goatools.Form.Sections = Goatools.Form.Sections || {};
@@ -67,10 +67,12 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
 
   function onOpenBtnClick() {
-    // TODO: Need to make sure the form is valid before calling the server
-    // Form.els.submitBtn.click();
-    changeBtn.bind(this)();
-    Goatools.File.Sections.get();
+    if (Goatools.Form.els.form[0].checkValidity()) {
+      changeBtn.bind(this)();
+      Goatools.File.Sections.get();
+    } else {
+      Goatools.Form.els.form.submit();
+    }
   }
 
   function changeBtn() {
