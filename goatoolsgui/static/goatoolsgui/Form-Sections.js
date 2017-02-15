@@ -1,8 +1,12 @@
 /* global $ FileEditor Goatools createTxtFileHtml */
-var Sections = (function() {
+var Goatools = Goatools || {};
+Goatools.Form = Goatools.Form || {};
+Goatools.Form.Sections = Goatools.Form.Sections || {};
+
+(function() {
   'use strict';
 
-  var Module = {
+  $.extend(true, Goatools.Form.Sections, {
     els: {
       sectionsGroups: $('.sections-file__group'),
       blobInput: $('#blob_file'),
@@ -42,10 +46,9 @@ var Sections = (function() {
       this.els.blobInput.val(null);
       this.sectionsFile = 'Optional';
       this.display();
-      FileEditor.reset();
+      Goatools.Form.Sections.Editor.reset();
     }
-  };
-  return Module;
+  });
 
   function onInput(ev) {
     Goatools.File.read(ev.target.files[0], Goatools.File.Sections.addName);
@@ -53,6 +56,8 @@ var Sections = (function() {
 
   function addToEditor() {
     createTxtFileHtml(this.sections.split('# SECTION:'));
-    FileEditor.show();
+    Goatools.Form.Sections.Editor.show();
   }
 })();
+
+Goatools.Form.Sections.init();

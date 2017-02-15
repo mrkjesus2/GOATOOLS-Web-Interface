@@ -1,10 +1,13 @@
 /* global document window Sections $ */
 var Goatools = Goatools || {};
+Goatools.Form = Goatools.Form || {};
+Goatools.Form.Sections = Goatools.Form.Sections || {};
 
-var FileEditor = (function() {
+(function() {
   'use strict';
+  var sectsModule = Goatools.Form.Sections;
 
-  var Module = {
+  Goatools.Form.Sections.Editor = {
     els: {
       openBtn: $('#editor__open-button'),
       saveBtn: $('.editor__save-btn'),
@@ -20,8 +23,8 @@ var FileEditor = (function() {
     },
 
     show: function() {
-      Sections.els.sectionsGroups.eq(0).addClass('hidden');
-      Sections.els.sectionsGroups.eq(1).removeClass('hidden');
+      sectsModule.els.sectionsGroups.eq(0).addClass('hidden');
+      sectsModule.els.sectionsGroups.eq(1).removeClass('hidden');
 
       // Change the openBtn when called programatically
       if (this.els.openBtn.text().trim() === 'Generate') {
@@ -30,8 +33,8 @@ var FileEditor = (function() {
     },
 
     hide: function() {
-      Sections.els.sectionsGroups.eq(1).addClass('hidden');
-      Sections.els.sectionsGroups.eq(0).removeClass('hidden');
+      sectsModule.els.sectionsGroups.eq(1).addClass('hidden');
+      sectsModule.els.sectionsGroups.eq(0).removeClass('hidden');
     },
 
     reset: function() {
@@ -61,7 +64,7 @@ var FileEditor = (function() {
       $('.unsaved-warning').remove();
     }
   };
-  return Module;
+
 
   function onOpenBtnClick() {
     // TODO: Need to make sure the form is valid before calling the server
@@ -77,7 +80,7 @@ var FileEditor = (function() {
       .text('View/Edit')
       // .removeClass('btn-primary')
       // .addClass('btn-info')
-      .on('click', FileEditor.show.bind(this));
+      .on('click', Goatools.Form.Sections.Editor.show.bind(this));
   }
 
   function resetOpenBtn() {
@@ -96,13 +99,13 @@ var FileEditor = (function() {
   }
 
   function onClose(ev) {
-    Sections.setSections(); // Must be first or editor won't hide
+    Goatools.Form.Sections.setSections(); // Must be first or editor won't hide
     this.hide(ev);
     this.removeWarning();
   }
 })();
 
-
+Goatools.Form.Sections.Editor.init();
 /**
  * Sections File Editor
  * @param {string} file A string representing the sections.txt file
@@ -386,7 +389,7 @@ function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
   // Stop the scroll loop used while dragging
   stopScroll = true;
   window.cancelAnimationFrame(scrollId);
-  FileEditor.addWarning();
+  Goatools.Form.Sections.Editor.addWarning();
   console.timeEnd('Drop Over Handler');
 }
 

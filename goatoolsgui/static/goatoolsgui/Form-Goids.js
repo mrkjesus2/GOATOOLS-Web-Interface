@@ -1,8 +1,11 @@
 /* global $ Goatools  */
-var Goids = (function() {
+var Goatools = Goatools || {};
+Goatools.Form = Goatools.Form || {};
+console.log('Goids is loading');
+(function() {
   'use strict';
 
-  var Module = {
+  Goatools.Form.Goids = {
     els: {
       cont: $('#form__goids-container'),
       input: $('#goids'),
@@ -11,6 +14,7 @@ var Goids = (function() {
     },
 
     init: function() {
+      console.log('Goids initializing');
       this.els.fileInput.on('change', onFileChange.bind(this));
       this.els.examples.on('click', onExampleClick.bind(this));
       this.els.input.on('keyup', checkInput.bind(this));
@@ -38,7 +42,6 @@ var Goids = (function() {
       return false;
     }
   };
-  return Module;
 
   function onFileChange(ev) {
     Goatools.File.read(ev.target.files[0], Goatools.File.Goids.parse);
@@ -90,3 +93,5 @@ var Goids = (function() {
     }
   }
 })();
+
+Goatools.Form.Goids.init();

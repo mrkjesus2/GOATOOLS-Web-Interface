@@ -1,9 +1,12 @@
 /* global $ Sections Goids FileEditor */
+console.log('Form is loading');
+var Goatools = Goatools || {};
+Goatools.Form = Goatools.Form || {};
 
-var Form = (function() {
+(function() {
   'use strict';
 
-  var Module = {
+  $.extend(true, Goatools.Form, {
     els: {
       form: $('#goid-form'),
       warningCont: $('#form__warning')
@@ -38,16 +41,15 @@ var Form = (function() {
     // submitForm: submitForm,
     // checkAuthentication: checkAuthentication
     // END TESTING API
-  };
-  return Module;
+  });
 
   function onReset() {
-    Sections.reset();
-    Goids.reset();
+    Goatools.Form.Sections.reset();
+    Goatools.Form.Goids.reset();
   }
 
   function onSubmit(ev) {
-    if (!Goids.validate()) {
+    if (!Goatools.Form.Goids.validate()) {
       ev.preventDefault();
     }
   }
@@ -65,7 +67,7 @@ var Form = (function() {
       'class': 'close',
       'type': 'button',
       'aria-label': 'Close',
-      'onclick': 'Form.removeError(this)'
+      'onclick': 'Goatools.Form.removeError(this)'
       // 'data-dismiss': 'alert'
     });
 
@@ -86,17 +88,4 @@ var Form = (function() {
   }
 })();
 
-
-(function() {
-  'use strict';
-  var goids = Object.create(Goids);
-  goids.init();
-  var editor = Object.create(FileEditor);
-  editor.init();
-  var sections = Object.create(Sections);
-  sections.init();
-  // console.log(editor);
-  var form = Object.create(Form);
-  form.init();
-  // console.log(form);
-})();
+Goatools.Form.init();

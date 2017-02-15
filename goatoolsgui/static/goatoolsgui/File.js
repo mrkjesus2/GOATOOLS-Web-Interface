@@ -14,12 +14,12 @@ Goatools.File = {
         };
 
         reader.onabort = function() {
-          Form.addError('The operation was aborted. Please Try Again');
+          Goatools.Form.addError('The operation was aborted. Please Try Again');
         };
 
         reader.onerror = function() {
           // console.log(e);
-          Form.addError('There was an error during the operation. ' +
+          Goatools.Form.addError('There was an error during the operation. ' +
             'Please Try Again');
         };
 
@@ -30,7 +30,7 @@ Goatools.File = {
         reader.readAsText(file);
       }
     } else {
-      Form.addError('The file APIs are not fully supported by your browser.' +
+      Goatools.Form.addError('The file APIs are not fully supported by your browser.' +
         'This site may not work as expected');
     }
   },
@@ -38,11 +38,11 @@ Goatools.File = {
   isValid: function(file) {
     var extension = file.name.substr(file.name.lastIndexOf('.') + 1);
     if (!file) {
-      Form.addError("The file failed to load. Give it another try");
+      Goatools.Form.addError("The file failed to load. Give it another try");
     } else if (extension === 'txt' || extension === 'tsv') {
       return true;
     } else {
-      Form.addError(file.name + " is not a valid text file.");
+      Goatools.Form.addError(file.name + " is not a valid text file.");
     }
   },
 
@@ -52,8 +52,12 @@ Goatools.File = {
       var isBlob = true;
 
       function setData(filename, contents) {
-        Sections.setSections(response.sections_name, contents, isBlob);
-        Goids.setGoids(response.goids);
+        Goatools.Form.Sections.setSections(
+          response.sections_name,
+          contents,
+          isBlob
+        );
+        Goatools.Form.Goids.setGoids(response.goids);
       }
 
       Goatools.File.read(blob, setData);
@@ -79,9 +83,9 @@ Goatools.File.Goids = {
   parse: function(filename, cont) {
     if (this.Goids.isValidType(cont) && !this.Sections.isValidType(cont)) {
       var ids = cont.match(/GO:\d*/gi).join(', ');
-      Goids.setGoids(ids);
+      Goatools.Form.Goids.setGoids(ids);
     } else {
-      Form.addError('Please use a valid GOIDs file!');
+      Goatools.Form.addError('Please use a valid GOIDs file!');
     }
   }
 };
@@ -96,12 +100,12 @@ Goatools.File.Sections = {
 
     callServer('generatesections/', data)
       .then(function(response) {
-        Sections.setSections('generated-sections-file.txt', response);
+        Goatools.Form.Sections.setSections('generated-sections-file.txt', response);
       });
   },
 
   reset: function() {
-    Form.setSections();
+    Goatools.Form.setSections();
   },
 
   update: function() {
@@ -137,9 +141,9 @@ Goatools.File.Sections = {
 
   addName: function(name, contents) {
     if (this.Sections.isValidType(contents)) {
-      Sections.setSections(name, contents);
+      Goatools.Form.Sections.setSections(name, contents);
     } else {
-      Form.addError('Please use a valid Sections file!');
+      Goatools.Form.addError('Please use a valid Sections file!');
     }
   }
 };
