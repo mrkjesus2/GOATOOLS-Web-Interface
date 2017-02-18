@@ -5,8 +5,20 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
 (function() {
   'use strict';
+  
+  /*
+    Private Variables
+   */
   var sectsModule = Goatools.Form.Sections;
+  // Variables needed for scroll function
+  var scrollId = 0;
+  var stopScroll = true;
+  var cursor; // Set by dragOver
+  var height = window.innerHeight; // Query once, improve performance
 
+  /*
+    Public Methods
+   */
   Goatools.Form.Sections.Editor = {
     els: {
       openBtn: $('#editor__open-button'),
@@ -68,7 +80,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     },
 
     createFileHtml: function(sectionsArray) {
-      var $el = $('#editor__file');
+      var $el = this.els.file;
       var lineObj = Goatools.File.Sections.parseLines(sectionsArray);
 
       // Clear previous information
@@ -87,8 +99,9 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
         // Add goid lines
         section[1].forEach(function(goid) {
-          if (goid.length > 0)
+          if (goid.length > 0) {
             sectionContainer.append(makeEditorLine(goid, 'goid'));
+          }
         });
 
         $el.append(sectionContainer);
@@ -100,6 +113,28 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     }
   };
 
+  /*
+    Private Methods
+   */
+  function scroll() {
+    if (cursor < 210) {
+      // Scroll up faster
+      window.scrollBy(0, -10);
+    } else if (cursor > height - 50) {
+      // Scroll down faster
+      window.scrollBy(0, 10);
+    } else if (cursor < 260) {
+      // Scroll up slow
+      window.scrollBy(0, -5);
+    } else if (cursor > height - 100) {
+      // Scroll down slow
+      window.scrollBy(0, 5);
+    }
+
+    if (!stopScroll) {
+      scrollId = window.requestAnimationFrame(scroll);
+    }
+  }
 
   function onOpenBtnClick() {
     if (Goatools.Form.els.form[0].checkValidity()) {
@@ -137,6 +172,9 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     this.removeWarning();
   }
 
+/*
+  createFileHtml helper functions
+ */
   function makeSectionContainer(line) {
     var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
     var container = $('<div/>', {
@@ -168,6 +206,9 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     return $line;
   }
 
+/*
+  Add a new section functions
+ */
   function addNewSection() {
     var $container = makeSectionContainer();
     var $line = makeEditorLine(
@@ -205,6 +246,9 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     sel.addRange(range);
   }
 
+/*
+  Drag and Drop Event Handlers
+ */
   function goidDragStart(ev) {
     var containers = $('.editor__section-container');
 
@@ -240,7 +284,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     var $targ = $(ev.target);
 
     if (ev.target !== this) {
-      console.log('Entered a section');
       // Add goid line drag over classname if it doesn't exist
       if (!$targ.hasClass('editor__goid-line--drag-over')) {
         $targ.addClass('editor__goid-line--drag-over');
@@ -259,14 +302,13 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   function dragOver(ev) {
     ev.preventDefault();
     ev.originalEvent.dataTransfer.dropEffect = 'move';
-
     // Update the cursor position for the scroll loop
-    cursor = ev.pageY;
+    cursor = ev.screenY;
   }
 
   function onDropOver(ev, el) { // eslint-disable-line no-unused-vars
-    // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
     ev.preventDefault();
+
     var id = ev.dataTransfer.getData('text');
     var toEl = ev.toElement;
 
@@ -382,35 +424,36 @@ Goatools.Form.Sections.Editor.init();
 * Trying HTML drag and drop
 */
 
-// Variables needed for scroll function
-var scrollId = 0;
-var stopScroll = true;
-var cursor; // Set by goid line drag handler
-var modal = document.getElementById('editor-modal'); // Query once, improve performmance
-var height = window.innerHeight; // Query once, improve performance
+// // Variables needed for scroll function
+// var scrollId = 0;
+// var stopScroll = true;
+// var cursor; // Set by dragOver
+// var height = window.innerHeight; // Query once, improve performance
 
 /**
  * Allow scroll while dragging lines
  * @param  { num } timestamp  Return id from requestAnimationFrame
  * @return { undefined }
  */
-function scroll() {
-  var scrollY = modal.scrollTop;
-
-  if (cursor < 50) {
-    modal.scrollTop = scrollY - 10;
-  } else if (cursor > height - 50) {
-    modal.scrollTop = scrollY + 10;
-  } else if (cursor < 150) {
-    modal.scrollTop = scrollY - 5;
-  } else if (cursor > height - 150) {
-    modal.scrollTop = scrollY + 5;
-  }
-
-  if (!stopScroll) {
-    scrollId = window.requestAnimationFrame(scroll);
-  }
-}
+// function scroll() {
+//   if (cursor < 210) {
+//     // Scroll up faster
+//     window.scrollBy(0, -10);
+//   } else if (cursor > height - 50) {
+//     // Scroll down faster
+//     window.scrollBy(0, 10);
+//   } else if (cursor < 260) {
+//     // Scroll up slow
+//     window.scrollBy(0, -5);
+//   } else if (cursor > height - 100) {
+//     // Scroll down slow
+//     window.scrollBy(0, 5);
+//   }
+//
+//   if (!stopScroll) {
+//     scrollId = window.requestAnimationFrame(scroll);
+//   }
+// }
 
 /**
  * Drag and Drop Handlers
