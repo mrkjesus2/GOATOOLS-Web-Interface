@@ -13,13 +13,16 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       saveBtn: $('.editor__save-btn'),
       closeBtns: $('.close'),
       panels: $('.panel-heading'),
-      container: $('.panel')
+      container: $('.panel'),
+      addSectionBtn: $('#editor__add-section'),
+      file: $('#editor__file')
     },
 
     init: function() {
       this.els.saveBtn.on('click', onSave.bind(this));
       this.els.closeBtns.on('click', onClose.bind(this));
       this.els.openBtn.on('click', onOpenBtnClick.bind(this));
+      this.els.addSectionBtn.on('click', addNewSection.bind(this));
     },
 
     show: function() {
@@ -62,6 +65,34 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     removeWarning: function() {
       this.els.container.removeClass('panel-danger');
       $('.unsaved-warning').remove();
+    },
+
+    createFileHtml: function(sectionsArray) {
+      var $el = $('#editor__file');
+      var lineObj = Goatools.File.Sections.parseLines(sectionsArray);
+
+      // Clear previous information
+      $el.html('');
+
+      // Add the group line
+      if (lineObj.group) {
+        $el.append(makeEditorLine(lineObj.group, 'group'));
+      }
+
+      lineObj.sections.forEach(function(section) {
+        var sectionContainer = makeSectionContainer(section[0]);
+
+        // Append the section name line
+        sectionContainer.append(makeEditorLine(section[0], 'section'));
+
+        // Add goid lines
+        section[1].forEach(function(goid) {
+          if (goid.length > 0)
+            sectionContainer.append(makeEditorLine(goid, 'goid'));
+        });
+
+        $el.append(sectionContainer);
+      });
     }
   };
 
@@ -80,8 +111,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
     this.els.openBtn
       .text('View/Edit')
-      // .removeClass('btn-primary')
-      // .addClass('btn-info')
       .on('click', Goatools.Form.Sections.Editor.show.bind(this));
   }
 
@@ -90,8 +119,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
     this.els.openBtn
       .text('Generate')
-      // .removeClass('btn-info')
-      // .addClass('btn-primary')
       .on('click', onOpenBtnClick.bind(this));
   }
 
@@ -104,6 +131,71 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     Goatools.Form.Sections.setSections(); // Must be first or editor won't hide
     this.hide(ev);
     this.removeWarning();
+  }
+
+  function makeSectionContainer(line) {
+    var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+    var container = $('<div/>', {
+      id: line ? line.replace(cssValidRegex, '') : '',
+      class: 'editor__section-container'
+    })
+      .attr('ondrop', 'sectionDropOver(event, this)');
+
+    return container;
+  }
+
+  function makeEditorLine(item, type) {
+    var $line = $('<div/>', {
+      class: 'editor__' + type + '-line',
+      html: type === 'section' ? '# SECTION: ' + item : item
+    });
+
+    if (type === 'goid') {
+      $line.attr({
+        id: item.substr(0, 10),
+        draggable: 'true'
+      })
+        .on('dragstart', goidDragStart)
+        .on('dragend', goidDragEnd);
+    }
+    return $line;
+  }
+
+  function addNewSection() {
+    var $container = makeSectionContainer();
+    var $line = makeEditorLine(
+      '<span contenteditable="true">New section name</span>',
+      'section'
+    );
+    var $newSection = $line.children(0);
+
+    $container.append($line);
+    $container.insertBefore($('.editor__section-container')[0]);
+
+    selectEditable($newSection[0]);
+    $newSection.on('keydown', onSectionNameKeydown);
+  }
+
+  function onSectionNameKeydown(ev) {
+    var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+    var container = ev.target.parentElement.parentElement;
+
+    // Set the id of the Sections container
+    container.id = ev.target.innerText.replace(cssValidRegex, '');
+    container.id = container.id.replace(/ /g, '-');
+
+    if (ev.keyCode === 13 || ev.keycode === 27) {
+      ev.preventDefault();
+      ev.target.blur();
+    }
+  }
+
+  function selectEditable(el) {
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 })();
 
@@ -119,149 +211,90 @@ Goatools.Form.Sections.Editor.init();
 //   return lines;
 // }
 
-/**
- * onclick in base_form.html
- * Add a new section name to the sections file editor
- */
-function addSectionName() { // eslint-disable-line no-unused-vars
-  // Create a new section line with a default name
-  var target = document.getElementById('editor');
-  var container = makeSectionContainer();
-  var line = makeEditorLine(
-    '<span contenteditable="true">New section name</span>', 'section'
-  );
 
-  container.id = 'default-section-name';
-  container.append(line);
+// /**
+//  * Create a container element for a section
+//  * @param  {string} line The section name
+//  * @return {HTMLElement}      Container div
+//  */
+// function makeSectionContainer(line) {
+//   // var container = document.createElement('div');
+//   var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+//   //
+//   // if (line) {
+//   //   container.id = line.replace(cssValidRegex, '');
+//   // }
+//   // container.className = 'editor__section-container';
+//   // container.setAttribute('ondrop', 'sectionDropOver(event, this)');
+//
+//   var container = $('<div/>', {
+//     id: line ? line.replace(cssValidRegex, '') : '',
+//     class: 'editor__section-container',
+//   })
+//     .attr('ondrop', 'sectionDropOver(event, this)');
+//
+//   return container;
+// }
 
-  // Insert user's new section
-  target.insertBefore(container, target.children[1]);
+// /**
+//  * Create an element for an Editor line
+//  * @param  {string} item The line text
+//  * @param  {string} type Type of line that is created 'group', 'section', 'goid'
+//  * @return {HTMLElement}      The line that is created
+//  */
+// function makeEditorLine(item, type) {
+//   var $line = $('<div/>', {
+//     class: 'editor__' + type + '-line',
+//     html: type === 'section' ? '# SECTION: ' + item : item
+//   });
+//
+//   if (type === 'goid') {
+//     $line.attr({
+//       id: item.substr(0, 10),
+//       draggable: 'true'
+//     })
+//       .on('dragstart', goidDragStart)
+//       .on('dragend', goidDragEnd);
+//   }
+//   return $line;
+// }
 
-  // Select the new section automatically for easier editing
-  selectEditableSection(line.children[0]);
-  line.children[0].addEventListener('keydown', sectionNameListener);
-}
-
-/**
- * Handles keydown events on newly created sections
- * @param  {object} ev The keydown event
- * @return {undefined}
- */
-function sectionNameListener(ev) {
-  var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
-  var container = ev.srcElement.parentElement.parentElement;
-
-  container.id = ev.srcElement.innerText.replace(cssValidRegex, '');
-  container.id = container.id.replace(/ /g, '-');
-
-  if (ev.keyCode === 13 || ev.keycode === 27) {
-    ev.preventDefault();
-    ev.srcElement.blur();
-  }
-}
-
-/**
- * Highlights editable text in passed element
- * @param {HTMLElement} el Element to select for editing
- */
-function selectEditableSection(el) {
-  var range = document.createRange();
-  range.selectNodeContents(el);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(range);
-}
-
-/**
- * Create a container element for a section
- * @param  {string} line The section name
- * @return {HTMLElement}      Container div
- */
-function makeSectionContainer(line) {
-  var container = document.createElement('div');
-  var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
-
-  if (line) {
-    container.id = line.replace(cssValidRegex, '');
-  }
-  container.className = 'editor__section-container';
-  container.setAttribute('ondrop', 'sectionDropOver(event, this)');
-
-  return container;
-}
-
-/**
- * Create an element for an Editor line
- * @param  {string} item The line text
- * @param  {string} type Type of line that is created 'group', 'section', 'goid'
- * @return {HTMLElement}      The line that is created
- */
-function makeEditorLine(item, type) {
-  var line = document.createElement('div');
-  var lineClass = 'editor__' + type + '-line';
-  var lineText = item;
-
-  if (type === 'section') {
-    lineText = '# SECTION: ' + item;
-  }
-
-  if (type === 'goid') {
-    line.id = item.substr(0, 10);
-    line.draggable = true;
-    line.addEventListener('dragstart', goidDragStart, false);
-    line.addEventListener('dragend', goidDragEnd, false);
-  }
-
-  line.className = lineClass;
-  line.innerHTML = lineText;
-
-  return line;
-}
-
-/**
- * Creates HTML representation of the array created from sections.txt
- * @param  {array} sectionsArray Array of strings representing the .txt file
- * @return {undefined}
- */
-function createTxtFileHtml(sectionsArray) { // eslint-disable-line no-unused-vars
-  // console.log('Create File HTML');
-  var el = document.getElementById('editor');
-  var fragment = document.createDocumentFragment();
-  var sectionFragment = document.createDocumentFragment();
-
-  // Clear previous information
-  el.innerHTML = '';
-
-  // Create the new file information
-  sectionsArray.forEach(function(section) {
-    if (section.includes('# GROUP')) {
-      // Append GROUP NAME line
-      fragment.append(makeEditorLine(section, 'group'));
-    } else {
-      // Create section container and child lines
-      var sectionLines = section.split('\n');
-      var sectionContainer;
-
-      sectionLines.forEach(function(line) {
-        if (!line.includes('GO:') && line.length > 0) {
-          // Make container
-          sectionContainer = makeSectionContainer(line);
-
-          // Make section name line and append to section container
-          var sectionLine = makeEditorLine(line, 'section');
-          sectionContainer.append(sectionLine);
-        } else if (line.length > 0) {
-          // Make and append goid line
-          var goidLine = makeEditorLine(line, 'goid');
-          sectionContainer.append(goidLine);
-        }
-      });
-      sectionFragment.append(sectionContainer);
-    }
-    fragment.append(sectionFragment);
-  });
-  el.append(fragment);
-}
+// /**
+//  * Creates HTML representation of the array created from sections.txt
+//  * @param  {array} sectionsArray Array of strings representing the .txt file
+//  * @return {undefined}
+//  */
+// function createTxtFileHtml(sectionsArray) { // eslint-disable-line no-unused-vars
+//   // console.log('Create File HTML');
+//   var $el = $('#editor__file');
+//   // var el = document.getElementById('editor__file');
+//   // var fragment = document.createDocumentFragment();
+//   var lineObj = Goatools.File.Sections.parseLines(sectionsArray);
+//
+//   // Clear previous information
+//   // el.innerHTML = '';
+//   $el.html('');
+//   if (lineObj.group) {
+//     $el.append(makeEditorLine(lineObj.group, 'group'));
+//   }
+//
+//   lineObj.sections.forEach(function(section) {
+//     var sectionContainer = makeSectionContainer(section[0]);
+//
+//     // Append the section name line
+//     sectionContainer.append(makeEditorLine(section[0], 'section'));
+//
+//     section[1].forEach(function(goid) {
+//       if (goid.length > 0)
+//         sectionContainer.append(makeEditorLine(goid, 'goid'));
+//     });
+//
+//     // fragment.append(sectionContainer);
+//     $el.append(sectionContainer);
+//   });
+//
+//   // el.append(fragment);
+// }
 
 /*
 * Trying HTML drag and drop
@@ -307,6 +340,7 @@ function scroll() {
  * @return {undefined}
  */
 function goidDragStart(ev) {
+  console.log(ev);
   // Add event listeners to 'editor__section-container'
   var containers = document.getElementsByClassName('editor__section-container');
 
@@ -319,7 +353,8 @@ function goidDragStart(ev) {
   }
 
   // Set the data to be transferred by dragging
-  ev.dataTransfer.setData('text/plain', ev.target.id);
+  // ev.dataTransfer.setData('text/plain', ev.target.id);
+  ev.originalEvent.dataTransfer.setData('text/plain', ev.target.id);
 
   // Allow the modal content to scroll while dragging
   stopScroll = false;

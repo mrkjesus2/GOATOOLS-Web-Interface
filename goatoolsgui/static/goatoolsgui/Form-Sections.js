@@ -55,8 +55,9 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   }
 
   function addToEditor() {
-    createTxtFileHtml(this.sections.split('# SECTION:'));
-    Goatools.Form.Sections.Editor.show();
+    var editor = Goatools.Form.Sections.Editor;
+    editor.createFileHtml(this.sections.split('# SECTION:'));
+    editor.show();
   }
 })();
 

@@ -145,5 +145,29 @@ Goatools.File.Sections = {
     } else {
       Goatools.Form.addError('Please use a valid Sections file!');
     }
+  },
+
+  parseLines: function(sectionsArray) {
+    var index;
+    var group = sectionsArray.filter(function(val, idx) {
+      if (val.includes('# GROUP')) {
+        index = idx;
+        return val;
+      }
+    });
+
+    // Remove group from array
+    sectionsArray.splice(index, 1);
+
+    // Make 2D array of sections with sections[name][goids]
+    var sections = sectionsArray.map(function(val) {
+      var lines = val.split('\n');
+      return [lines.shift(), lines];
+    }, []);
+
+    return {
+      group: group.toString(),
+      sections: sections
+    }
   }
 };
