@@ -93,6 +93,10 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
         $el.append(sectionContainer);
       });
+    },
+
+    sectionDropOver: function(ev, el) {
+      onDropOver.bind(this)(ev, el);
     }
   };
 
@@ -139,7 +143,10 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       id: line ? line.replace(cssValidRegex, '') : '',
       class: 'editor__section-container'
     })
-      .attr('ondrop', 'sectionDropOver(event, this)');
+      .attr(
+        'ondrop',
+        'Goatools.Form.Sections.Editor.sectionDropOver(event, this)'
+      );
 
     return container;
   }
@@ -196,6 +203,81 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
+  }
+
+  function goidDragStart(ev) {
+    var containers = $('.editor__section-container');
+
+    // Add event listeners to 'editor__section-container'
+    containers.on('dragenter', dragEnter)
+      .on('dragleave', dragLeave)
+      .on('dragover', dragOver);
+
+    // Set the data to be transferred by dragging
+    ev.originalEvent.dataTransfer.setData('text/plain', ev.target.id);
+
+    // Allow the modal content to scroll while dragging
+    stopScroll = false;
+    scrollId = window.requestAnimationFrame(scroll);
+  }
+
+  function goidDragEnd() {
+    var containers = $('.editor__section-container');
+
+    // Unbind event listeners when not needed
+    containers.off('dragenter', dragEnter)
+      .off('dragleave', dragLeave)
+      .off('dragover', dragOver);
+
+    // End the scrolling loop
+    cursor = null;
+    stopScroll = true;
+    window.cancelAnimationFrame(scroll);
+  }
+
+  function dragEnter(ev) {
+    ev.preventDefault();
+    var $targ = $(ev.target);
+
+    if (ev.target !== this) {
+      console.log('Entered a section');
+      // Add goid line drag over classname if it doesn't exist
+      if (!$targ.hasClass('editor__goid-line--drag-over')) {
+        $targ.addClass('editor__goid-line--drag-over');
+      }
+    }
+  }
+
+  function dragLeave(ev) {
+    if (ev.target === this) {
+      $(ev.target).removeClass('editor__section-container--drag-over');
+    } else {
+      $(ev.target).removeClass('editor__goid-line--drag-over');
+    }
+  }
+
+  function dragOver(ev) {
+    ev.preventDefault();
+    ev.originalEvent.dataTransfer.dropEffect = 'move';
+
+    // Update the cursor position for the scroll loop
+    cursor = ev.pageY;
+  }
+
+  function onDropOver(ev, el) { // eslint-disable-line no-unused-vars
+    // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
+    ev.preventDefault();
+    var id = ev.dataTransfer.getData('text');
+    var toEl = ev.toElement;
+
+    // Insert element and remove drag-over state
+    el.insertBefore(document.getElementById(id), ev.toElement.nextSibling);
+    toEl.className = toEl.className.replace('editor__goid-line--drag-over', '');
+
+    // Stop the scroll loop used while dragging
+    stopScroll = true;
+    window.cancelAnimationFrame(scrollId);
+    Goatools.Form.Sections.Editor.addWarning();
   }
 })();
 
@@ -339,118 +421,104 @@ function scroll() {
  * @param  {object} ev The event object
  * @return {undefined}
  */
-function goidDragStart(ev) {
-  console.log(ev);
-  // Add event listeners to 'editor__section-container'
-  var containers = document.getElementsByClassName('editor__section-container');
-
-  for (var i = 0; i < containers.length; i++) {
-    var container = containers[i];
-
-    container.addEventListener('dragenter', sectionDragEnter, false);
-    container.addEventListener('dragleave', sectionDragLeave, false);
-    container.addEventListener('dragover', sectionDragOver, false);
-  }
-
-  // Set the data to be transferred by dragging
-  // ev.dataTransfer.setData('text/plain', ev.target.id);
-  ev.originalEvent.dataTransfer.setData('text/plain', ev.target.id);
-
-  // Allow the modal content to scroll while dragging
-  stopScroll = false;
-  scrollId = window.requestAnimationFrame(scroll);
-}
+// function goidDragStart(ev) {
+//   console.log(ev);
+//   // Add event listeners to 'editor__section-container'
+//   var containers = document.getElementsByClassName('editor__section-container');
+//
+//   for (var i = 0; i < containers.length; i++) {
+//     var container = containers[i];
+//
+//     container.addEventListener('dragenter', sectionDragEnter, false);
+//     container.addEventListener('dragleave', sectionDragLeave, false);
+//     container.addEventListener('dragover', sectionDragOver, false);
+//   }
+//
+//   // Set the data to be transferred by dragging
+//   // ev.dataTransfer.setData('text/plain', ev.target.id);
+//   ev.originalEvent.dataTransfer.setData('text/plain', ev.target.id);
+//
+//   // Allow the modal content to scroll while dragging
+//   stopScroll = false;
+//   scrollId = window.requestAnimationFrame(scroll);
+// }
 
 /**
  * Handle the event fired when dragging ends
  * @param  {object} ev The event object
  * @return {undefined}
  */
-function goidDragEnd() {
-  var containers = document.getElementsByClassName('editor__section-container');
-
-  // Unbind event listeners when not dragging
-  for (var i = 0; i < containers.length; i++) {
-    var container = containers[i];
-
-    container.removeEventListener('dragenter', sectionDragEnter, false);
-    container.removeEventListener('dragleave', sectionDragLeave, false);
-    container.removeEventListener('dragover', sectionDragOver, false);
-  }
-  // End the scrolling loop
-  cursor = null;
-  stopScroll = true;
-  window.cancelAnimationFrame(scroll);
-}
+// function goidDragEnd() {
+//   var containers = document.getElementsByClassName('editor__section-container');
+//
+//   // Unbind event listeners when not dragging
+//   for (var i = 0; i < containers.length; i++) {
+//     var container = containers[i];
+//
+//     container.removeEventListener('dragenter', sectionDragEnter, false);
+//     container.removeEventListener('dragleave', sectionDragLeave, false);
+//     container.removeEventListener('dragover', sectionDragOver, false);
+//   }
+//   // End the scrolling loop
+//   cursor = null;
+//   stopScroll = true;
+//   window.cancelAnimationFrame(scroll);
+// }
 
 /**
  * Section Drag Handlers
  */
 
-/**
- * Handle the dragover event fired while over 'editor__section-container'
- * @param  {event} ev The event object
- * @param  {HTMLElement} el The element that fired the event
- * @return {undefined}
- */
-function sectionDragOver(ev) {
-  ev.preventDefault();
-  ev.dataTransfer.dropEffect = 'move';
+ /**
+  * Handle the event fired when a line is dropped on 'editor__section-container'
+  * @param  {object} ev The event object
+  * @param  {HTMLElement} el The element that fired the event
+  * @return {undefined}
+  */
+ // function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
+ //   console.time('Drop Over Handler');
+ //   // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
+ //   ev.preventDefault();
+ //   var id = ev.dataTransfer.getData('text');
+ //
+ //   el.insertBefore(document.getElementById(id), ev.toElement.nextSibling);
+ //
+ //   var target = ev.toElement;
+ //   var targetParent = target.parentElement;
+ //
+ //   target.className = target.className
+ //                      .replace(' editor__goid-line--drag-over', '');
+ //   targetParent.className = targetParent.className
+ //                           .replace(' editor__section-container--drag-over', '');
+ //
+ //   // Stop the scroll loop used while dragging
+ //   stopScroll = true;
+ //   window.cancelAnimationFrame(scrollId);
+ //   Goatools.Form.Sections.Editor.addWarning();
+ //   console.timeEnd('Drop Over Handler');
+ // }
 
-  // Update the cursor position for the scroll loop
-  cursor = ev.pageY;
-}
-
-/**
- * Handle the event fired when a line is dropped on 'editor__section-container'
- * @param  {object} ev The event object
- * @param  {HTMLElement} el The element that fired the event
- * @return {undefined}
- */
-function sectionDropOver(ev, el) { // eslint-disable-line no-unused-vars
-  console.time('Drop Over Handler');
-  // TODO BUG: If there are duplicate GOID's it grabs the first one/not the dragged one
-  ev.preventDefault();
-  var id = ev.dataTransfer.getData('text');
-
-  el.insertBefore(document.getElementById(id), ev.toElement.nextSibling);
-
-  var target = ev.toElement;
-  var targetParent = target.parentElement;
-
-  target.className = target.className
-                     .replace(' editor__goid-line--drag-over', '');
-  targetParent.className = targetParent.className
-                          .replace(' editor__section-container--drag-over', '');
-
-  // Stop the scroll loop used while dragging
-  stopScroll = true;
-  window.cancelAnimationFrame(scrollId);
-  Goatools.Form.Sections.Editor.addWarning();
-  console.timeEnd('Drop Over Handler');
-}
-
-/**
- * Handle the event fired when entering a 'editor__section-container' element
- * @param  {object} ev The event object
- * @param  {HTMLElement} el The element that fired the event
- * @return {undefined}
- */
-function sectionDragEnter(ev) {
-  ev.preventDefault();
-  // if (el.className.indexOf('editor__section-container--drag-over') === -1) {
-  //   el.className += ' editor__section-container--drag-over';
-  // }
-
-  if (ev.target !== this) {
-    // Add goid line classname if it doesn't exist
-    if (ev.target.className.indexOf('editor__goid-line--drag-over') === -1) {
-      ev.target.className += ' editor__goid-line--drag-over';
-    }
-  } else {
-    // Add classname if it doesn't exist
-  }
-}
+// /**
+//  * Handle the event fired when entering a 'editor__section-container' element
+//  * @param  {object} ev The event object
+//  * @param  {HTMLElement} el The element that fired the event
+//  * @return {undefined}
+//  */
+// function sectionDragEnter(ev) {
+//   ev.preventDefault();
+//   // if (el.className.indexOf('editor__section-container--drag-over') === -1) {
+//   //   el.className += ' editor__section-container--drag-over';
+//   // }
+//
+//   if (ev.target !== this) {
+//     // Add goid line classname if it doesn't exist
+//     if (ev.target.className.indexOf('editor__goid-line--drag-over') === -1) {
+//       ev.target.className += ' editor__goid-line--drag-over';
+//     }
+//   } else {
+//     // Add classname if it doesn't exist
+//   }
+// }
 
 /**
  * Handle the event fired when leaving a 'editor__section-container' element
@@ -458,17 +526,31 @@ function sectionDragEnter(ev) {
  * @param  {HTMLElement} el The element that fired the event
  * @return {undefined}
  */
-function sectionDragLeave(ev) {
-  if (ev.target === this) {
-    ev.target.className = ev.target.className.replace(
-      ' editor__section-container--drag-over', ''
-    );
-    // console.log(ev.target);
-  } else {
-    // console.log('Left a section');
-    // console.log("Left a line");
-    ev.target.className = ev.target.className.replace(
-      ' editor__goid-line--drag-over', ''
-      );
-  }
-}
+// function sectionDragLeave(ev) {
+//   if (ev.target === this) {
+//     ev.target.className = ev.target.className.replace(
+//       ' editor__section-container--drag-over', ''
+//     );
+//     // console.log(ev.target);
+//   } else {
+//     // console.log('Left a section');
+//     // console.log("Left a line");
+//     ev.target.className = ev.target.className.replace(
+//       ' editor__goid-line--drag-over', ''
+//       );
+//   }
+// }
+
+/**
+ * Handle the dragover event fired while over 'editor__section-container'
+ * @param  {event} ev The event object
+ * @param  {HTMLElement} el The element that fired the event
+ * @return {undefined}
+ */
+// function sectionDragOver(ev) {
+//   ev.preventDefault();
+//   ev.originalEvent.dataTransfer.dropEffect = 'move';
+//
+//   // Update the cursor position for the scroll loop
+//   cursor = ev.pageY;
+// }
