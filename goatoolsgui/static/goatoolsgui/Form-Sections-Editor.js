@@ -183,7 +183,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     return validId;
   }
 
-  function makeSectionContainer(line, collapsible) {
+  function makeSectionContainer(line, collapsed) {
     var $container = $('<div/>', {
       id: makeValidId(line),
       class: 'editor__section-container'
@@ -196,8 +196,16 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       // Add ul - collapsed if more than 2 sections
       var $ul = $('<ul/>', {
         id: makeValidId(line) + 'Ids',
-        class: collapsible ? 'collapse' : ''
-      });
+        class: collapsed ? 'collapse' : 'collapse in'
+      })
+        .on('hide.bs.collapse', function(ev) {
+          var icon = $('.editor__section-icon', this.previousSibling);
+          icon.toggleClass('editor__section-icon--open');
+        })
+        .on('show.bs.collapse', function(ev) {
+          var icon = $('.editor__section-icon', this.previousSibling);
+          icon.toggleClass('editor__section-icon--open');
+        });
 
       $container.append($ul);
 
@@ -213,26 +221,24 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     return $line;
   }
 
-  function makeSectionLine(text, collapsible) {
+  function makeSectionLine(text, collapsed) {
+    var iconCls = 'glyphicon glyphicon-menu-down editor__section-icon';
+
     var $caret = $('<span/>', {
-      class: 'glyphicon glyphicon-menu-down'
-    });
+      'class': collapsed ? iconCls : iconCls + ' editor__section-icon--open',
+      'role': 'button',
+      'data-toggle': 'collapse',
+      'data-target': '#' + makeValidId(text) + 'Ids',
+      'aria-expanded': collapsed ? 'false' : 'true',
+      'aria-controls': makeValidId(text) + 'Ids'
+    })
 
     var $line = $('<div/>', {
       class: 'editor__section-line',
-      html: '<span> # SECTION ' + text + '</span>'
+      html: '<span> # SECTION: ' + text + '</span>'
     });
 
-    if (collapsible) {
-      $caret.attr({
-        'role': 'button',
-        'data-toggle': 'collapse',
-        'data-target': '#' + makeValidId(text) + 'Ids',
-        'aria-expanded': 'false',
-        'aria-controls': makeValidId(text) + 'Ids'
-      })
-      $line.prepend($caret);
-    }
+    $line.prepend($caret);
 
     return $line;
   }
@@ -253,33 +259,35 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 /*
   Add a new section functions
  */
-  function addNewSection() {
-    var $container = makeSectionContainer();
-    var $line = makeEditorLine(
-      '<span contenteditable="true">New section name</span>',
-      'section'
-    );
-    var $newSection = $line.children(0);
+  function addNewSection(ev, text) {
+    var lineText = text || 'New section name';
+    var $container = makeSectionContainer(lineText, false);
+    var $line = makeSectionLine(lineText, false);
 
-    $container.append($line);
-    $container.append($('<ul/>'));
+    $container.prepend($line);
     $container.insertBefore($('.editor__section-container')[0]);
 
-    selectEditable($newSection[0]);
-    $newSection.on('keydown', onSectionNameKeydown);
+    // Allow editing section name the first time
+    if (!text) {
+      var $newSection = $line.children().last();
+      var prefix = ' # SECTION: ';
+      var editable = "<span contenteditable='true'>" + lineText + '</span>';
+      $newSection.html(prefix + editable);
+      selectEditable($newSection[0].lastChild);
+      $newSection.on('keydown', onSectionNameKeydown);
+    }
   }
 
   function onSectionNameKeydown(ev) {
-    var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
-    var container = ev.target.parentElement.parentElement;
-
-    // Set the id of the Sections container
-    container.id = ev.target.innerText.replace(cssValidRegex, '');
-    container.id = container.id.replace(/ /g, '-');
+    var cssValidRegex = /[ ~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+    var $container = $('#Newsectionname');
+    var name = ev.target.innerText;
 
     if (ev.keyCode === 13 || ev.keycode === 27) {
       ev.preventDefault();
-      ev.target.blur();
+
+      $container.remove();
+      addNewSection(null, name);
     }
   }
 

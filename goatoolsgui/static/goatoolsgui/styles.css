@@ -85,6 +85,15 @@ footer {
 .editor__section-line {
   padding: 0 0 1em 0;
 }
+
+.editor__section-icon {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.editor__section-icon--open {
+  transform: rotateZ(-180deg);
+}
+
 .editor__goid-line {
   // margin-left: 1em;
   padding: 0 1em 1em;
