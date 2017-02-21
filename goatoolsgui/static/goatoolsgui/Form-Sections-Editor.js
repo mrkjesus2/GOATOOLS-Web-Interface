@@ -82,25 +82,26 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     createFileHtml: function(sectionsArray) {
       var $el = this.els.file;
       var lineObj = Goatools.File.Sections.parseLines(sectionsArray);
+      var collapsible = lineObj.sections.length > 2 ? true : false;
 
       // Clear previous information
       $el.html('');
 
       // Add the group line
       if (lineObj.group) {
-        $el.append(makeEditorLine(lineObj.group, 'group'));
+        $el.append(makeGroupLine(lineObj.group));
       }
 
       lineObj.sections.forEach(function(section) {
-        var $sectionContainer = makeSectionContainer(section[0]);
-
+        var name = section[0].trim();
+        var $sectionContainer = makeSectionContainer(name, collapsible); // Add data stuff and aria stuff here
         // Append the section name line
-        $sectionContainer.append(makeEditorLine(section[0], 'section'));
-        $sectionContainer.append($('<ul/>'));
+        $sectionContainer.prepend(makeSectionLine(name, collapsible));
+
         // Add goid lines
         section[1].forEach(function(goid) {
           if (goid.length > 0) {
-            var $line = makeEditorLine(goid, 'goid');
+            var $line = makeGoidLine(goid);
             $sectionContainer.children().last().append($line);
           }
         });
@@ -176,10 +177,15 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 /*
   createFileHtml helper functions
  */
-  function makeSectionContainer(line) {
-    var cssValidRegex = /[~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+  function makeValidId(str) {
+    var cssValidRegex = /[ ~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+    var validId = str ? str.replace(cssValidRegex, '') : '';
+    return validId;
+  }
+
+  function makeSectionContainer(line, collapsible) {
     var $container = $('<div/>', {
-      id: line ? line.replace(cssValidRegex, '') : '',
+      id: makeValidId(line),
       class: 'editor__section-container'
     })
       .attr(
@@ -187,25 +193,60 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
         'Goatools.Form.Sections.Editor.sectionDropOver(event, this)'
       );
 
+      // Add ul - collapsed if more than 2 sections
+      var $ul = $('<ul/>', {
+        id: makeValidId(line) + 'Ids',
+        class: collapsible ? 'collapse' : ''
+      });
+
+      $container.append($ul);
+
     return $container;
   }
 
-  function makeEditorLine(item, type) {
+  function makeGroupLine(text) {
     var $line = $('<div/>', {
-      class: 'editor__' + type + '-line',
-      html: type === 'section' ? '# SECTION: ' + item : item
+      class: 'editor__group-line',
+      html: text
     });
 
-    if (type === 'goid') {
-      $line = $('<li/>', {
-        id: item.substr(0, 10),
-        class: 'editor__goid-line',
-        html: item,
-        draggable: 'true'
+    return $line;
+  }
+
+  function makeSectionLine(text, collapsible) {
+    var $caret = $('<span/>', {
+      class: 'glyphicon glyphicon-menu-down'
+    });
+
+    var $line = $('<div/>', {
+      class: 'editor__section-line',
+      html: '<span> # SECTION ' + text + '</span>'
+    });
+
+    if (collapsible) {
+      $caret.attr({
+        'role': 'button',
+        'data-toggle': 'collapse',
+        'data-target': '#' + makeValidId(text) + 'Ids',
+        'aria-expanded': 'false',
+        'aria-controls': makeValidId(text) + 'Ids'
       })
-        .on('dragstart', goidDragStart)
-        .on('dragend', goidDragEnd);
+      $line.prepend($caret);
     }
+
+    return $line;
+  }
+
+  function makeGoidLine(text) {
+    var $line = $('<li/>', {
+      id: text.substr(0, 10),
+      class: 'editor__goid-line',
+      html: text,
+      draggable: 'true'
+    })
+      .on('dragstart', goidDragStart)
+      .on('dragend', goidDragEnd);
+
     return $line;
   }
 
