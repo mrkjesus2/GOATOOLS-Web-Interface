@@ -110,6 +110,23 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       });
     },
 
+    showPlotImg: function(data) {
+      console.time('Show Plot');
+      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'png-image-element', scale: 1});
+      $(img).removeAttr('width height');
+      $(img).addClass('img-responsive');
+
+      var imgCont = $('<div/>', {
+        id: 'plot-image',
+        class: 'plot-image',
+        html: img
+      });
+
+      $('#plot-image-modal').modal('show');
+      $('#plot-image-modal .modal-body').html(imgCont);
+      console.timeEnd('Show Plot');
+    },
+
     sectionDropOver: function(ev, el) {
       onDropOver.bind(this)(ev, el);
     }
@@ -253,6 +270,18 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       .on('dragstart', goidDragStart)
       .on('dragend', goidDragEnd);
 
+    var $link = $('<button/>', {
+      class: 'btn btn-primary btn-xs',
+      type: 'button',
+      text: 'Plot'
+    })
+      .on('click', function(ev) {
+        callServer('plots/one').then(function(response) {
+          Goatools.Form.Sections.Editor.showPlotImg(response);
+        });
+      });
+
+    $line.prepend($link);
     return $line;
   }
 

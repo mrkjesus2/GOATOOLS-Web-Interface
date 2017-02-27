@@ -16,7 +16,7 @@ function callServer(url, data) { // eslint-disable-line no-unused-vars
   return $.ajax({
     url: url,
     type: reqType,
-    data: data,
+    data: data || {},
 
     beforeSend: function(xhr, settings) {
       if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -116,6 +116,7 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
         $progressBar.text('');
         console.time('AJAX Success Function');
         // Create svg elements from JSON response
+        console.log(response);
         response.forEach(function(dotFileStr, idx) {
         // for (var i = 0; i < response.length; i++) {
           (function(dotFileStr, idx) {

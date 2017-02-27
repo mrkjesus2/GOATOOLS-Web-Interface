@@ -118,7 +118,14 @@ footer {
   cursor: move;
 }
 
+.plot-image {
+  max-width: 100%;
+}
 
+/* TODO: Overriding bootstrap - probably not a great practice */
+.modal-lg {
+  width: 95%;
+}
 /*
 * ===== Results Page =====
 */
