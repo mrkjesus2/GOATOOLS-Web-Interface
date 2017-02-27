@@ -92,13 +92,18 @@ def showGos(request):
 
 def showPlots(request):
   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
-
   response = JsonResponse(user_data.plot_data, safe=False)
 
   return response
 
 
-
+def showOnePlot(request, what):
+  print request.session['user_data_id']
+  user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+  print '\nShow One Plot was called\n'
+  # Temporary for front-end dev purposes
+  response = JsonResponse(user_data.plot_data[0], safe=False)
+  return response
 
 def sendFile(request):
   user_gos_obj = GoIds.objects.get(pk=request.session['user_data_id'])
