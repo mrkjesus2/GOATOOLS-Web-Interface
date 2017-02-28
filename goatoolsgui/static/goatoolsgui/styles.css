@@ -10,15 +10,12 @@
 * Footer
 */
 footer {
-  margin-bottom: 0!important;
+  margin-bottom: 0 !important;
 }
-
-
 
 /*
 * ===== Form Page =====
-*/
-/*
+*
 * Customized file <input>'s
 */
 .input-file {
@@ -70,10 +67,11 @@ footer {
 */
 .editor {
   font-size: 14px;
-  // line-height: 2em;
+
+  /* line-height: 2em; */
 }
 
-.editor__group_line ,
+.editor__group_line,
 .editor__section-container {
   padding: 0.5em;
 }
@@ -83,7 +81,7 @@ footer {
 }
 
 .editor__section-line {
-  padding: 0 0 1em 0;
+  padding: 0 0 1em;
 }
 
 .editor__section-icon {
@@ -95,21 +93,26 @@ footer {
 }
 
 .editor__goid-line {
-  // margin-left: 1em;
+  /* margin-left: 1em; */
   padding: 0 1em 1em;
-  // border: 1px dotted gray;
+
+  /* border: 1px dotted gray; */
 }
 
 .editor__goid-line--drag-over {
   padding-bottom: 3em;
-  // transition: padding-bottom 0.3s;
-  // border: 2px solid black;
+
+  /* transition: padding-bottom 0.3s; */
+
+  /* border: 2px solid black; */
 }
 
 .editor__goid-line--drag-over + .editor__goid-line {
   padding-top: 1em;
-  // transition: padding-top 0.3s;
-  // border: 1px dotted black;
+
+  /* transition: padding-top 0.3s; */
+
+  /* border: 1px dotted black; */
 }
 
 .editor__goid-line:hover {
@@ -136,6 +139,7 @@ footer {
 .modal-lg {
   width: 95%;
 }
+
 /*
 * ===== Results Page =====
 */
@@ -159,6 +163,7 @@ footer {
 /*
 * ----- fixedHeaderTable.js -----
 */
+
 /* @group Reset */
 .fht-table,
 .fht-table thead,
@@ -169,10 +174,13 @@ footer {
 .fht-table td {
   /* position */
   margin: 0;
+
   /* size */
   padding: 0;
+
   /* text */
   font-size: 100%;
+  /* stylelint-disable-next-line declaration-block-no-shorthand-property-overrides */
   font: inherit;
   vertical-align: top;
 }
@@ -182,6 +190,7 @@ footer {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 /* @end Reset */
 
 /* @group Content */
@@ -193,6 +202,7 @@ footer {
 .fht-table-wrapper .fht-tbody {
   /* appearance */
   overflow: hidden;
+
   /* position */
   position: relative;
 }
@@ -206,6 +216,7 @@ footer {
 .fht-table-wrapper .fht-table .fht-cell {
   /* appearance */
   overflow: hidden;
+
   /* size */
   height: 1px;
 }
@@ -222,12 +233,13 @@ footer {
   /* position */
   z-index: 1;
 }
-/* @end Content */
 
+/* @end Content */
 
 /*
 * ===== Media Queries =====
 */
+
 /*
 * Smaller Padding for small screens
 */
@@ -242,17 +254,17 @@ footer {
 * Overide Bootstrap navbar collapse
 */
 @media (min-width: 435px) and (max-width: 767px) {
-  .navbar-nav>li {
-    float:left;
+  .navbar-nav > li {
+    float: left;
   }
 
-  .navbar-nav>li>a {
+  .navbar-nav > li > a {
     padding-top: 15px;
     padding-bottom: 15px;
   }
 
   .navbar-right {
-    float: right!important;
+    float: right !important;
     margin-right: -15px;
   }
 
@@ -260,7 +272,7 @@ footer {
     margin: 0;
   }
 
-  .container-fluid>.navbar-collapse {
+  .container-fluid > .navbar-collapse {
     margin-right: 0;
     margin-left: 0;
   }
@@ -272,13 +284,13 @@ footer {
   }
 
   .navbar-collapse.collapse {
-    display: block!important;
-    height: auto!important;
+    display: block !important;
+    height: auto !important;
     padding-bottom: 0;
-    overflow: visible!important;
+    overflow: visible !important;
   }
 
-  .container-fluid>.navbar-header {
+  .container-fluid > .navbar-header {
     margin-left: 0;
     margin-right: 0;
   }
@@ -287,7 +299,7 @@ footer {
     float: left;
   }
 
-  .navbar>.container-fluid .navbar-brand {
+  .navbar > .container-fluid .navbar-brand {
     margin-left: -15px;
   }
 

@@ -1,5 +1,5 @@
-/* global document window $ */
-var Goatools = Goatools || {};
+/* global document window callServer Viz $ */
+var Goatools = Goatools || {}; // eslint-disable-line no-use-before-define
 Goatools.Form = Goatools.Form || {};
 Goatools.Form.Sections = Goatools.Form.Sections || {};
 
@@ -13,7 +13,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   // Variables needed for scroll function
   var scrollId = 0;
   var stopScroll = true;
-  var plotImgPanId;
   var cursor; // Set by dragOver
   var height = window.innerHeight; // Query once, improve performance
 
@@ -84,7 +83,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     createFileHtml: function(sectionsArray) {
       var $el = this.els.file;
       var lineObj = Goatools.File.Sections.parseLines(sectionsArray);
-      var collapsible = lineObj.sections.length > 2 ? true : false;
+      var collapsible = lineObj.sections.length > 2;
 
       // Clear previous information
       $el.html('');
@@ -115,7 +114,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     showPlotImg: function(data) {
       console.time('Show Plot');
       var $imgModal = $('#plot-image-modal');
-      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'svg'});
+      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'svg'}); // eslint-disable-line new-cap
 
       var imgCont = $('<div/>', {
         id: 'plot-image',
@@ -181,10 +180,10 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     panPlotImage.bind(this)(ev);
   }
 
-  function stopPanPlotImage(ev) {
+  function stopPanPlotImage() {
     this.els.plotImg.css('transform', 'translate(0, 0)');
   }
-  
+
   function scroll() {
     if (cursor < 210) {
       // Scroll up faster
@@ -260,21 +259,21 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
         'Goatools.Form.Sections.Editor.sectionDropOver(event, this)'
       );
 
-      // Add ul - collapsed if more than 2 sections
-      var $ul = $('<ul/>', {
-        id: makeValidId(line) + 'Ids',
-        class: collapsed ? 'collapse' : 'collapse in'
+    // Add ul - collapsed if more than 2 sections
+    var $ul = $('<ul/>', {
+      id: makeValidId(line) + 'Ids',
+      class: collapsed ? 'collapse' : 'collapse in'
+    })
+      .on('hide.bs.collapse', function() {
+        var icon = $('.editor__section-icon', this.previousSibling);
+        icon.toggleClass('editor__section-icon--open');
       })
-        .on('hide.bs.collapse', function(ev) {
-          var icon = $('.editor__section-icon', this.previousSibling);
-          icon.toggleClass('editor__section-icon--open');
-        })
-        .on('show.bs.collapse', function(ev) {
-          var icon = $('.editor__section-icon', this.previousSibling);
-          icon.toggleClass('editor__section-icon--open');
-        });
+      .on('show.bs.collapse', function() {
+        var icon = $('.editor__section-icon', this.previousSibling);
+        icon.toggleClass('editor__section-icon--open');
+      });
 
-      $container.append($ul);
+    $container.append($ul);
 
     return $container;
   }
@@ -298,7 +297,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       'data-target': '#' + makeValidId(text) + 'Ids',
       'aria-expanded': collapsed ? 'false' : 'true',
       'aria-controls': makeValidId(text) + 'Ids'
-    })
+    });
 
     var $line = $('<div/>', {
       class: 'editor__section-line',
@@ -325,7 +324,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       type: 'button',
       text: 'Plot'
     })
-      .on('click', function(ev) {
+      .on('click', function() {
         callServer('plots/one').then(function(response) {
           Goatools.Form.Sections.Editor.showPlotImg(response);
         });
@@ -358,7 +357,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   }
 
   function onSectionNameKeydown(ev) {
-    var cssValidRegex = /[ ~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
+    // var cssValidRegex = /[ ~!@$%^&*()+=,.\/';:"?><[\]\\{}|`#]/g;
     var $container = $('#Newsectionname');
     var name = ev.target.innerText;
 
