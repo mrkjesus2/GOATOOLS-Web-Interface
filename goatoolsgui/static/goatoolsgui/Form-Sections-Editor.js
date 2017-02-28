@@ -13,6 +13,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   // Variables needed for scroll function
   var scrollId = 0;
   var stopScroll = true;
+  var plotImgPanId;
   var cursor; // Set by dragOver
   var height = window.innerHeight; // Query once, improve performance
 
@@ -27,7 +28,8 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       panels: $('.panel-heading'),
       container: $('.panel'),
       addSectionBtn: $('#editor__add-section'),
-      file: $('#editor__file')
+      file: $('#editor__file'),
+      plotImg: null
     },
 
     init: function() {
@@ -112,18 +114,22 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
     showPlotImg: function(data) {
       console.time('Show Plot');
-      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'png-image-element', scale: 1});
-      $(img).removeAttr('width height');
-      $(img).addClass('img-responsive');
+      var $imgModal = $('#plot-image-modal');
+      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'svg'});
 
       var imgCont = $('<div/>', {
         id: 'plot-image',
         class: 'plot-image',
         html: img
-      });
+      })
+        .on('mousemove', panPlotImage.bind(this))
+        .on('mousedown', startPanPlotImage.bind(this))
+        .on('mouseup', stopPanPlotImage.bind(this))
+        .on('mouseleave', stopPanPlotImage.bind(this));
 
-      $('#plot-image-modal').modal('show');
-      $('#plot-image-modal .modal-body').html(imgCont);
+      $imgModal.modal('show');
+      $('.modal-body', $imgModal).html(imgCont);
+      $('svg', $imgModal).removeAttr('width height');
       console.timeEnd('Show Plot');
     },
 
@@ -135,6 +141,50 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   /*
     Private Methods
    */
+  var translateObj;
+  function panPlotImage(ev) {
+    this.els.plotImg = this.els.plotImg || $('#plot-image').children().eq(0);
+    var imgCont = this.els.plotImg.parent().eq(0);
+
+    // Stop text selection
+    ev.preventDefault();
+
+    if (translateObj && ev.buttons === 1) {
+      // Elements to work with
+      var el = this.els.plotImg;
+      var mainCont = imgCont.parent();
+
+      // Allow relative panning when zoomed
+      var scale = el.height() / mainCont.height();
+
+      // Calculate the amount to translate
+      var cursor = {
+        x: mainCont.width() * translateObj.imgXPrct,
+        y: mainCont.height() * translateObj.imgYPrct
+      };
+      var heightDiff = mainCont.height() / 2 - cursor.y;
+      var widthDiff = mainCont.width() / 2 - cursor.x;
+
+      // Translate the image
+      var value = widthDiff * scale + 'px,' + heightDiff * scale + 'px';
+      this.els.plotImg.css('transform', 'translate(' + value + ')');
+    }
+
+    // Set translateObj for next call
+    translateObj = {
+      imgXPrct: (ev.pageX - imgCont.offset().left) / imgCont.width(),
+      imgYPrct: (ev.pageY - imgCont.offset().top) / imgCont.height()
+    };
+  }
+
+  function startPanPlotImage(ev) {
+    panPlotImage.bind(this)(ev);
+  }
+
+  function stopPanPlotImage(ev) {
+    this.els.plotImg.css('transform', 'translate(0, 0)');
+  }
+  
   function scroll() {
     if (cursor < 210) {
       // Scroll up faster
