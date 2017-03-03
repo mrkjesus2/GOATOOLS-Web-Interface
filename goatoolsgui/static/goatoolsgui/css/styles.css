@@ -1,0 +1,357 @@
+/**********************
+*       Layout        *
+**********************/
+.container {
+  padding-top: 50px;
+  padding-bottom: 70px;
+}
+
+@media (max-width: 767px) {
+  .container {
+    /*padding-right: 5px;
+    padding-left: 5px;*/
+  }
+}
+
+/*
+ ===== Header =====
+*/
+@media (max-width: 339px) {
+  .navbar-brand {
+    font-size: 14px;
+  }
+
+  .navbar-toggle {
+    margin-right: 5px;
+  }
+}
+
+/* Overide Bootstrap navbar collapse - Don't use navbar toggle until necessary */
+@media (min-width: 435px) and (max-width: 767px) {
+  .navbar-header {
+    float: left;
+  }
+
+  .navbar-collapse {
+    display: block;
+    /* !important overides bootstrap's .container-fluid > .navbar-collapse */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0;
+    /* TODO: Should these move to styling */
+    border-top: 0;
+    box-shadow: none;
+  }
+
+  .navbar-right {
+    float: right;
+    margin: 0 -15px 0 0;
+  }
+
+  .navbar-right > li {
+    float: left;
+  }
+
+  .navbar-right > li > a {
+    padding: 15px 10px;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+}
+
+hr {
+  margin-top: 15px;
+}
+
+/*
+ ===== Intro =====
+ */
+.lead {
+  width: 90%;
+  margin: 20px 5% 0;
+}
+
+.form__error {
+  margin-top: 20px;
+}
+
+/*
+ ===== Form =====
+ */
+
+/* Hide <input type="file"> els since they have been customized */
+.input-file {
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+  height: 0.1px;
+  width: 0.1px;
+  opacity: 0;
+}
+
+.info-circle {
+  float: right;
+  padding: 3px 5px;
+  height: 100%;
+  width: 34px;
+}
+
+.help-text h4:nth-of-type(n+2) {
+  margin-top: 25px;
+}
+
+.help-text p {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/*
+ ===== Editor =====
+*/
+.editor__unsaved-warning {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+/* Use padding instead of margins for containers to prevent deadzones while dragging */
+.editor__group-line {
+  padding: 0.2em 0;
+}
+
+/* Padding for section container is on .editor__section-line and ul to prevent
+drag events being fired by the container. */
+.editor__section-line {
+  display: flex;
+  padding: 0.2em 0.2em 0.7em;
+}
+
+.editor__section-icon {
+  min-width: 20px;
+  align-self: center;
+  display: inline-flex;
+  flex-direction: column-reverse;
+}
+
+.editor__section-icon + span {
+  align-self: center;
+  padding-left: 0.3em;
+  margin-left: 20px;
+  text-indent: -20px;
+}
+
+ul {
+  margin-bottom: 0;
+  padding: 0 0 0.2em;
+  list-style-type: none;
+}
+
+.editor__goid-line {
+  padding-bottom: 0.5em;
+}
+
+.editor__plot-link {
+  margin-right: 5px;
+  margin-left: 10px;
+}
+
+.plot-image {
+  max-width: 100%;
+  transition: transform 200ms ease;
+}
+
+.goid-example {
+  max-width: 275px;
+}
+
+/* TODO: Overriding bootstrap - probably not a great practice */
+.modal-lg {
+  width: 95%;
+}
+
+footer {
+  padding-bottom: 0 !important;
+}
+
+/******************
+*   Typography    *
+******************/
+.navbar,
+.intro {
+  font-family: 'Libre Baskerville', serif;
+}
+
+.lead {
+  font-size: 18px;
+}
+
+.control-label {
+  font-size: 16px;
+}
+
+.form-control {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+/* For inputs text */
+.help-text {
+  font-family: 'Raleway';
+  font-weight: normal;
+  line-height: 1.5;
+}
+
+.editor {
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+/* These are perfect to 399px */
+.editor {
+  white-space: pre-wrap;
+}
+
+.editor__unsaved-warning {
+  text-align: center;
+}
+
+.editor__section-icon {
+  font-size: 10px;
+}
+
+.editor__section-icon:before {
+  font-size: 14px;
+  text-align: center;
+}
+.editor__goid-line {
+  /* Indent lines after first */
+  text-indent: -50px;
+  padding-left: 50px;
+}
+
+/***************
+*   Styling    *
+***************/
+.info-circle {
+  fill: #40c128;
+}
+
+.editor__goid-line {
+  cursor: move;
+}
+
+.editor__goid-line a {
+  cursor: pointer;
+}
+
+/* #2bae13 #40c128 */
+.editor__section-icon {
+  color: #2bae13;
+  /*text-shadow: 1px 0 #c5c5c5;*/
+}
+
+.editor__section-icon:after {
+  font-size: 90%;
+}
+
+/*************
+*   States   *
+*************/
+/* Show focus on custom upload buttons */
+/*.input-file:focus + div label,
+.input-file + div label:hover {
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
+}*/
+
+.info-circle:hover {
+  fill: #2bae13;
+  filter: drop-shadow(1px 1px 2px #000);
+}
+
+.info-circle:active {
+  filter: none;
+}
+
+.editor__section-container--drag-over {
+  background-color: #a1f2a1;
+  box-shadow: inset 1px 1px 10px 2px #29a729;
+  border-radius: 10px;
+}
+
+.editor__goid-line--drag-over {
+  padding-bottom: 2em;
+  transition: padding-bottom 0.2s;
+}
+
+@media (max-width: 650px) {
+  .editor__goid-line--drag-over {
+    padding-bottom: 4em;
+  }
+}
+
+.editor__goid-line:hover {
+  background-color: #337ab7;
+  color: white;
+  border-radius: 5px;
+  box-shadow: 1px 1px 8px -1px black;
+}
+/* TODO: Remove shadow on click */
+.editor__goid-line:hover a {
+  color: black;
+}
+
+.editor__goid-line:active {
+  box-shadow: none;
+}
+
+.editor__section-icon {
+  /* Transform color and transform */
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.editor__section-icon:after {
+  content: 'show';
+}
+.editor__section-icon--open {
+  color: #e36565;
+  transform: rotateZ(-180deg);
+}
+
+.editor__section-icon--open:after {
+  content: 'hide';
+  transform: rotateZ(-180deg);
+}
+
+.modal-body:active {
+  overflow: hidden;
+}
+
+/* TODO: Adjust this with media queries */
+.plot-image:active {
+  transform: scale(3);
+}
+
+/*
+* ===== Results Page =====
+*/
+/*.results-links {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}*/
+
+/*.table-container {
+  width: 100%;
+}*/
+
+/*.go-header {
+  background-color: #d8d6d6;
+}*/
+
+/*.go-section {
+  background-color: #9b9997;
+}*/
+
+/*.progress-bar {
+  color: black;
+}*/

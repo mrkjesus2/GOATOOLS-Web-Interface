@@ -24,8 +24,8 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       openBtn: $('#editor__open-button'),
       saveBtn: $('.editor__save-btn'),
       closeBtns: $('.close'),
-      panels: $('.panel-heading'),
-      container: $('.panel'),
+      panels: $('.editor__header'),
+      container: $('#editor__container'),
       addSectionBtn: $('#editor__add-section'),
       file: $('#editor__file'),
       plotImg: null
@@ -60,24 +60,24 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     },
 
     addWarning: function() {
-      var warningEl = $('<span/>', {
-        class: 'unsaved-warning',
+      var warningEl = $('<div/>', {
+        class: 'editor__unsaved-warning',
         text: 'You have unsaved changes'
       });
 
       this.els.container.addClass('panel-danger');
 
       // Check for warning message, add if none
-      if ($('.unsaved-warning', this.els.panels).length === 0) {
+      if ($('.editor__unsaved-warning', this.els.panels).length === 0) {
         this.els.panels.each(function() {
-          $(this).append(warningEl.clone());
+          $(this).prepend(warningEl.clone());
         });
       }
     },
 
     removeWarning: function() {
       this.els.container.removeClass('panel-danger');
-      $('.unsaved-warning').remove();
+      $('.editor__unsaved-warning').remove();
     },
 
     createFileHtml: function(sectionsArray) {
@@ -319,10 +319,10 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       .on('dragstart', goidDragStart)
       .on('dragend', goidDragEnd);
 
-    var $link = $('<button/>', {
-      class: 'btn btn-primary btn-xs',
+    var $link = $('<a/>', {
+      class: 'editor__plot-link',
       type: 'button',
-      text: 'Plot'
+      text: 'Plot-'
     })
       .on('click', function() {
         callServer('plots/one').then(function(response) {
@@ -413,21 +413,20 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   function dragEnter(ev) {
     ev.preventDefault();
     var $targ = $(ev.target);
+    var contClass = 'editor__section-container--drag-over';
 
-    if (ev.target !== this) {
-      // Add goid line drag over classname if it doesn't exist
-      if (!$targ.hasClass('editor__goid-line--drag-over')) {
-        $targ.addClass('editor__goid-line--drag-over');
-      }
+    // Add drag-over state to goid line
+    $targ.addClass('editor__goid-line--drag-over');
+
+    // Remove all drag-over state for containers and add state to target
+    if (!$(this).hasClass(contClass)) {
+      $(this).siblings().removeClass(contClass);
+      $(this).addClass(contClass);
     }
   }
 
   function dragLeave(ev) {
-    if (ev.target === this) {
-      $(ev.target).removeClass('editor__section-container--drag-over');
-    } else {
       $(ev.target).removeClass('editor__goid-line--drag-over');
-    }
   }
 
   function dragOver(ev) {
@@ -438,7 +437,10 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   }
 
   function onDropOver(ev, el) { // eslint-disable-line no-unused-vars
+    console.log('onDropOver');
     ev.preventDefault();
+    // Remove container drag-over state
+    $(el).removeClass('editor__section-container--drag-over');
 
     var id = ev.dataTransfer.getData('text');
     var newEl = document.getElementById(id);

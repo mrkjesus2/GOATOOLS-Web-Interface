@@ -11,19 +11,23 @@
 
 <!-- Bootstrap 3 from the CDN -->
     <!-- Latest compiled and minified CSS -->
-     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Assistant|Libre+Baskerville|Raleway:500" rel="stylesheet">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://code.jquery.com/jquery-3.1.1.js"
             integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
             crossorigin="anonymous"></script>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" async></script>
     <script src="{% static 'goatoolsgui/jquery.fixedheadertable.min.js' %}"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-<!-- My assets -->
-    <link rel="stylesheet" href="{% static 'goatoolsgui/styles.css' %}" />
     <script src="{% static 'goatoolsgui/viz.js' %}" type="text/javascript" async defer></script>
+
+    <!-- My assets -->
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'goatoolsgui/css/fixed-header-table.css' %}">
+    <link rel="stylesheet" href="{% static 'goatoolsgui/css/styles.css' %}" />
+
+    <!-- Scripts -->
     <script src="{% static 'goatoolsgui/app.js' %}" type="text/javascript" async defer></script>
     <script src="{% static 'goatoolsgui/Form-Goids.js' %}" type="text/javascript" async defer></script>
     <script src="{% static 'goatoolsgui/Form-Sections.js' %}" type="text/javascript" async defer></script>
@@ -53,5 +57,3 @@
     <!-- <script src="{% static 'goatoolsgui/jasmine/spec/test_home-page-form.js' %}"></script> -->
   </body>
 </html>
-
-<!-- col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 -->
