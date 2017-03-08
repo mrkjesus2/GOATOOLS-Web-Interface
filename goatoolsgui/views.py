@@ -97,13 +97,31 @@ def showPlots(request):
   return response
 
 
+
+
 def showOnePlot(request, what):
+  ''' May need to add this to prevent ajax error before submitting form '''
+  # '''
+  # Create user session if it doesn't exist
+  # '''
+  # if request.session.has_key('user_data_id'):
+  #   # There is session data
+  #   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+  # else:
+  #   # No session data - Set up a user
+  #   user_data = GoIds()
+  #   user_data.save()
+  #   request.session['user_data_id'] = user_data.id
+
   print request.session['user_data_id']
   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
   print '\nShow One Plot was called\n'
   # Temporary for front-end dev purposes
   response = JsonResponse(user_data.plot_data[0], safe=False)
   return response
+
+
+
 
 def sendFile(request):
   user_gos_obj = GoIds.objects.get(pk=request.session['user_data_id'])
@@ -143,12 +161,6 @@ def generateSections(request):
   if request.session.has_key('user_data_id'):
     # There is session data
     user_data = GoIds.objects.get(pk=request.session['user_data_id'])
-
-    # Convert JSON to 2d list for make_sections_file()
-    if request.POST.get('sections'):
-      sections = json.loads(request.POST.get('sections'))
-      sections_list = [ [k,v] for k, v in sections.items() ]
-      user_data.sections = sections_list
   else:
     # No session data - Set up a user
     user_data = GoIds()
