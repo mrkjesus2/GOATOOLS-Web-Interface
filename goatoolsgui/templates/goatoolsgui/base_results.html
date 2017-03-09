@@ -6,13 +6,17 @@
   <!--
     Nav Tabs
    -->
-  <ul id="results-tabs" class="nav nav-tabs" role="tablist">
+  <ul id="results-tabs" class="nav nav-tabs results__nav" role="tablist">
     <li role="presentation" class="active">
-      <a href="#table" id="table-tab" role="tab" data-toggle="tab" aria-controls="table" aria-expanded="true">View Table</a>
+      <a href="#table" id="table-tab" role="tab" data-toggle="tab" aria-controls="table" aria-expanded="true">Table</a>
     </li>
     <li role="presentation">
-      <a href="#plots" id="plots-tab" role="tab" data-toggle="tab" aria-controls="plots">View Plots</a>
+      <a href="#plots" id="plots-tab" role="tab" data-toggle="tab" aria-controls="plots">Plots</a>
     </li>
+    <!-- TODO: Not entirely sure that the download link shouldn't be here -->
+    <!-- <li role="presentation" class="results__links pull-right">
+      <a class="btn btn-primary" href="{% url 'goatoolsgui:sendfile' %}">Get xls file</a>
+    </li> -->
   </ul>
 
   <div id="results-tab-content" class="tab-content">
@@ -87,7 +91,7 @@
       <!--
         Links
        -->
-      <div class="results-links">
+      <div class="results__links">
         <!-- <a href="#">Citation Link</a> -->
         <a class="btn btn-primary" href="{% url 'goatoolsgui:sendfile' %}">Download File</a>
       </div>

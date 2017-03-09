@@ -160,10 +160,10 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
 /*
   Fixed Header Table JS
  */
-var hdrHeight = $('header').height();
-var ftrHeight = $('footer').height();
-var tabHeight = $('#results-tabs').height();
-var lnkHeight = $('.results-links').outerHeight();
+var hdrHeight = $('header').outerHeight();
+var ftrHeight = $('footer').outerHeight();
+var tabHeight = $('#results-tabs').outerHeight();
+var lnkHeight = $('.results__links').outerHeight();
 var wndwHeight = window.innerHeight;
 // var wndwWidth = window.innerWidth;
 

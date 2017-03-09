@@ -111,6 +111,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       });
     },
 
+    // TODO: The AJAX fucntion for all of the plots should be able to use this method - thus extract all plot functions to new module
     showPlotImg: function(data) {
       console.time('Show Plot');
       var $imgModal = $('#plot-image-modal');

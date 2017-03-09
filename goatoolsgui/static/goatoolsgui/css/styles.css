@@ -1,9 +1,14 @@
 /**********************
 *       Layout        *
 **********************/
+body {
+  min-height: 100vh;
+}
+
 .container {
+  /* 52 is the footer height plus borders */
+  min-height: calc(100vh - 52px);
   padding-top: 50px;
-  padding-bottom: 70px;
 }
 
 @media (max-width: 767px) {
@@ -64,6 +69,26 @@
 hr {
   margin-top: 15px;
 }
+
+/*
+ ===== Results Page =====
+ The height of the table is calculated in app.js for fixedheadertable.js
+ */
+.results__nav {
+  padding-top: 1em;
+}
+
+.results__links {
+  padding: 0.5em 0;
+}
+
+.progress {
+  margin: 40vh 10vw;
+}
+
+/*
+ ===== Form Page =====
+ */
 
 /*
  ===== Intro =====
@@ -149,7 +174,7 @@ drag events being fired by the container. */
   text-indent: -20px;
 }
 
-ul {
+.editor ul {
   margin-bottom: 0;
   padding: 0 0 0.2em;
   list-style-type: none;
@@ -179,11 +204,16 @@ ul {
 
 footer {
   padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 /******************
 *   Typography    *
 ******************/
+.results__links {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .navbar,
 .intro {
   font-family: 'Libre Baskerville', serif;
@@ -197,7 +227,8 @@ footer {
   font-size: 16px;
 }
 
-.form-control {
+.form-control,
+.tab-content {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
@@ -239,6 +270,10 @@ footer {
 /***************
 *   Styling    *
 ***************/
+
+/*
+ ===== Form Page =====
+*/
 .info-circle {
   fill: #40c128;
 }
@@ -260,6 +295,21 @@ footer {
 .editor__section-icon:after {
   font-size: 90%;
 }
+
+/*
+ ===== Results Page =====
+ */
+ .progress-bar {
+   color: black;
+ }
+
+ .go-section {
+   background-color: #bbb;
+ }
+
+ .go-header {
+   background-color: #e8e8e8;
+ }
 
 /*************
 *   States   *
@@ -338,27 +388,3 @@ footer {
 .plot-image:active {
   transform: scale(3);
 }
-
-/*
-* ===== Results Page =====
-*/
-/*.results-links {
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-}*/
-
-/*.table-container {
-  width: 100%;
-}*/
-
-/*.go-header {
-  background-color: #d8d6d6;
-}*/
-
-/*.go-section {
-  background-color: #9b9997;
-}*/
-
-/*.progress-bar {
-  color: black;
-}*/
