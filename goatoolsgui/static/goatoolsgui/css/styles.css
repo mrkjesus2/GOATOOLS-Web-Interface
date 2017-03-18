@@ -86,6 +86,10 @@ hr {
   margin: 40vh 10vw;
 }
 
+.plot-images {
+  padding: 24px 0 12px;
+}
+
 /*
  ===== Form Page =====
  */
@@ -311,6 +315,13 @@ footer {
    background-color: #e8e8e8;
  }
 
+.plot-images {
+  border-bottom: 1px solid #dbdbdb;
+
+  /* Prevent bleed from background when zooming */
+  background-color: white;
+}
+
 /*************
 *   States   *
 *************/
@@ -385,6 +396,6 @@ footer {
 }
 
 /* TODO: Adjust this with media queries */
-.plot-image:active {
+.plot-image svg:active {
   transform: scale(3);
 }
