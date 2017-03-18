@@ -86,8 +86,17 @@ hr {
   margin: 40vh 10vw;
 }
 
-.plot-images {
+.plot-image__container {
   padding: 24px 0 12px;
+}
+
+.plot-image__description {
+  padding-top: 0.5em;
+}
+
+.plot-image__download {
+  float: right;
+  margin-bottom: 1em;
 }
 
 /*
@@ -315,7 +324,7 @@ footer {
    background-color: #e8e8e8;
  }
 
-.plot-images {
+.plot-image__container {
   border-bottom: 1px solid #dbdbdb;
 
   /* Prevent bleed from background when zooming */

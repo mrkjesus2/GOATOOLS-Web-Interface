@@ -128,7 +128,7 @@ function createPlotDiv(dotFileStr) {
   // Container for description, button, and svg
   var $imgCont = $('<div/>', {
     id: goid + '-plot-image',
-    class: 'plot-image plot-images',
+    class: 'plot-image__container',
     html: svgString
   });
     // .on('mousemove', panPlotImage.bind(this))
@@ -159,8 +159,8 @@ function createPlotDiv(dotFileStr) {
     });
 
     // Add the description and download button to the div
-    $imgCont.prepend($btn);
     $imgCont.prepend($desc);
+    $imgCont.prepend($btn);
 
     return $imgCont[0];
 }
