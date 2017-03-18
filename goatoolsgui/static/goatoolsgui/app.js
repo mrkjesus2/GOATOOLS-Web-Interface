@@ -128,7 +128,7 @@ function createPlotDiv(dotFileStr) {
   // Container for description, button, and svg
   var $imgCont = $('<div/>', {
     id: goid + '-plot-image',
-    class: 'plot-image__container',
+    class: 'plot-image__container plot-image',
     html: svgString
   });
     // .on('mousemove', panPlotImage.bind(this))
