@@ -87,6 +87,7 @@ hr {
 }
 
 .plot-image__container {
+  overflow: hidden;
   padding: 24px 0 12px;
 }
 

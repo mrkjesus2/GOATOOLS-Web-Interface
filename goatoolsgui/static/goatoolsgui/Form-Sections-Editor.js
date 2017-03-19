@@ -27,8 +27,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       panels: $('.editor__header'),
       container: $('#editor__container'),
       addSectionBtn: $('#editor__add-section'),
-      file: $('#editor__file'),
-      plotImg: null
+      file: $('#editor__file')
     },
 
     init: function() {
@@ -111,28 +110,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       });
     },
 
-    // TODO: The AJAX fucntion for all of the plots should be able to use this method - thus extract all plot functions to new module
-    showPlotImg: function(data) {
-      console.time('Show Plot');
-      var $imgModal = $('#plot-image-modal');
-      var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'svg'}); // eslint-disable-line new-cap
-
-      var imgCont = $('<div/>', {
-        id: 'plot-image',
-        class: 'plot-image',
-        html: img
-      })
-        .on('mousemove', panPlotImage.bind(this))
-        .on('mousedown', startPanPlotImage.bind(this))
-        .on('mouseup', stopPanPlotImage.bind(this))
-        .on('mouseleave', stopPanPlotImage.bind(this));
-
-      $imgModal.modal('show');
-      $('.modal-body', $imgModal).html(imgCont);
-      $('svg', $imgModal).removeAttr('width height');
-      console.timeEnd('Show Plot');
-    },
-
     sectionDropOver: function(ev, el) {
       onDropOver.bind(this)(ev, el);
     }
@@ -141,50 +118,6 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   /*
     Private Methods
    */
-  var translateObj;
-  function panPlotImage(ev) {
-    this.els.plotImg = this.els.plotImg || $('#plot-image').children().eq(0);
-    var imgCont = this.els.plotImg.parent().eq(0);
-
-    // Stop text selection
-    ev.preventDefault();
-
-    if (translateObj && ev.buttons === 1) {
-      // Elements to work with
-      var el = this.els.plotImg;
-      var mainCont = imgCont.parent();
-
-      // Allow relative panning when zoomed
-      var scale = el.height() / mainCont.height();
-
-      // Calculate the amount to translate
-      var cursor = {
-        x: mainCont.width() * translateObj.imgXPrct,
-        y: mainCont.height() * translateObj.imgYPrct
-      };
-      var heightDiff = mainCont.height() / 2 - cursor.y;
-      var widthDiff = mainCont.width() / 2 - cursor.x;
-
-      // Translate the image
-      var value = widthDiff * scale + 'px,' + heightDiff * scale + 'px';
-      this.els.plotImg.css('transform', 'translate(' + value + ')');
-    }
-
-    // Set translateObj for next call
-    translateObj = {
-      imgXPrct: (ev.pageX - imgCont.offset().left) / imgCont.width(),
-      imgYPrct: (ev.pageY - imgCont.offset().top) / imgCont.height()
-    };
-  }
-
-  function startPanPlotImage(ev) {
-    panPlotImage.bind(this)(ev);
-  }
-
-  function stopPanPlotImage() {
-    this.els.plotImg.css('transform', 'translate(0, 0)');
-  }
-
   function scroll() {
     if (cursor < 210) {
       // Scroll up faster
@@ -327,7 +260,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     })
       .on('click', function() {
         callServer('plots/one').then(function(response) {
-          Goatools.Form.Sections.Editor.showPlotImg(response);
+          Goatools.Plots.showPlotImg(response);
         });
       });
 
