@@ -29,6 +29,7 @@ Goatools.callServer = function(url, data) {
     },
 
     error: function(xhr, errmsg, err) { // eslint-disable-line no-unused-vars
+      // TODO: Handle Ajax errors
       console.log('Ajax Error');
     }
   });
@@ -88,7 +89,26 @@ if (location.pathname === '/show/') {
   }
 }
 
+// $('#loading').modal({
+  // backdrop: false,
+  // show: true
+// });
+// $('.loading__spinner').css('animation-play-state', 'running');
 
+$(document)
+  .ajaxStart(function() {
+    $('#loading').modal({
+      backdrop: false,
+      show: true
+    });
+    $('.loading__spinner').css('animation-play-state', 'running');
+    $('#progress').css('visibility', 'hidden');
+  })
+  .ajaxStop(function() {
+    $('.loading__spinner').css('animation-play-state', 'paused');
+    $('#loading').modal('hide');
+    $('#progress').css('visibility', 'visible');
+  });
 
 /*
    Bootstrap functionality

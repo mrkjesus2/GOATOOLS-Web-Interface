@@ -70,6 +70,28 @@ hr {
   margin-top: 15px;
 }
 
+.loading__spinner {
+  height: 20vh;
+  width: 20vh;
+  border-radius: 50%;
+  margin: 30vh auto;
+  background-color: white;
+  border: 1.1em solid rgba(91, 192, 222, 0.3);
+  border-left: 1.1em solid #5bc0de;
+  animation: load 1.1s infinite linear;
+  animation-play-state: paused;
+}
+
+@keyframes load {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /*
  ===== Results Page =====
  The height of the table is calculated in app.js for fixedheadertable.js
