@@ -259,7 +259,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       text: 'Plot-'
     })
       .on('click', function() {
-        callServer('plots/one').then(function(response) {
+        Goatools.callServer('plots/one').then(function(response) {
           Goatools.Plots.showPlotImg(response);
         });
       });

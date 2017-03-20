@@ -23,7 +23,7 @@ Goatools.Plots = Goatools.Plots || {};
       var frag = document.createDocumentFragment();
       // TODO: Speed up loading by initializing an animation here and canceling?
 
-      callServer('../plots').then(function(response) {
+      Goatools.callServer('../plots').then(function(response) {
         // TODO: The function can be faster without setTimeout, but need to indicate something is happening
         // console.time('AJAX Success Function');
 

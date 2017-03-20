@@ -47,7 +47,7 @@ Goatools.File = {
   },
 
   getExampleData: function(id) {
-    callServer('exampledata/', {'type': id}).then(function(response) {
+    Goatools.callServer('exampledata/', {'type': id}).then(function(response) {
       var blob = Goatools.File.createBlob(response.sections_data);
       var isBlob = true;
 
@@ -98,7 +98,7 @@ Goatools.File.Sections = {
       sections: sections || ''
     };
 
-    callServer('generatesections/', data)
+    Goatools.callServer('generatesections/', data)
       .then(function(response) {
         Goatools.Form.Sections.setSections('generated-sections-file.txt', response);
       });

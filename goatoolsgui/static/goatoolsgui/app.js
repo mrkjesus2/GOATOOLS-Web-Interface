@@ -9,8 +9,8 @@ var Goatools = Goatools || {} // eslint-disable-line
  * @param  {object} data The data the endpoint expectations
  * @return {function}      Allows using .then() to work with the response
  */
-function callServer(url, data) { // eslint-disable-line no-unused-vars
-  var csrftoken = getCookie('csrftoken');
+Goatools.callServer = function(url, data) {
+  var csrftoken = Goatools.getCookie('csrftoken');
   var reqType = url === 'generatesections/' ? 'POST' : 'GET';
   console.log('SERVER IS BEING CALLED');
   return $.ajax({
@@ -19,7 +19,7 @@ function callServer(url, data) { // eslint-disable-line no-unused-vars
     data: data || {},
 
     beforeSend: function(xhr, settings) {
-      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+      if (!Goatools.csrfSafeMethod(settings.type) && !this.crossDomain) {
         xhr.setRequestHeader("X-CSRFToken", csrftoken);
       }
     },
@@ -32,27 +32,24 @@ function callServer(url, data) { // eslint-disable-line no-unused-vars
       console.log('Ajax Error');
     }
   });
-}
-
-/**
- * CSRF Token Methods
- */
+};
 
 /**
  * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
  * @param  {[type]} method [description]
  * @return {[type]}        [description]
  */
-function csrfSafeMethod(method) {
+Goatools.csrfSafeMethod = function(method) {
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+};
+
 
 /**
  * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
  * @param  {[type]} name [description]
  * @return {[type]}      [description]
  */
-function getCookie(name) {
+Goatools.getCookie = function(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     var cookies = document.cookie.split(';');
@@ -65,7 +62,10 @@ function getCookie(name) {
     }
   }
   return cookieValue;
-}
+};
+
+
+
 
 /*
    Bootstrap functionality
@@ -89,7 +89,6 @@ $('#InformationModal').on('hidden.bs.modal', function() {
 });
 
 
-
 /**
  * Fetch plot dot strings and display svg images
  */
@@ -109,6 +108,10 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
   tabContent.find(ref).show();
 }));
 
+
+
+
+
 /*
   Fixed Header Table JS
  */
@@ -127,6 +130,9 @@ $(document).ready(function() {
     autoresize: true
   });
 });
+
+
+
 
 /**
  * Development Helpers
