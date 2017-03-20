@@ -65,6 +65,29 @@ Goatools.getCookie = function(name) {
 };
 
 
+/*
+  Fixed Header Table JS
+ */
+if (location.pathname === '/show/') {
+  Goatools.table = function() {
+
+    var hdrHt = $('header').outerHeight();
+    var ftrHt = $('footer').outerHeight();
+    var tabHt = $('#results-tabs').outerHeight();
+    var lnkHt = $('.results__links').outerHeight();
+    var wndwHt = window.innerHeight;
+    // var wndwWidth = window.innerWidth;
+
+    var height = wndwHt - hdrHt - ftrHt - tabHt - lnkHt;
+
+    $('#results-table').fixedHeaderTable({
+      // width: 300,
+      height: height,
+      autoresize: true
+    });
+  }
+}
+
 
 
 /*
@@ -75,17 +98,6 @@ $(function() {
   $('[data-toggle="tooltip"]').tooltip({
     trigger: 'hover'
   });
-});
-
-// Show correct info when modal opens
-$('#InformationModal').on('show.bs.modal', function(event) {
-  var targets = $('.modal-' + event.relatedTarget.id);
-  targets.removeClass('hidden');
-});
-
-// Hide info when modal closes - prevents too much info in next modal
-$('#InformationModal').on('hidden.bs.modal', function() {
-  $('#InformationModal.modal-info').addClass('hidden');
 });
 
 
@@ -107,29 +119,6 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
   tabContent.find('.tab-pane').hide();
   tabContent.find(ref).show();
 }));
-
-
-
-
-
-/*
-  Fixed Header Table JS
- */
-var hdrHeight = $('header').outerHeight();
-var ftrHeight = $('footer').outerHeight();
-var tabHeight = $('#results-tabs').outerHeight();
-var lnkHeight = $('.results__links').outerHeight();
-var wndwHeight = window.innerHeight;
-// var wndwWidth = window.innerWidth;
-
-$(document).ready(function() {
-  var height = wndwHeight - hdrHeight - ftrHeight - tabHeight - lnkHeight;
-  $('#results-table').fixedHeaderTable({
-    // width: 300,
-    height: height,
-    autoresize: true
-  });
-});
 
 
 
