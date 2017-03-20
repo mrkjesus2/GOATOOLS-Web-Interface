@@ -14,7 +14,7 @@ Goatools.callServer = function(url, data) {
   var reqType = url === 'generatesections/' ? 'POST' : 'GET';
   console.log('SERVER IS BEING CALLED');
   return $.ajax({
-    url: url,
+    url: 'broken', //url,
     type: reqType,
     data: data || {},
 
@@ -31,6 +31,7 @@ Goatools.callServer = function(url, data) {
     error: function(xhr, errmsg, err) { // eslint-disable-line no-unused-vars
       // TODO: Handle Ajax errors
       console.log('Ajax Error');
+      $('#ajax-error').modal('show');
     }
   });
 };
@@ -89,12 +90,6 @@ if (location.pathname === '/show/') {
   }
 }
 
-// $('#loading').modal({
-  // backdrop: false,
-  // show: true
-// });
-// $('.loading__spinner').css('animation-play-state', 'running');
-
 $(document)
   .ajaxStart(function() {
     $('#loading').modal({
@@ -149,6 +144,12 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
  */
 
 $(document).ready(function() {
+  // $('#ajax-error').modal('show');
+  // $('#loading').modal({
+    // backdrop: false,
+    // show: true
+  // });
+  // $('.loading__spinner').css('animation-play-state', 'running');
   // eslint-disable-next-line max-len
   $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
 //   $('#section_names').val('sections1, sections2');
