@@ -62,8 +62,8 @@ Goatools.Plots = Goatools.Plots || {};
         html: img
       })
         .on('mousemove', panPlotImage.bind(this))
-        .on('mousedown', startPanPlotImage.bind(this))
-        .on('mouseup', stopPanPlotImage.bind(this))
+        .on('mousedown', 'svg', startPanPlotImage.bind(this))
+        .on('mouseup', 'svg', stopPanPlotImage.bind(this))
         .on('mouseleave', stopPanPlotImage.bind(this));
 
       $imgModal.modal('show');
@@ -86,10 +86,11 @@ Goatools.Plots = Goatools.Plots || {};
         html: svgString
       })
         .on('mousemove', panPlotImage.bind(this))
-        .on('mousedown', startPanPlotImage.bind(this))
-        .on('mouseup', stopPanPlotImage.bind(this))
-        .on('mouseleave', stopPanPlotImage.bind(this));
-
+        .on('mousedown', 'svg', startPanPlotImage.bind(this))
+        .on('mouseup', 'svg', stopPanPlotImage.bind(this))
+        .on('mouseleave', stopPanPlotImage.bind(this))
+        // Prevent image from moving on description click
+        .on('mousemove', 'p', function() {return false;});
 
       // Desciption for the SVG
       var $desc = $('<p/>', {
@@ -181,12 +182,11 @@ Goatools.Plots = Goatools.Plots || {};
    }
 
    function startPanPlotImage(ev) {
-    this.els.plotImg = $('svg', ev.currentTarget).eq(0);
+    this.els.plotImg = $(ev.currentTarget);
     panPlotImage.bind(this)(ev);
    }
 
    function stopPanPlotImage() {
      this.els.plotImg.css('transform', 'translate(0, 0)');
-     this.els.plotImg = null;
    }
 })();
