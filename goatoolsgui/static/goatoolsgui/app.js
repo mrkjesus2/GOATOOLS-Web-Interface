@@ -4,39 +4,6 @@
 var Goatools = Goatools || {} // eslint-disable-line
 
 /**
- * Function used to call the Goatools server for information
- * @param  {string} url  The url to used
- * @param  {object} data The data the endpoint expectations
- * @return {function}      Allows using .then() to work with the response
- */
-Goatools.callServer = function(url, data) {
-  var csrftoken = Goatools.getCookie('csrftoken');
-  var reqType = url === 'generatesections/' ? 'POST' : 'GET';
-  console.log('SERVER IS BEING CALLED');
-  return $.ajax({
-    url: 'broken', //url,
-    type: reqType,
-    data: data || {},
-
-    beforeSend: function(xhr, settings) {
-      if (!Goatools.csrfSafeMethod(settings.type) && !this.crossDomain) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-      }
-    },
-
-    success: function(response) {
-      return response;
-    },
-
-    error: function(xhr, errmsg, err) { // eslint-disable-line no-unused-vars
-      // TODO: Handle Ajax errors
-      console.log('Ajax Error');
-      $('#ajax-error').modal('show');
-    }
-  });
-};
-
-/**
  * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
  * @param  {[type]} method [description]
  * @return {[type]}        [description]
@@ -44,7 +11,6 @@ Goatools.callServer = function(url, data) {
 Goatools.csrfSafeMethod = function(method) {
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 };
-
 
 /**
  * Method from https://docs.djangoproject.com/en/dev/ref/csrf/ for AJAX calls
@@ -66,13 +32,64 @@ Goatools.getCookie = function(name) {
   return cookieValue;
 };
 
+/**
+ * Function used to call the Goatools server for information
+ * @param  {string} url  The url to used
+ * @param  {object} data The data the endpoint expectations
+ * @return {function}      Allows using .then() to work with the response
+ */
+Goatools.callServer = function(url, data) {
+  var csrftoken = Goatools.getCookie('csrftoken');
+  var reqType = url === 'generatesections/' ? 'POST' : 'GET';
+  console.log('SERVER IS BEING CALLED');
+  return $.ajax({
+    url: url,
+    type: reqType,
+    data: data || {},
+
+    beforeSend: function(xhr, settings) {
+      if (!Goatools.csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+
+      Goatools.showSpinner();
+    },
+
+    success: function(response) {
+      Goatools.hideSpinner();
+      return response;
+    },
+
+    error: function(xhr, errmsg, err) { // eslint-disable-line no-unused-vars
+      Goatools.hideSpinner();
+      $('#ajax-error').modal('show');
+    }
+  });
+};
+
+Goatools.showSpinner = function() {
+  $('#loading').modal({
+    backdrop: false,
+    show: true
+  });
+  $('.loading__spinner').css('animation-play-state', 'running');
+  $('#progress').css('visibility', 'hidden');
+};
+
+Goatools.hideSpinner = function() {
+  $('.loading__spinner').css('animation-play-state', 'paused');
+  $('#loading').modal('hide');
+  $('#progress').css('visibility', 'visible');
+};
+
+
+
 
 /*
   Fixed Header Table JS
  */
 if (location.pathname === '/show/') {
-  Goatools.table = function() {
-
+  (function() {
     var hdrHt = $('header').outerHeight();
     var ftrHt = $('footer').outerHeight();
     var tabHt = $('#results-tabs').outerHeight();
@@ -87,23 +104,10 @@ if (location.pathname === '/show/') {
       height: height,
       autoresize: true
     });
-  }
+  })();
 }
 
-$(document)
-  .ajaxStart(function() {
-    $('#loading').modal({
-      backdrop: false,
-      show: true
-    });
-    $('.loading__spinner').css('animation-play-state', 'running');
-    $('#progress').css('visibility', 'hidden');
-  })
-  .ajaxStop(function() {
-    $('.loading__spinner').css('animation-play-state', 'paused');
-    $('#loading').modal('hide');
-    $('#progress').css('visibility', 'visible');
-  });
+
 
 /*
    Bootstrap functionality

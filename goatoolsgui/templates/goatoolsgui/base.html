@@ -51,36 +51,37 @@
     {% include "goatoolsgui/header.html" %}
     <div class="container">
       {% block content %}{% endblock %}
-    </div>
-    {% include "goatoolsgui/footer.html" %}
 
-    <!-- Loading Spinner Modal -->
-    <div class="modal" id="loading" tabindex="-1" role="dialog" aria-labelledby="loading-label">
-      <div class="modal-dialog" role="document">
+      <!-- Loading Spinner Modal -->
+      <div class="modal" id="loading" tabindex="-1" role="dialog" aria-labelledby="loading-label">
+        <div class="modal-dialog" role="document">
           <div class="modal-body">
             <div class="loading__spinner">
               <span class="sr-only" id="loading-label">Loading...</span>
             </div>
           </div>
+        </div>
       </div>
-    </div>
 
-    <!-- AJAX Error Modal -->
-    <div class="modal fade" id="ajax-error" tabindex="-1" role="dialog" aria-labelledby="ajax-error-title">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header bg-danger">
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h3 class="modal-title" id="ajax-error-title">Error</h3>
-          </div>
-          <div class="modal-body">
-            <p>There was an error contacting the server, please try again!</p>
+      <!-- AJAX Error Modal -->
+      <div class="modal" id="ajax-error" tabindex="-1" role="dialog" aria-labelledby="ajax-error-title">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-danger">
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 class="modal-title" id="ajax-error-title">Error</h3>
+            </div>
+            <div class="modal-body">
+              <p>There was an error contacting the server, please try again!</p>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
+    {% include "goatoolsgui/footer.html" %}
 
     <!-- My test scripts -->
     <!-- <script src="{% static 'goatoolsgui/jasmine/spec/test_home-page.js' %}"></script> -->

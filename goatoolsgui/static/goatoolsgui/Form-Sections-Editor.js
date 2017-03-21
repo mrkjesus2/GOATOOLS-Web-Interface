@@ -140,8 +140,8 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
 
   function onOpenBtnClick() {
     if (Goatools.Form.els.form[0].checkValidity()) {
-      changeBtn.bind(this)();
       Goatools.File.Sections.get();
+      changeBtn.bind(this)();
     } else {
       Goatools.Form.els.form.submit();
     }
@@ -259,7 +259,8 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       text: 'Plot-'
     })
       .on('click', function() {
-        Goatools.callServer('plots/one').then(function(response) {
+        Goatools.callServer('plots/one')
+        .then(function(response) {
           Goatools.Plots.showPlotImg(response);
         });
       });

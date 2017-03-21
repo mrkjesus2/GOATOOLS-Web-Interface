@@ -21,32 +21,33 @@ Goatools.Plots = Goatools.Plots || {};
     getAll: function() {
       var $parent = $('#plots');
       var frag = document.createDocumentFragment();
-      // TODO: Speed up loading by initializing an animation here and canceling?
 
-      Goatools.callServer('../plots').then(function(response) {
-        // TODO: The function can be faster without setTimeout, but need to indicate something is happening
-        // console.time('AJAX Success Function');
-
+      Goatools.callServer('../plots')
+      .then(function(response) {
         Goatools.Plots.els.progressBar.text('');
 
-        // Create svg elements from JSON response
-        response.forEach(function(dotFileStr, idx) {
+        (function addImages(index) {
           setTimeout(function() {
-            var percent = (idx + 1) / response.length * 100;
-            requestAnimationFrame(function() {
-              Goatools.Plots.setProgressBar(percent);
-            });
-            frag.appendChild(Goatools.Plots.createPlotDiv(dotFileStr));
+            // Set the progress indicator
+            var percent = (index + 1) / response.length * 100;
+            Goatools.Plots.setProgressBar(percent);
 
-            if (response.length - 1 === idx) {
+            // Add svg to fragment
+            frag.appendChild(Goatools.Plots.createPlotDiv(response[index]));
+
+            // Call the next image or add images to page
+            if (++index < response.length) {
+              addImages(index);
+            } else {
               $parent.html(frag);
-              // Temporary fix to ease my sanity
+              // Temporary fix to save my sanity
               $('svg').removeAttr('width height');
             }
-
-          }, 100 * idx);
-      });
-      // console.timeEnd('AJAX Success Function');
+          }, 1 * index);
+        })(0);
+      })
+      .fail(function(response) {
+        $('#table-tab').click();
       });
     },
 
