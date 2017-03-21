@@ -51,6 +51,8 @@ Goatools.Form = Goatools.Form || {};
   function onSubmit(ev) {
     if (!Goatools.Form.Goids.validate()) {
       ev.preventDefault();
+    } else {
+      Goatools.showSpinner();
     }
   }
 
