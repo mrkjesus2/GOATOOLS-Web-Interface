@@ -244,31 +244,34 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
   }
 
   function makeGoidLine(text) {
-    var $line = $('<li/>', {
-      id: text.substr(0, 10),
-      class: 'editor__goid-line',
-      html: text,
-      draggable: 'true'
-    })
-      .on('dragstart', goidDragStart)
-      .on('dragend', goidDragEnd);
+    // Return only lines that start with 'GO:' to avoid commented lines
+    if (text.indexOf('GO:') === 0) {
+      var $line = $('<li/>', {
+        id: text.substr(0, 10),
+        class: 'editor__goid-line',
+        html: text,
+        draggable: 'true'
+      })
+        .on('dragstart', goidDragStart)
+        .on('dragend', goidDragEnd);
 
-    var $link = $('<a/>', {
-      class: 'editor__plot-link',
-      type: 'button',
-      text: 'Plot-'
-    })
-      .on('click', function(ev) {
-        var id = ev.currentTarget.parentElement.id;
-        console.log(id);
-        Goatools.callServer('plots/one', {'goid': id}) // send the goid too
-        .then(function(response) {
-          Goatools.Plots.showPlotImg(response, id);
+      var $link = $('<a/>', {
+        class: 'editor__plot-link',
+        type: 'button',
+        text: 'Plot-'
+      })
+        .on('click', function(ev) {
+          var id = ev.currentTarget.parentElement.id;
+          console.log(id);
+          Goatools.callServer('plots/one', {'goid': id}) // send the goid too
+          .then(function(response) {
+            Goatools.Plots.showPlotImg(response, id);
+          });
         });
-      });
 
-    $line.prepend($link);
-    return $line;
+      $line.prepend($link);
+      return $line;
+    }
   }
 
 /*
