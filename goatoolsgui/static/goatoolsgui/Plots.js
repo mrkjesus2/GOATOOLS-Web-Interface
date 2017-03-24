@@ -52,7 +52,7 @@ Goatools.Plots = Goatools.Plots || {};
     },
 
     // TODO: The AJAX fucntion for all of the plots should be able to use this method - thus extract all plot functions to new module
-    showPlotImg: function(data) {
+    showPlotImg: function(data, id) {
       console.time('Show Plot');
       var $imgModal = $('#plot-image-modal');
       var img = Viz(data.replace(/dpi=[0-9]+,/g, ''), {format: 'svg'}); // eslint-disable-line new-cap
@@ -67,6 +67,8 @@ Goatools.Plots = Goatools.Plots || {};
         .on('mouseup', 'svg', stopPanPlotImage.bind(this))
         .on('mouseleave', stopPanPlotImage.bind(this));
 
+      // Add modal header, show modal and remove implied heigth and width
+      $('#exampleModalLabel').text(id + ' Plot Image');
       $imgModal.modal('show');
       $('.modal-body', $imgModal).html(imgCont);
       $('svg', $imgModal).removeAttr('width height');

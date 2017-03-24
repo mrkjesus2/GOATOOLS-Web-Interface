@@ -101,24 +101,25 @@ def showPlots(request):
 
 def showOnePlot(request, what):
   ''' May need to add this to prevent ajax error before submitting form '''
-  # '''
-  # Create user session if it doesn't exist
-  # '''
-  # if request.session.has_key('user_data_id'):
-  #   # There is session data
-  #   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
-  # else:
-  #   # No session data - Set up a user
-  #   user_data = GoIds()
-  #   user_data.save()
-  #   request.session['user_data_id'] = user_data.id
+  '''
+  Create user session if it doesn't exist
+  '''
+  if request.session.has_key('user_data_id'):
+    # There is session data
+    user_data = GoIds.objects.get(pk=request.session['user_data_id'])
+  else:
+    # No session data - Set up a user
+    user_data = GoIds()
+    user_data.save()
+    request.session['user_data_id'] = user_data.id
 
-  print request.session['user_data_id']
   user_data = GoIds.objects.get(pk=request.session['user_data_id'])
-  print '\nShow One Plot was called\n'
-  # Temporary for front-end dev purposes
-  response = JsonResponse(user_data.plot_data[0], safe=False)
+  user_data.go_ids = request.GET.get('goid')
+  user_data.save()
+
+  response = JsonResponse(user_data.get_svg_plots()[0], safe=False)
   return response
+
 
 
 

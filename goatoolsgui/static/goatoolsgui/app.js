@@ -148,6 +148,7 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
  */
 
 $(document).ready(function() {
+  // $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
   // $('#ajax-error').modal('show');
   // $('#loading').modal({
     // backdrop: false,
@@ -155,7 +156,6 @@ $(document).ready(function() {
   // });
   // $('.loading__spinner').css('animation-play-state', 'running');
   // eslint-disable-next-line max-len
-  $('#goids').val('GO:0002376, GO:0002682, GO:0001817, GO:0001816, GO:0034097, GO:0045087, GO:0006954, GO:0002521, GO:0002467, GO:0007229, GO:0050900, GO:0022610, GO:0030155, GO:0007155, GO:0016032, GO:0050792, GO:0098542');
 //   $('#section_names').val('sections1, sections2');
   // $('#go-info').click();
   // $('#sections-info').click();

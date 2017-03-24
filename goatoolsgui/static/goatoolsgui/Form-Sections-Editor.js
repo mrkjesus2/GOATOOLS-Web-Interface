@@ -258,10 +258,12 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
       type: 'button',
       text: 'Plot-'
     })
-      .on('click', function() {
-        Goatools.callServer('plots/one')
+      .on('click', function(ev) {
+        var id = ev.currentTarget.parentElement.id;
+        console.log(id);
+        Goatools.callServer('plots/one', {'goid': id}) // send the goid too
         .then(function(response) {
-          Goatools.Plots.showPlotImg(response);
+          Goatools.Plots.showPlotImg(response, id);
         });
       });
 
