@@ -23,7 +23,7 @@ Goatools.Form.Sections = Goatools.Form.Sections || {};
     els: {
       openBtn: $('#editor__open-button'),
       saveBtn: $('.editor__save-btn'),
-      closeBtns: $('.close'),
+      closeBtns: $('#editor__container .close'),
       panels: $('.editor__header'),
       container: $('#editor__container'),
       addSectionBtn: $('#editor__add-section'),

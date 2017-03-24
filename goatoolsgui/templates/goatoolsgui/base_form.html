@@ -301,8 +301,12 @@ GO:0007568 # BP     17 L03 D03 DF    aging</pre>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">{Goid}</h4>
+        <button type="button" class="close" data-dismiss="modal" data-target="#plot-image-modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">
+          <!-- Added via JS when receiving one plot from server -->
+        </h4>
       </div>
       <div class="modal-body">
         <!-- Putting the plot image here -->
