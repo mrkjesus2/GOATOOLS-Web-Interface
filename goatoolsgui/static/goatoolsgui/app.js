@@ -141,6 +141,37 @@ $('#results-tabs a').on('shown.bs.tab', (function(ev) {
 
 
 
+/**
+ * Place the help info in the help container for large screens and
+ * move the help info back inline if the screen is shrunk
+ */
+Goatools.placeHelpInfo = function() {
+  var width = window.innerWidth;
+  var $container = $('#help-container');
+
+  if (width >= 992) {
+    $container.append($('#goids-help').detach())
+    $container.append($('#sections-help').detach())
+  } else if (width < 992 && $container.children().length > 0) {
+    $('#goids-help').detach().insertAfter($('#form__goids-container'));
+    $('#sections-help').detach().insertAfter($('#form__section-container'));
+  }
+};
+
+/**
+ * Event listeners for help elements
+ */
+$('#goids-help').on('show.bs.collapse', function() {
+  $('#sections-help').collapse('hide');
+});
+
+$('#sections-help').on('show.bs.collapse', function() {
+  $('#goids-help').collapse('hide');
+});
+
+window.onload = Goatools.placeHelpInfo();
+window.onresize = Goatools.placeHelpInfo;
+
 
 /**
  * Development Helpers
