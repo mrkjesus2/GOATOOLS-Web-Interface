@@ -14,3 +14,4 @@ and not `os-getcwd()`
 add to `ALLOWED_HOSTS` in `/var/www/projects/gosite/go_site/settings/production.py`
   - Change `sendExample()` in `views.py` to use the goids variable with the absolute path
 and not `os-getcwd()`
+  - Reset the apache server with `sudo service apache2 restart`
